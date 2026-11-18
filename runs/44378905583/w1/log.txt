@@ -1,0 +1,2 @@
+spells 27
+eval {'games': 640, 'winrate': 0.2062, 'wins': 132, 'losses': 505, 'draws': 3, 'faults': 0}
