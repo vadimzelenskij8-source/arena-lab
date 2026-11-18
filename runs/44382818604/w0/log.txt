@@ -1,0 +1,11 @@
+spells 27
+resume skipped Error(s) in loading state_dict for Net:
+	Unexpected key(s) in state_dict: "cnn.4.weight", "cnn.4.bias". 
+	size mismatch for to_grid.weight: copying a param with shape torch.Size([24, 128]) from checkpoint, the shape in current model is torch.Size([16, 128]).
+	size mismatch for to_grid.bias: copying a param with shape torch.Size([24]) from checkpoint, the shape in current model is torch.Size([16]).
+	size mismatch for cnn.0.weight: copying a param with shape torch.Size([32, 26, 3, 3]) from checkpoint, the shape in current model is torch.Size([24, 18, 3, 3]).
+	size mismatch for cnn.0.bias: copying a param with shape torch.Size([32]) from checkpoint, the shape in current model is torch.Size([24]).
+	size mismatch for cnn.2.weight: copying a param with shape torch.Size([32, 32, 3, 3]) from checkpoint, the shape in current model is torch.Size([32, 24, 3, 3]).
+{'iter': 10, 't': 1795031200, 'episodes': 2, 'winrate_last200': 0.0, 'entropy': 0.013, 'value_loss': 0.1942, 'aux_hand': 0.4778, 'delegate': 0.999, 'own_plays_per_100': 0.06, 'anchor': 0.0009} {'obs': 1.4, 'net': 21.4, 'bots': 4.7, 'sim': 11.8, 'reward': 8.0, 'learn': 171.2}
+{'iter': 20, 't': 1795031417, 'episodes': 130, 'winrate_last200': 0.354, 'entropy': 0.018, 'value_loss': 0.3619, 'aux_hand': 0.4814, 'delegate': 0.999, 'own_plays_per_100': 0.09, 'anchor': 0.0013} {'obs': 2.7, 'net': 41.1, 'bots': 9.3, 'sim': 21.4, 'reward': 14.1, 'learn': 346.4}
+eval {'games': 640, 'winrate': 0.3234, 'wins': 207, 'losses': 428, 'draws': 5, 'faults': 0}
