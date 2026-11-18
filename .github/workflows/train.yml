@@ -4,8 +4,6 @@ on:
     inputs:
       workers: { description: "parallel workers (1-20)", default: "16" }
       minutes: { description: "training minutes per worker", default: "300" }
-  schedule:
-    - cron: "17 */6 * * *"
 permissions: { contents: write }
 concurrency: { group: train, cancel-in-progress: false }
 env:
