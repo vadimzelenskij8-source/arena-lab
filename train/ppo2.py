@@ -63,7 +63,8 @@ class Enc:
                              "enemy_play_count", "section_type") if n in h]
         self.scalar_idx = [h[n][0] for n in names]
         self.scalar_names = names
-        self.tw = list(h["towers"])
+        self.tw = [h[f"{t}{k}"][0] for t in ("own_king", "own_left", "own_right", "enemy_king", "enemy_left", "enemy_right")
+                   for k in ("_hp", "_max_hp")]
         self.hand = list(h["hand_card"]); self.hcost = list(h["hand_cost"]); self.hform = list(h["hand_form"])
         self.hpend = list(h["hand_pending"])
         self.nxt = list(h["next_card"]); self.queue = list(h.get("queue", ()))
