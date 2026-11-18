@@ -1,0 +1,87 @@
+name: train
+on:
+  workflow_dispatch:
+    inputs:
+      workers: { description: "parallel workers (1-20)", default: "16" }
+      minutes: { description: "training minutes per worker", default: "300" }
+  schedule:
+    - cron: "17 */6 * * *"
+permissions: { contents: write }
+concurrency: { group: train, cancel-in-progress: false }
+env:
+  CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
+  DATA_VERSION: "16.635.8"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - id: m
+        run: |
+          W=${{ github.event.inputs.workers || '16' }}
+          echo "matrix=$(python3 -c "import json;print(json.dumps(list(range(min(20,max(1,int('$W')))))))")" >> $GITHUB_OUTPUT
+      - run: git clone https://github.com/voonhous/crforge crforge && git -C crforge checkout "$CRFORGE_SHA"
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: gradle/actions/setup-gradle@v4
+      - working-directory: crforge
+        run: ./gradlew --no-daemon :env:installDist :tables:dataVersionTables -Pcrforge.assetSource=cdn -Pcrforge.dataVersion=$DATA_VERSION
+      - run: |
+          mkdir -p sim && cp -r crforge/env/build/install/env sim/env && cp -r crforge/python sim/python && cp -r ~/.crforge/tables/$DATA_VERSION sim/tables
+          tar czf sim.tgz sim
+      - uses: actions/upload-artifact@v4
+        with: { name: sim, path: sim.tgz, retention-days: 1 }
+  work:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      matrix:
+        w: ${{ fromJSON(needs.build.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install ./sim/python && pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: base checkpoint
+        run: |
+          mkdir -p out
+          git fetch origin results 2>/dev/null && git show origin/results:base/policy.pt > out/policy.pt 2>/dev/null && git show origin/results:base/metrics.json > out/metrics.json 2>/dev/null || rm -f out/policy.pt out/metrics.json
+          ls -la out
+      - name: train
+        run: |
+          W=${{ matrix.w }}
+          LR=$(python3 -c "print([1e-4,3e-4,5e-5,2e-4][$W%4])")
+          ENT=$(python3 -c "print([0.002,0.005,0.01,0.001][($W//4)%4])")
+          R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
+          python train/ppo.py --install sim/env --tables sim/tables --out out --envs 32 --threads 4 \
+            --minutes ${{ github.event.inputs.minutes || '300' }} --eval-minutes 25 --eval-games 640 \
+            --seed $(( ${{ github.run_number }} * 100 + W )) --lr $LR --ent $ENT $R 2>&1 | tail -c 20000 > out/log.txt
+          tail -3 out/log.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: "w${{ matrix.w }}", path: out/, retention-days: 3 }
+  select:
+    needs: work
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { path: workers, pattern: "w*" }
+      - name: pick best and publish
+        run: |
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          if git fetch origin results 2>/dev/null; then git worktree add ../res origin/results && cd ../res && git checkout -B results
+          else git worktree add --detach ../res && cd ../res && git checkout --orphan results && git rm -rqf . ; fi
+          python ../${{ github.event.repository.name }}/train/select_best.py ../${{ github.event.repository.name }}/workers base ${{ github.run_id }}
+          python ../${{ github.event.repository.name }}/train/report.py base
+          mkdir -p runs/${{ github.run_id }} && for d in ../${{ github.event.repository.name }}/workers/*; do n=$(basename $d); mkdir -p runs/${{ github.run_id }}/$n; cp $d/eval.json $d/log.txt runs/${{ github.run_id }}/$n/ 2>/dev/null || true; done
+          git add -A && git commit -q -m "gen ${{ github.run_id }}" && git push origin results

@@ -1,0 +1,7938 @@
+[
+{
+"name": "Balloon Cycle",
+"group": "Balloon",
+"src": "meta",
+"cards": [
+"skeletons",
+"musketeer",
+"zap",
+"balloon",
+"miner",
+"ice-golem",
+"bomb-tower",
+"barbarian-barrel"
+],
+"evo": [
+"skeletons",
+"zap"
+],
+"hero": [
+"musketeer"
+]
+},
+{
+"name": "Hero Balloon Freeze",
+"group": "Balloon",
+"src": "meta",
+"cards": [
+"pekka",
+"balloon",
+"elite-barbarians",
+"executioner",
+"electro-wizard",
+"elixir-collector",
+"freeze",
+"tornado"
+],
+"evo": [
+"pekka",
+"elite-barbarians"
+],
+"hero": [
+"balloon"
+]
+},
+{
+"name": "LumberLoon",
+"group": "Balloon",
+"src": "meta",
+"cards": [
+"lumberjack",
+"balloon",
+"goblin-cage",
+"ice-golem",
+"musketeer",
+"bats",
+"barbarian-barrel",
+"zap"
+],
+"evo": [
+"lumberjack",
+"goblin-cage"
+],
+"hero": [
+"balloon"
+]
+},
+{
+"name": "LumberLoon",
+"group": "Balloon",
+"src": "meta",
+"cards": [
+"pekka",
+"balloon",
+"baby-dragon",
+"lumberjack",
+"ice-wizard",
+"vines",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [
+"pekka",
+"baby-dragon"
+],
+"hero": [
+"balloon"
+]
+},
+{
+"name": "LavaLoon",
+"group": "Balloon",
+"src": "meta",
+"cards": [
+"barbarians",
+"balloon",
+"baby-dragon",
+"lava-hound",
+"mega-minion",
+"tombstone",
+"lightning",
+"arrows"
+],
+"evo": [
+"barbarians",
+"baby-dragon"
+],
+"hero": [
+"balloon"
+]
+},
+{
+"name": "Royal Hogs, Evo P.E.K.K.A, Skeleton King",
+"group": "Royal Hogs",
+"src": "meta",
+"cards": [
+"pekka",
+"skeleton-king",
+"furnace",
+"royal-hogs",
+"zappies",
+"skeleton-dragons",
+"poison",
+"tornado"
+],
+"evo": [
+"pekka",
+"furnace"
+],
+"hero": []
+},
+{
+"name": "Royal Hogs, Cannon Cart, Mother Witch",
+"group": "Royal Hogs",
+"src": "meta",
+"cards": [
+"skeletons",
+"royal-hogs",
+"goblin-cage",
+"cannon-cart",
+"mother-witch",
+"skeleton-dragons",
+"fireball",
+"the-log"
+],
+"evo": [
+"skeletons",
+"goblin-cage"
+],
+"hero": []
+},
+{
+"name": "Royal Recruits Fireball Bait",
+"group": "Royal Hogs",
+"src": "meta",
+"cards": [
+"royal-hogs",
+"barbarian-barrel",
+"goblin-cage",
+"royal-recruits",
+"zappies",
+"flying-machine",
+"vines",
+"arrows"
+],
+"evo": [
+"royal-hogs",
+"goblin-cage"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Royal Hogs, Giant Skeleton, Zappies",
+"group": "Royal Hogs",
+"src": "meta",
+"cards": [
+"bomber",
+"barbarian-barrel",
+"goblin-cage",
+"royal-hogs",
+"giant-skeleton",
+"zappies",
+"flying-machine",
+"arrows"
+],
+"evo": [
+"bomber",
+"goblin-cage"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Evo Royal Hogs Earthquake",
+"group": "Royal Hogs",
+"src": "meta",
+"cards": [
+"royal-hogs",
+"archer-queen",
+"goblin-cage",
+"skeletons",
+"fire-spirit",
+"earthquake",
+"royal-delivery",
+"the-log"
+],
+"evo": [
+"royal-hogs",
+"goblin-cage"
+],
+"hero": []
+},
+{
+"name": "Wall Breakers, Evo Mega Knight, Archer Q",
+"group": "Wall Breakers",
+"src": "meta",
+"cards": [
+"mega-knight",
+"mini-pekka",
+"archer-queen",
+"wall-breakers",
+"bandit",
+"goblin-gang",
+"arrows",
+"zap"
+],
+"evo": [
+"mega-knight"
+],
+"hero": [
+"mini-pekka"
+]
+},
+{
+"name": "Evo Skeleton Barrel, Evo Wall Breakers, ",
+"group": "Wall Breakers",
+"src": "meta",
+"cards": [
+"skeleton-barrel",
+"barbarian-barrel",
+"wall-breakers",
+"rascals",
+"royal-ghost",
+"dart-goblin",
+"bomb-tower",
+"rocket"
+],
+"evo": [
+"skeleton-barrel",
+"wall-breakers"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Skeleton Barrel, Wall Breakers, Evo Roya",
+"group": "Wall Breakers",
+"src": "meta",
+"cards": [
+"royal-recruits",
+"valkyrie",
+"firecracker",
+"skeleton-barrel",
+"wall-breakers",
+"goblin-gang",
+"cannon",
+"arrows"
+],
+"evo": [
+"royal-recruits",
+"firecracker"
+],
+"hero": [
+"valkyrie"
+]
+},
+{
+"name": "Evo Skeleton Barrel, Wall Breakers, Evo ",
+"group": "Wall Breakers",
+"src": "meta",
+"cards": [
+"skeleton-barrel",
+"dark-prince",
+"royal-recruits",
+"wall-breakers",
+"princess",
+"dart-goblin",
+"goblin-gang",
+"arrows"
+],
+"evo": [
+"skeleton-barrel",
+"royal-recruits"
+],
+"hero": [
+"dark-prince"
+]
+},
+{
+"name": "Hyperbait",
+"group": "Wall Breakers",
+"src": "meta",
+"cards": [
+"royal-ghost",
+"skeleton-barrel",
+"dart-goblin",
+"wall-breakers",
+"rascals",
+"goblin-gang",
+"vines",
+"the-log"
+],
+"evo": [
+"royal-ghost",
+"dart-goblin"
+],
+"hero": []
+},
+{
+"name": "Evo Royal Giant Mother Witch Fisherman",
+"group": "Royal Giant",
+"src": "meta",
+"cards": [
+"royal-giant",
+"mega-minion",
+"goblin-cage",
+"dark-prince",
+"fisherman",
+"mother-witch",
+"fireball",
+"the-log"
+],
+"evo": [
+"royal-giant",
+"goblin-cage"
+],
+"hero": [
+"mega-minion"
+]
+},
+{
+"name": "Evo Royal Giant",
+"group": "Royal Giant",
+"src": "meta",
+"cards": [
+"royal-giant",
+"skeleton-king",
+"skeleton-army",
+"fisherman",
+"mother-witch",
+"zappies",
+"lightning",
+"the-log"
+],
+"evo": [
+"royal-giant",
+"skeleton-army"
+],
+"hero": []
+},
+{
+"name": "Evo Royal Giant",
+"group": "Royal Giant",
+"src": "meta",
+"cards": [
+"royal-giant",
+"barbarian-barrel",
+"skeleton-army",
+"giant-skeleton",
+"fisherman",
+"mother-witch",
+"zappies",
+"fireball"
+],
+"evo": [
+"royal-giant",
+"skeleton-army"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Evo Royal Giant",
+"group": "Royal Giant",
+"src": "meta",
+"cards": [
+"royal-giant",
+"barbarian-barrel",
+"hunter",
+"lumberjack",
+"fisherman",
+"skeletons",
+"electro-spirit",
+"fireball"
+],
+"evo": [
+"royal-giant",
+"hunter"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Royal Giant",
+"group": "Royal Giant",
+"src": "meta",
+"cards": [
+"royal-ghost",
+"knight",
+"goblin-cage",
+"royal-giant",
+"hunter",
+"electro-spirit",
+"lightning",
+"arrows"
+],
+"evo": [
+"royal-ghost",
+"goblin-cage"
+],
+"hero": [
+"knight"
+]
+},
+{
+"name": "Ram Rider, Boss Bandit, Mini P.E.K.K.A",
+"group": "Ram Rider",
+"src": "meta",
+"cards": [
+"wizard",
+"boss-bandit",
+"giant-snowball",
+"ram-rider",
+"mini-pekka",
+"valkyrie",
+"lightning",
+"barbarian-barrel"
+],
+"evo": [
+"wizard",
+"giant-snowball"
+],
+"hero": []
+},
+{
+"name": "Ram Rider, Monk, Bowler",
+"group": "Ram Rider",
+"src": "meta",
+"cards": [
+"electro-dragon",
+"ice-wizard",
+"monk",
+"ram-rider",
+"bowler",
+"goblins",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [
+"electro-dragon"
+],
+"hero": [
+"ice-wizard"
+]
+},
+{
+"name": "Evo P.E.K.K.A Bridge Spam",
+"group": "Ram Rider",
+"src": "meta",
+"cards": [
+"pekka",
+"dark-prince",
+"barbarian-barrel",
+"ram-rider",
+"bandit",
+"electro-wizard",
+"mother-witch",
+"fireball"
+],
+"evo": [
+"pekka"
+],
+"hero": [
+"dark-prince",
+"barbarian-barrel"
+]
+},
+{
+"name": "Ram Rider, Monk, Ice Wizard",
+"group": "Ram Rider",
+"src": "meta",
+"cards": [
+"electro-dragon",
+"monk",
+"ram-rider",
+"ice-wizard",
+"skeletons",
+"electro-spirit",
+"tornado",
+"the-log"
+],
+"evo": [
+"electro-dragon"
+],
+"hero": []
+},
+{
+"name": "Ram Rider, Monk, Hero Ice Wizard",
+"group": "Ram Rider",
+"src": "meta",
+"cards": [
+"electro-dragon",
+"ice-wizard",
+"monk",
+"ram-rider",
+"skeletons",
+"poison",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [
+"electro-dragon"
+],
+"hero": [
+"ice-wizard"
+]
+},
+{
+"name": "Hog Rider, Three Musketeers, Evo Barbari",
+"group": "Three Musketeers",
+"src": "meta",
+"cards": [
+"barbarians",
+"goblins",
+"zap",
+"hog-rider",
+"three-musketeers",
+"princess",
+"cannon",
+"rocket"
+],
+"evo": [
+"barbarians",
+"zap"
+],
+"hero": [
+"goblins"
+]
+},
+{
+"name": "Evo Battle Ram, Golem, Three Musketeers",
+"group": "Three Musketeers",
+"src": "meta",
+"cards": [
+"battle-ram",
+"golem",
+"minion-horde",
+"three-musketeers",
+"minions",
+"goblin-gang",
+"elixir-collector",
+"arrows"
+],
+"evo": [
+"battle-ram",
+"minion-horde"
+],
+"hero": []
+},
+{
+"name": "Three Musketeers",
+"group": "Three Musketeers",
+"src": "meta",
+"cards": [
+"elite-barbarians",
+"three-musketeers",
+"zap",
+"royal-ghost",
+"bandit",
+"heal-spirit",
+"elixir-collector",
+"mirror"
+],
+"evo": [
+"elite-barbarians",
+"zap"
+],
+"hero": []
+},
+{
+"name": "Evo Minion Horde Evo Battle Ram Three Mu",
+"group": "Three Musketeers",
+"src": "meta",
+"cards": [
+"battle-ram",
+"ice-golem",
+"minion-horde",
+"three-musketeers",
+"dark-prince",
+"bandit",
+"elixir-collector",
+"zap"
+],
+"evo": [
+"battle-ram",
+"minion-horde"
+],
+"hero": [
+"ice-golem"
+]
+},
+{
+"name": "Three Musketeers",
+"group": "Three Musketeers",
+"src": "meta",
+"cards": [
+"battle-ram",
+"ice-golem",
+"royal-ghost",
+"three-musketeers",
+"hunter",
+"heal-spirit",
+"elixir-collector",
+"barbarian-barrel"
+],
+"evo": [
+"battle-ram",
+"royal-ghost"
+],
+"hero": [
+"ice-golem"
+]
+},
+{
+"name": "Lava Hound Beatdown",
+"group": "Updated New Meta!",
+"src": "meta",
+"cards": [
+"inferno-dragon",
+"valkyrie",
+"mega-minion",
+"lava-hound",
+"guards",
+"cannon",
+"lightning",
+"arrows"
+],
+"evo": [
+"inferno-dragon"
+],
+"hero": [
+"valkyrie",
+"mega-minion"
+]
+},
+{
+"name": "Evo Battle Ram, Skeleton King, Evo Royal",
+"group": "Updated New Meta!",
+"src": "meta",
+"cards": [
+"battle-ram",
+"skeleton-king",
+"royal-recruits",
+"fisherman",
+"mother-witch",
+"zappies",
+"lightning",
+"arrows"
+],
+"evo": [
+"battle-ram",
+"royal-recruits"
+],
+"hero": []
+},
+{
+"name": "Hyperbait",
+"group": "Updated New Meta!",
+"src": "meta",
+"cards": [
+"skeleton-barrel",
+"goblins",
+"royal-ghost",
+"suspicious-bush",
+"rascals",
+"dart-goblin",
+"bomb-tower",
+"vines"
+],
+"evo": [
+"skeleton-barrel",
+"royal-ghost"
+],
+"hero": [
+"goblins"
+]
+},
+{
+"name": "Evo Battle Ram, Giant Skeleton, Evo Lumb",
+"group": "Seasonal Arena I",
+"src": "meta",
+"cards": [
+"battle-ram",
+"electro-wizard",
+"lumberjack",
+"giant-skeleton",
+"bandit",
+"furnace",
+"arrows",
+"zap"
+],
+"evo": [
+"battle-ram",
+"lumberjack"
+],
+"hero": [
+"electro-wizard"
+]
+},
+{
+"name": "Evo Goblin Giant Sparky",
+"group": "Seasonal Arena I",
+"src": "meta",
+"cards": [
+"goblin-giant",
+"electro-wizard",
+"zap",
+"sparky",
+"mini-pekka",
+"dark-prince",
+"heal-spirit",
+"rage"
+],
+"evo": [
+"goblin-giant",
+"zap"
+],
+"hero": [
+"electro-wizard"
+]
+},
+{
+"name": "Evo Battle Ram, Giant Skeleton, Evo Lumb",
+"group": "Seasonal Arena I",
+"src": "meta",
+"cards": [
+"battle-ram",
+"electro-wizard",
+"lumberjack",
+"giant-skeleton",
+"royal-ghost",
+"furnace",
+"heal-spirit",
+"arrows"
+],
+"evo": [
+"battle-ram",
+"lumberjack"
+],
+"hero": [
+"electro-wizard"
+]
+},
+{
+"name": "LumberLoon Freeze",
+"group": "Seasonal Arena I",
+"src": "meta",
+"cards": [
+"inferno-dragon",
+"balloon",
+"bowler",
+"lumberjack",
+"electro-dragon",
+"freeze",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [
+"inferno-dragon"
+],
+"hero": [
+"balloon",
+"bowler"
+]
+},
+{
+"name": "Evo Battle Ram, Evo Royal Recruits, Roya",
+"group": "Seasonal Arena II",
+"src": "meta",
+"cards": [
+"battle-ram",
+"berserker",
+"royal-recruits",
+"royal-ghost",
+"zappies",
+"skeleton-dragons",
+"princess",
+"void"
+],
+"evo": [
+"battle-ram",
+"royal-recruits"
+],
+"hero": [
+"berserker"
+]
+},
+{
+"name": "P.E.K.K.A Bridge Spam",
+"group": "Seasonal Arena II",
+"src": "meta",
+"cards": [
+"battle-ram",
+"boss-bandit",
+"royal-ghost",
+"pekka",
+"electro-wizard",
+"hunter",
+"goblin-curse",
+"zap"
+],
+"evo": [
+"battle-ram",
+"royal-ghost"
+],
+"hero": []
+},
+{
+"name": "Royal Recruits Fireball Bait",
+"group": "Seasonal Arena II",
+"src": "meta",
+"cards": [
+"royal-hogs",
+"barbarian-barrel",
+"goblin-cage",
+"royal-recruits",
+"zappies",
+"flying-machine",
+"lightning",
+"arrows"
+],
+"evo": [
+"royal-hogs",
+"goblin-cage"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "P.E.K.K.A Bridge Spam",
+"group": "Seasonal Arena II",
+"src": "meta",
+"cards": [
+"battle-ram",
+"electro-wizard",
+"zap",
+"pekka",
+"royal-ghost",
+"bandit",
+"minions",
+"poison"
+],
+"evo": [
+"battle-ram",
+"zap"
+],
+"hero": [
+"electro-wizard"
+]
+},
+{
+"name": "Evo Giant Sparky",
+"group": "Giant",
+"src": "meta",
+"cards": [
+"giant",
+"mini-pekka",
+"zap",
+"sparky",
+"dark-prince",
+"mother-witch",
+"minions",
+"vines"
+],
+"evo": [
+"giant",
+"zap"
+],
+"hero": [
+"mini-pekka"
+]
+},
+{
+"name": "Evo Skeleton Barrel, Giant, Evo Elite Ba",
+"group": "Giant",
+"src": "meta",
+"cards": [
+"skeleton-barrel",
+"barbarian-barrel",
+"elite-barbarians",
+"giant",
+"night-witch",
+"skeleton-dragons",
+"ice-spirit",
+"lightning"
+],
+"evo": [
+"skeleton-barrel",
+"elite-barbarians"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Hero Giant Sparky",
+"group": "Giant",
+"src": "meta",
+"cards": [
+"zap",
+"giant",
+"mini-pekka",
+"sparky",
+"mother-witch",
+"minions",
+"skeleton-army",
+"arrows"
+],
+"evo": [
+"zap"
+],
+"hero": [
+"giant",
+"mini-pekka"
+]
+},
+{
+"name": "Hero Giant Graveyard",
+"group": "Giant",
+"src": "meta",
+"cards": [
+"musketeer",
+"giant",
+"witch",
+"graveyard",
+"bowler",
+"guards",
+"arrows",
+"giant-snowball"
+],
+"evo": [
+"musketeer",
+"witch"
+],
+"hero": [
+"giant"
+]
+},
+{
+"name": "Giant Sparky",
+"group": "Giant",
+"src": "meta",
+"cards": [
+"musketeer",
+"mini-pekka",
+"golden-knight",
+"giant",
+"sparky",
+"skeletons",
+"giant-snowball",
+"zap"
+],
+"evo": [
+"musketeer"
+],
+"hero": [
+"mini-pekka"
+]
+},
+{
+"name": "Log Bait",
+"group": "Mirror",
+"src": "meta",
+"cards": [
+"skeleton-barrel",
+"goblin-barrel",
+"minion-horde",
+"mega-knight",
+"zappies",
+"princess",
+"skeleton-army",
+"mirror"
+],
+"evo": [
+"skeleton-barrel",
+"minion-horde"
+],
+"hero": []
+},
+{
+"name": "Elixir Golem, Evo Elite Barbarians, Moth",
+"group": "Mirror",
+"src": "meta",
+"cards": [
+"elite-barbarians",
+"elixir-golem",
+"mirror",
+"mother-witch",
+"witch",
+"rage",
+"goblin-curse",
+"arrows"
+],
+"evo": [
+"elite-barbarians",
+"mirror"
+],
+"hero": []
+},
+{
+"name": "Evo Mortar, Cannon Cart, Hero Valkyrie",
+"group": "Mirror",
+"src": "meta",
+"cards": [
+"mortar",
+"valkyrie",
+"witch",
+"cannon-cart",
+"electro-wizard",
+"mirror",
+"poison",
+"arrows"
+],
+"evo": [
+"mortar",
+"witch"
+],
+"hero": [
+"valkyrie"
+]
+},
+{
+"name": "Hog Rider, Giant Skeleton, Cannon Cart",
+"group": "Mirror",
+"src": "meta",
+"cards": [
+"lumberjack",
+"barbarian-barrel",
+"furnace",
+"hog-rider",
+"giant-skeleton",
+"cannon-cart",
+"rascals",
+"mirror"
+],
+"evo": [
+"lumberjack",
+"furnace"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Log Bait",
+"group": "Sudden Death",
+"src": "meta",
+"cards": [
+"goblin-barrel",
+"princess",
+"knight",
+"goblin-gang",
+"ice-spirit",
+"inferno-tower",
+"rocket",
+"the-log"
+],
+"evo": [
+"goblin-barrel",
+"knight"
+],
+"hero": []
+},
+{
+"name": "Giant Graveyard",
+"group": "Sudden Death",
+"src": "meta",
+"cards": [
+"witch",
+"graveyard",
+"giant-snowball",
+"giant",
+"bowler",
+"minions",
+"guards",
+"arrows"
+],
+"evo": [
+"witch",
+"giant-snowball"
+],
+"hero": []
+},
+{
+"name": "2.6 Hog Cycle",
+"group": "Sudden Death",
+"src": "meta",
+"cards": [
+"skeletons",
+"hog-rider",
+"cannon",
+"ice-golem",
+"musketeer",
+"ice-spirit",
+"fireball",
+"the-log"
+],
+"evo": [
+"skeletons",
+"cannon"
+],
+"hero": []
+},
+{
+"name": "Evo Royal Recruits Evo Archers Balloon",
+"group": "Sudden Death",
+"src": "meta",
+"cards": [
+"royal-recruits",
+"little-prince",
+"archers",
+"balloon",
+"lumberjack",
+"fisherman",
+"arrows",
+"giant-snowball"
+],
+"evo": [
+"royal-recruits",
+"archers"
+],
+"hero": []
+},
+{
+"name": "SD Splashyard Freeze",
+"group": "Double Elixir",
+"src": "meta",
+"cards": [
+"graveyard",
+"valkyrie",
+"bowler",
+"electro-wizard",
+"ice-wizard",
+"inferno-dragon",
+"freeze",
+"tornado"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Golem Cannon Cart",
+"group": "Double Elixir",
+"src": "meta",
+"cards": [
+"golem",
+"cannon-cart",
+"lumberjack",
+"electro-dragon",
+"baby-dragon",
+"mega-minion",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "3.0 X-Bow Cycle",
+"group": "Double Elixir",
+"src": "meta",
+"cards": [
+"archers",
+"x-bow",
+"tesla",
+"knight",
+"skeletons",
+"electro-spirit",
+"fireball",
+"the-log"
+],
+"evo": [
+"archers",
+"tesla"
+],
+"hero": []
+},
+{
+"name": "Log Bait",
+"group": "Triple Elixir",
+"src": "meta",
+"cards": [
+"goblin-barrel",
+"goblinstein",
+"royal-recruits",
+"cannon-cart",
+"dart-goblin",
+"goblin-gang",
+"cannon",
+"arrows"
+],
+"evo": [
+"goblin-barrel",
+"royal-recruits"
+],
+"hero": []
+},
+{
+"name": "Triple Elixir Evo Royal Recruits bait",
+"group": "Triple Elixir",
+"src": "meta",
+"cards": [
+"royal-recruits",
+"skeleton-barrel",
+"firecracker",
+"cannon-cart",
+"dart-goblin",
+"goblin-gang",
+"fireball",
+"arrows"
+],
+"evo": [
+"royal-recruits",
+"firecracker"
+],
+"hero": []
+},
+{
+"name": "Triple Elixir Evo Executioner Bomb Tower",
+"group": "Infinite (7x) Elixir",
+"src": "meta",
+"cards": [
+"goblin-drill",
+"giant-skeleton",
+"executioner",
+"bowler",
+"bomb-tower",
+"rocket",
+"poison",
+"tornado"
+],
+"evo": [
+"goblin-drill",
+"executioner"
+],
+"hero": []
+},
+{
+"name": "Infinite Elixir Giant Skeleton Graveyard",
+"group": "Infinite (7x) Elixir",
+"src": "meta",
+"cards": [
+"firecracker",
+"graveyard",
+"giant-skeleton",
+"cannon-cart",
+"baby-dragon",
+"freeze",
+"poison",
+"tornado"
+],
+"evo": [
+"firecracker"
+],
+"hero": []
+},
+{
+"name": "PEKKA Ghost bridge spam",
+"group": "Infinite (7x) Elixir",
+"src": "meta",
+"cards": [
+"battle-ram",
+"pekka",
+"royal-ghost",
+"bandit",
+"electro-wizard",
+"magic-archer",
+"poison",
+"zap"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "LumberLoon Freeze",
+"group": "Infinite (7x) Elixir",
+"src": "meta",
+"cards": [
+"balloon",
+"lumberjack",
+"bowler",
+"inferno-dragon",
+"baby-dragon",
+"freeze",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Royal Hogs Earthquake",
+"group": "Ramp Up",
+"src": "meta",
+"cards": [
+"royal-hogs",
+"archer-queen",
+"skeletons",
+"fire-spirit",
+"cannon",
+"earthquake",
+"royal-delivery",
+"the-log"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "GobGiant Sparky EBarbs",
+"group": "Ramp Up",
+"src": "meta",
+"cards": [
+"goblin-giant",
+"elite-barbarians",
+"sparky",
+"dark-prince",
+"electro-wizard",
+"heal-spirit",
+"rage",
+"zap"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "CRL Hogs",
+"group": "Ramp Up",
+"src": "meta",
+"cards": [
+"royal-hogs",
+"giant-skeleton",
+"royal-ghost",
+"fisherman",
+"mother-witch",
+"zappies",
+"mirror",
+"arrows"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "P.E.K.K.A Bridge Spam",
+"group": "Rage Challenge",
+"src": "meta",
+"cards": [
+"battle-ram",
+"pekka",
+"royal-ghost",
+"bandit",
+"electro-wizard",
+"magic-archer",
+"fireball",
+"zap"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Double Elixir Mega Knight Spawn",
+"group": "Rage Challenge",
+"src": "meta",
+"cards": [
+"mega-knight",
+"cannon-cart",
+"mother-witch",
+"furnace",
+"flying-machine",
+"goblin-hut",
+"fireball",
+"barbarian-barrel"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Retro Royale Giant Sparky Rage",
+"group": "Rage Challenge",
+"src": "meta",
+"cards": [
+"giant",
+"sparky",
+"mini-pekka",
+"dark-prince",
+"wizard",
+"minion-horde",
+"elixir-collector",
+"rage"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Electro Giant Control",
+"group": "Electro Giant",
+"src": "meta",
+"cards": [
+"electro-dragon",
+"valkyrie",
+"bats",
+"electro-giant",
+"mini-pekka",
+"goblin-gang",
+"lightning",
+"tornado"
+],
+"evo": [
+"electro-dragon",
+"bats"
+],
+"hero": [
+"valkyrie"
+]
+},
+{
+"name": "Evo Electro Giant Control",
+"group": "Electro Giant",
+"src": "meta",
+"cards": [
+"electro-giant",
+"bowler",
+"knight",
+"phoenix",
+"goblin-hut",
+"lightning",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [
+"electro-giant",
+"knight"
+],
+"hero": [
+"bowler"
+]
+},
+{
+"name": "Evo Electro Giant Control",
+"group": "Electro Giant",
+"src": "meta",
+"cards": [
+"electro-giant",
+"dark-prince",
+"inferno-dragon",
+"ice-wizard",
+"goblin-cage",
+"lightning",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [
+"electro-giant",
+"inferno-dragon"
+],
+"hero": [
+"dark-prince"
+]
+},
+{
+"name": "Evo Electro Giant, Mini P.E.K.K.A, Hero ",
+"group": "Electro Giant",
+"src": "meta",
+"cards": [
+"electro-giant",
+"ice-wizard",
+"mega-minion",
+"mini-pekka",
+"bats",
+"electro-spirit",
+"lightning",
+"the-log"
+],
+"evo": [
+"electro-giant"
+],
+"hero": [
+"ice-wizard",
+"mega-minion"
+]
+},
+{
+"name": "Evo Electro Giant Phoenix Golden Knight ",
+"group": "Electro Giant",
+"src": "meta",
+"cards": [
+"electro-giant",
+"golden-knight",
+"bomber",
+"phoenix",
+"cannon",
+"lightning",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [
+"electro-giant",
+"bomber"
+],
+"hero": []
+},
+{
+"name": "Evo Battle Ram, Cannon Cart, Royal Ghost",
+"group": "Zappies",
+"src": "meta",
+"cards": [
+"battle-ram",
+"ice-golem",
+"baby-dragon",
+"cannon-cart",
+"royal-ghost",
+"zappies",
+"vines",
+"barbarian-barrel"
+],
+"evo": [
+"battle-ram",
+"baby-dragon"
+],
+"hero": [
+"ice-golem"
+]
+},
+{
+"name": "Evo Battle Ram Bridge Spam",
+"group": "Zappies",
+"src": "meta",
+"cards": [
+"battle-ram",
+"boss-bandit",
+"furnace",
+"cannon-cart",
+"royal-ghost",
+"zappies",
+"goblin-curse",
+"arrows"
+],
+"evo": [
+"battle-ram",
+"furnace"
+],
+"hero": []
+},
+{
+"name": "P.E.K.K.A Bridge Spam",
+"group": "Zappies",
+"src": "meta",
+"cards": [
+"battle-ram",
+"golden-knight",
+"royal-ghost",
+"pekka",
+"bandit",
+"mother-witch",
+"zappies",
+"arrows"
+],
+"evo": [
+"battle-ram",
+"royal-ghost"
+],
+"hero": []
+},
+{
+"name": "Hog Rider, Evo Mega Knight, Hero Berserk",
+"group": "Mega Knight",
+"src": "meta",
+"cards": [
+"mega-knight",
+"berserker",
+"goblin-cage",
+"hog-rider",
+"furnace",
+"bats",
+"lightning",
+"arrows"
+],
+"evo": [
+"mega-knight",
+"goblin-cage"
+],
+"hero": [
+"berserker"
+]
+},
+{
+"name": "Hog Rider, Evo Mega Knight, Prince",
+"group": "Mega Knight",
+"src": "meta",
+"cards": [
+"mega-knight",
+"wizard",
+"valkyrie",
+"hog-rider",
+"prince",
+"electro-wizard",
+"skeleton-army",
+"zap"
+],
+"evo": [
+"mega-knight",
+"valkyrie"
+],
+"hero": [
+"wizard"
+]
+},
+{
+"name": "X-Bow, Sparky, Evo Mega Knight",
+"group": "Mega Knight",
+"src": "meta",
+"cards": [
+"mega-knight",
+"archer-queen",
+"skeleton-army",
+"x-bow",
+"sparky",
+"mini-pekka",
+"wizard",
+"lightning"
+],
+"evo": [
+"mega-knight",
+"skeleton-army"
+],
+"hero": []
+},
+{
+"name": "Evo Goblin Drill Cycle",
+"group": "Goblin Drill",
+"src": "meta",
+"cards": [
+"goblin-drill",
+"valkyrie",
+"magic-archer",
+"skeletons",
+"fire-spirit",
+"bomb-tower",
+"tornado",
+"the-log"
+],
+"evo": [
+"goblin-drill"
+],
+"hero": [
+"valkyrie",
+"magic-archer"
+]
+},
+{
+"name": "Goblin Drill, Hero Knight, Evo Furnace",
+"group": "Goblin Drill",
+"src": "meta",
+"cards": [
+"furnace",
+"knight",
+"giant-snowball",
+"goblin-drill",
+"guards",
+"fire-spirit",
+"tesla",
+"the-log"
+],
+"evo": [
+"furnace",
+"giant-snowball"
+],
+"hero": [
+"knight"
+]
+},
+{
+"name": "Goblin Drill, Hero Dark Prince, Evo Furn",
+"group": "Goblin Drill",
+"src": "meta",
+"cards": [
+"furnace",
+"dark-prince",
+"giant-snowball",
+"goblin-drill",
+"skeletons",
+"tesla",
+"poison",
+"royal-delivery"
+],
+"evo": [
+"furnace",
+"giant-snowball"
+],
+"hero": [
+"dark-prince"
+]
+},
+{
+"name": "Evo Goblin Drill, Golden Knight, Cannon ",
+"group": "Goblin Drill",
+"src": "meta",
+"cards": [
+"goblin-drill",
+"golden-knight",
+"wizard",
+"cannon-cart",
+"royal-ghost",
+"executioner",
+"skeletons",
+"tornado"
+],
+"evo": [
+"goblin-drill",
+"wizard"
+],
+"hero": []
+},
+{
+"name": "Goblin Drill Cycle",
+"group": "Goblin Drill",
+"src": "meta",
+"cards": [
+"wall-breakers",
+"goblin-drill",
+"valkyrie",
+"bomber",
+"guards",
+"fire-spirit",
+"inferno-tower",
+"fireball"
+],
+"evo": [
+"wall-breakers",
+"valkyrie"
+],
+"hero": []
+},
+{
+"name": "Ice Bow",
+"group": "Recent",
+"src": "meta",
+"cards": [
+"x-bow",
+"valkyrie",
+"ice-wizard",
+"skeletons",
+"tesla",
+"rocket",
+"tornado",
+"the-log"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Pump Bow",
+"group": "Recent",
+"src": "meta",
+"cards": [
+"x-bow",
+"archer-queen",
+"mini-pekka",
+"skeletons",
+"fire-spirit",
+"electro-spirit",
+"elixir-collector",
+"the-log"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Queen Bow",
+"group": "Recent",
+"src": "meta",
+"cards": [
+"x-bow",
+"archer-queen",
+"knight",
+"skeletons",
+"ice-spirit",
+"tesla",
+"fireball",
+"the-log"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Balloon Cycle",
+"group": "Recent",
+"src": "meta",
+"cards": [
+"balloon",
+"miner",
+"ice-golem",
+"musketeer",
+"bats",
+"bomb-tower",
+"barbarian-barrel",
+"giant-snowball"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Giant Graveyard",
+"group": "Recent",
+"src": "meta",
+"cards": [
+"graveyard",
+"giant",
+"bowler",
+"musketeer",
+"night-witch",
+"guards",
+"arrows",
+"giant-snowball"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Electro Giant Control",
+"group": "Best Clash Royale Best",
+"src": "meta",
+"cards": [
+"lumberjack",
+"bowler",
+"baby-dragon",
+"electro-giant",
+"goblin-hut",
+"lightning",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [
+"lumberjack",
+"baby-dragon"
+],
+"hero": [
+"bowler"
+]
+},
+{
+"name": "Elixir Golem, Sparky, Evo Elite Barbaria",
+"group": "Best Clash Royale Best",
+"src": "meta",
+"cards": [
+"elite-barbarians",
+"elixir-golem",
+"executioner",
+"sparky",
+"heal-spirit",
+"rage",
+"vines",
+"tornado"
+],
+"evo": [
+"elite-barbarians",
+"executioner"
+],
+"hero": []
+},
+{
+"name": "Lava Hound, Spirit Empress, Hero Dark Pr",
+"group": "Best Clash Royale Best",
+"src": "meta",
+"cards": [
+"goblin-cage",
+"dark-prince",
+"zap",
+"lava-hound",
+"spirit-empress",
+"night-witch",
+"skeleton-dragons",
+"fireball"
+],
+"evo": [
+"goblin-cage",
+"zap"
+],
+"hero": [
+"dark-prince"
+]
+},
+{
+"name": "Hero Balloon Freeze",
+"group": "Best Clash Royale Best",
+"src": "meta",
+"cards": [
+"inferno-dragon",
+"balloon",
+"knight",
+"bowler",
+"electro-dragon",
+"freeze",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [
+"inferno-dragon"
+],
+"hero": [
+"balloon",
+"knight"
+]
+},
+{
+"name": "Golem Beatdown",
+"group": "Best Clash Royale Best",
+"src": "meta",
+"cards": [
+"elite-barbarians",
+"berserker",
+"electro-dragon",
+"golem",
+"night-witch",
+"elixir-collector",
+"tornado",
+"barbarian-barrel"
+],
+"evo": [
+"elite-barbarians",
+"electro-dragon"
+],
+"hero": [
+"berserker"
+]
+},
+{
+"name": "Golem, Skeleton King, Fisherman",
+"group": "Skeleton King",
+"src": "meta",
+"cards": [
+"barbarians",
+"skeleton-king",
+"bats",
+"golem",
+"fisherman",
+"night-witch",
+"lightning",
+"arrows"
+],
+"evo": [
+"barbarians",
+"bats"
+],
+"hero": []
+},
+{
+"name": "Evo Skeleton Barrel, Suspicious Bush, Sk",
+"group": "Skeleton King",
+"src": "meta",
+"cards": [
+"skeleton-barrel",
+"skeleton-king",
+"skeleton-army",
+"suspicious-bush",
+"mother-witch",
+"dart-goblin",
+"vines",
+"the-log"
+],
+"evo": [
+"skeleton-barrel",
+"skeleton-army"
+],
+"hero": []
+},
+{
+"name": "Evo Skeleton Barrel, Suspicious Bush, Sk",
+"group": "Skeleton King",
+"src": "meta",
+"cards": [
+"skeleton-barrel",
+"skeleton-king",
+"skeleton-army",
+"suspicious-bush",
+"rascals",
+"princess",
+"dart-goblin",
+"vines"
+],
+"evo": [
+"skeleton-barrel",
+"skeleton-army"
+],
+"hero": []
+},
+{
+"name": "Lava Hound Beatdown",
+"group": "Skeleton King",
+"src": "meta",
+"cards": [
+"inferno-dragon",
+"tombstone",
+"skeleton-king",
+"miner",
+"lava-hound",
+"skeleton-dragons",
+"flying-machine",
+"arrows"
+],
+"evo": [
+"inferno-dragon"
+],
+"hero": [
+"tombstone"
+]
+},
+{
+"name": "Queen Bow",
+"group": "Archer Queen",
+"src": "meta",
+"cards": [
+"valkyrie",
+"archer-queen",
+"cannon",
+"x-bow",
+"skeletons",
+"ice-spirit",
+"rocket",
+"the-log"
+],
+"evo": [
+"valkyrie",
+"cannon"
+],
+"hero": []
+},
+{
+"name": "Evo Battle Ram Bridge Spam",
+"group": "Archer Queen",
+"src": "meta",
+"cards": [
+"battle-ram",
+"archer-queen",
+"elite-barbarians",
+"royal-ghost",
+"bandit",
+"magic-archer",
+"heal-spirit",
+"arrows"
+],
+"evo": [
+"battle-ram",
+"elite-barbarians"
+],
+"hero": []
+},
+{
+"name": "GS 3M Heal control",
+"group": "Interesting non-meta",
+"src": "meta",
+"cards": [
+"three-musketeers",
+"giant-skeleton",
+"ice-golem",
+"minions",
+"heal-spirit",
+"elixir-collector",
+"the-log",
+"zap"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Giant NW Mirror Heal",
+"group": "Interesting non-meta",
+"src": "meta",
+"cards": [
+"giant",
+"night-witch",
+"mega-minion",
+"skeletons",
+"heal-spirit",
+"elixir-collector",
+"mirror",
+"arrows"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Lava Loon Clone eWiz",
+"group": "Interesting non-meta",
+"src": "meta",
+"cards": [
+"balloon",
+"lava-hound",
+"ice-golem",
+"electro-wizard",
+"mega-minion",
+"skeleton-army",
+"clone",
+"fireball"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Skeleton Dragons GS Clone",
+"group": "Interesting non-meta",
+"src": "meta",
+"cards": [
+"skeleton-barrel",
+"giant-skeleton",
+"cannon-cart",
+"night-witch",
+"skeleton-dragons",
+"goblin-cage",
+"clone",
+"tornado"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Giant Skelly Hog Miner eBarb beatdown",
+"group": "Interesting non-meta",
+"src": "meta",
+"cards": [
+"hog-rider",
+"miner",
+"giant-skeleton",
+"elite-barbarians",
+"executioner",
+"minions",
+"goblins",
+"tornado"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #106 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"elite-barbarians",
+"tornado",
+"graveyard",
+"dark-prince",
+"inferno-tower",
+"executioner",
+"wizard"
+],
+"evo": [],
+"hero": [
+"wizard"
+]
+},
+{
+"name": "Случайная #107 (Elixir Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elixir-golem",
+"the-log",
+"clone",
+"giant-skeleton",
+"bomb-tower",
+"skeletons",
+"fire-spirit",
+"ice-wizard"
+],
+"evo": [
+"skeletons"
+],
+"hero": [
+"ice-wizard"
+]
+},
+{
+"name": "Случайная #108 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"golem",
+"graveyard",
+"earthquake",
+"bomber",
+"boss-bandit",
+"goblin-demolisher",
+"goblin-cage"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #109 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"elixir-golem",
+"the-log",
+"fireball",
+"skeleton-dragons",
+"electro-dragon",
+"elixir-collector",
+"barbarians"
+],
+"evo": [
+"electro-dragon",
+"wall-breakers"
+],
+"hero": []
+},
+{
+"name": "Случайная #110 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"goblin-curse",
+"fireball",
+"skeleton-king",
+"mega-minion",
+"wizard",
+"barbarian-hut",
+"bowler"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #111 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"balloon",
+"poison",
+"rage",
+"executioner",
+"ice-spirit",
+"heal-spirit",
+"barbarian-hut"
+],
+"evo": [
+"executioner",
+"ice-spirit"
+],
+"hero": []
+},
+{
+"name": "Случайная #112 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"freeze",
+"the-log",
+"baby-dragon",
+"elixir-collector",
+"tombstone",
+"hunter",
+"cannon-cart"
+],
+"evo": [],
+"hero": [
+"tombstone"
+]
+},
+{
+"name": "Случайная #113 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"poison",
+"giant-snowball",
+"barbarians",
+"fire-spirit",
+"royal-ghost",
+"electro-wizard",
+"skeleton-army"
+],
+"evo": [
+"royal-ghost",
+"royal-hogs"
+],
+"hero": []
+},
+{
+"name": "Случайная #114 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"royal-giant",
+"clone",
+"giant-snowball",
+"furnace",
+"battle-healer",
+"three-musketeers",
+"fire-spirit"
+],
+"evo": [
+"royal-giant"
+],
+"hero": []
+},
+{
+"name": "Случайная #115 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"miner",
+"arrows",
+"void",
+"royal-ghost",
+"zappies",
+"barbarians",
+"guards"
+],
+"evo": [
+"royal-ghost"
+],
+"hero": []
+},
+{
+"name": "Случайная #116 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"ice-golem",
+"clone",
+"giant-snowball",
+"skeleton-army",
+"inferno-tower",
+"bomber",
+"mega-minion"
+],
+"evo": [],
+"hero": [
+"mega-minion"
+]
+},
+{
+"name": "Случайная #117 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"elite-barbarians",
+"arrows",
+"giant-snowball",
+"furnace",
+"battle-healer",
+"suspicious-bush",
+"lumberjack"
+],
+"evo": [
+"lumberjack",
+"furnace"
+],
+"hero": []
+},
+{
+"name": "Случайная #118 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"golem",
+"barbarian-barrel",
+"lightning",
+"inferno-dragon",
+"goblin-machine",
+"zappies",
+"ice-spirit"
+],
+"evo": [
+"ice-spirit"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #119 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"goblin-curse",
+"freeze",
+"barbarian-hut",
+"inferno-dragon",
+"zappies",
+"electro-dragon",
+"dark-prince"
+],
+"evo": [],
+"hero": [
+"dark-prince"
+]
+},
+{
+"name": "Случайная #120 (Goblinstein)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblinstein",
+"rage",
+"royal-delivery",
+"prince",
+"cannon",
+"archers",
+"ice-spirit",
+"elixir-collector"
+],
+"evo": [
+"ice-spirit",
+"cannon"
+],
+"hero": []
+},
+{
+"name": "Случайная #121 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"barbarian-barrel",
+"royal-delivery",
+"giant-skeleton",
+"mortar",
+"bomb-tower",
+"goblin-demolisher",
+"electro-spirit"
+],
+"evo": [],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #122 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"the-log",
+"vines",
+"bowler",
+"barbarians",
+"hunter",
+"baby-dragon",
+"cannon"
+],
+"evo": [
+"royal-hogs",
+"cannon"
+],
+"hero": [
+"bowler"
+]
+},
+{
+"name": "Случайная #123 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"hog-rider",
+"fireball",
+"barbarian-barrel",
+"mortar",
+"lumberjack",
+"pekka",
+"skeleton-king"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #124 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"void",
+"arrows",
+"ice-spirit",
+"mortar",
+"electro-wizard",
+"hunter",
+"fisherman"
+],
+"evo": [
+"hunter"
+],
+"hero": [
+"electro-wizard"
+]
+},
+{
+"name": "Случайная #125 (Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"giant",
+"royal-delivery",
+"the-log",
+"bomber",
+"minions",
+"royal-recruits",
+"rascals",
+"mini-pekka"
+],
+"evo": [
+"giant"
+],
+"hero": [
+"mini-pekka"
+]
+},
+{
+"name": "Случайная #126 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"barbarian-barrel",
+"rocket",
+"goblin-gang",
+"dart-goblin",
+"skeleton-army",
+"golden-knight",
+"royal-ghost"
+],
+"evo": [
+"dart-goblin",
+"royal-ghost"
+],
+"hero": []
+},
+{
+"name": "Случайная #127 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"lightning",
+"royal-delivery",
+"elixir-collector",
+"ice-wizard",
+"night-witch",
+"bomber",
+"skeleton-dragons"
+],
+"evo": [
+"bomber"
+],
+"hero": []
+},
+{
+"name": "Случайная #128 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"x-bow",
+"void",
+"goblin-barrel",
+"princess",
+"furnace",
+"mortar",
+"zappies"
+],
+"evo": [
+"princess"
+],
+"hero": []
+},
+{
+"name": "Случайная #129 (Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"golem",
+"vines",
+"zap",
+"princess",
+"ice-wizard",
+"mega-minion",
+"monk",
+"bomb-tower"
+],
+"evo": [
+"princess"
+],
+"hero": []
+},
+{
+"name": "Случайная #130 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"elite-barbarians",
+"zap",
+"giant-snowball",
+"goblin-gang",
+"boss-bandit",
+"ice-spirit",
+"electro-dragon"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #131 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"bandit",
+"giant-snowball",
+"rage",
+"skeleton-dragons",
+"musketeer",
+"ronin",
+"firecracker"
+],
+"evo": [],
+"hero": [
+"musketeer"
+]
+},
+{
+"name": "Случайная #132 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"the-log",
+"barbarian-barrel",
+"rascals",
+"ice-wizard",
+"hunter",
+"royal-ghost",
+"mighty-miner"
+],
+"evo": [
+"royal-ghost"
+],
+"hero": []
+},
+{
+"name": "Случайная #133 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"royal-giant",
+"earthquake",
+"rocket",
+"goblin-gang",
+"mega-minion",
+"bowler",
+"inferno-tower"
+],
+"evo": [
+"royal-giant"
+],
+"hero": [
+"mega-minion"
+]
+},
+{
+"name": "Случайная #134 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"lightning",
+"the-log",
+"archers",
+"minions",
+"tesla",
+"tombstone",
+"skeletons"
+],
+"evo": [
+"skeletons"
+],
+"hero": [
+"tombstone"
+]
+},
+{
+"name": "Случайная #135 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"royal-hogs",
+"freeze",
+"earthquake",
+"bowler",
+"ice-spirit",
+"sparky",
+"magic-archer"
+],
+"evo": [
+"ice-spirit",
+"elite-barbarians"
+],
+"hero": [
+"magic-archer"
+]
+},
+{
+"name": "Случайная #136 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"lightning",
+"tornado",
+"boss-bandit",
+"spear-goblins",
+"tombstone",
+"goblin-machine",
+"mother-witch"
+],
+"evo": [
+"royal-hogs"
+],
+"hero": []
+},
+{
+"name": "Случайная #137 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"earthquake",
+"clone",
+"inferno-dragon",
+"skeleton-king",
+"firecracker",
+"suspicious-bush",
+"cannon-cart"
+],
+"evo": [
+"battle-ram",
+"inferno-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #138 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"freeze",
+"giant-snowball",
+"archers",
+"goblin-demolisher",
+"baby-dragon",
+"archer-queen",
+"goblin-machine"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #139 (Goblin Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-giant",
+"fireball",
+"poison",
+"goblin-demolisher",
+"spear-goblins",
+"fire-spirit",
+"guards",
+"goblin-gang"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #140 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"graveyard",
+"barbarian-barrel",
+"barbarians",
+"musketeer",
+"night-witch",
+"electro-wizard",
+"mortar"
+],
+"evo": [
+"mortar"
+],
+"hero": [
+"musketeer"
+]
+},
+{
+"name": "Случайная #141 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"minion-giant",
+"fireball",
+"void",
+"royal-recruits",
+"mortar",
+"skeleton-army",
+"skeletons"
+],
+"evo": [
+"skeleton-army"
+],
+"hero": []
+},
+{
+"name": "Случайная #142 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"royal-delivery",
+"rocket",
+"witch",
+"electro-dragon",
+"goblin-machine",
+"electro-spirit",
+"cannon-cart"
+],
+"evo": [
+"electro-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #143 (Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"giant",
+"vines",
+"rocket",
+"flying-machine",
+"cannon",
+"ice-wizard",
+"firecracker",
+"wizard"
+],
+"evo": [
+"giant",
+"wizard"
+],
+"hero": []
+},
+{
+"name": "Случайная #144 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"barbarian-barrel",
+"goblin-barrel",
+"fire-spirit",
+"bomb-tower",
+"mother-witch",
+"barbarians",
+"hunter"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #145 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"goblin-barrel",
+"giant-snowball",
+"lumberjack",
+"royal-ghost",
+"bats",
+"heal-spirit",
+"cannon-cart"
+],
+"evo": [
+"goblin-barrel",
+"royal-ghost"
+],
+"hero": []
+},
+{
+"name": "Случайная #146 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"fireball",
+"barbarian-barrel",
+"prince",
+"rascals",
+"mortar",
+"phoenix",
+"skeletons"
+],
+"evo": [
+"skeleton-barrel"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #147 (Rune Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"rune-giant",
+"rocket",
+"goblin-curse",
+"ice-wizard",
+"skeleton-army",
+"rascals",
+"minions",
+"elixir-collector"
+],
+"evo": [
+"skeleton-army"
+],
+"hero": []
+},
+{
+"name": "Случайная #148 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"golem",
+"rocket",
+"clone",
+"skeletons",
+"suspicious-bush",
+"ronin",
+"archer-queen"
+],
+"evo": [
+"skeletons"
+],
+"hero": []
+},
+{
+"name": "Случайная #149 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"goblinstein",
+"royal-delivery",
+"clone",
+"heal-spirit",
+"spear-goblins",
+"lumberjack",
+"cannon-cart"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #150 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"goblin-giant",
+"the-log",
+"lightning",
+"baby-dragon",
+"sparky",
+"goblin-hut",
+"little-prince"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #151 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"tornado",
+"earthquake",
+"barbarians",
+"fire-spirit",
+"mini-pekka",
+"dart-goblin",
+"knight"
+],
+"evo": [
+"wall-breakers"
+],
+"hero": []
+},
+{
+"name": "Случайная #152 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"wall-breakers",
+"clone",
+"arrows",
+"mortar",
+"barbarian-hut",
+"cannon",
+"archers"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #153 (Electro Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"electro-giant",
+"bandit",
+"goblin-curse",
+"the-log",
+"dark-prince",
+"fisherman",
+"tombstone",
+"heal-spirit"
+],
+"evo": [
+"electro-giant"
+],
+"hero": [
+"tombstone"
+]
+},
+{
+"name": "Случайная #154 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"hog-rider",
+"goblin-barrel",
+"fireball",
+"giant-skeleton",
+"phoenix",
+"boss-bandit",
+"ice-wizard"
+],
+"evo": [
+"goblin-barrel",
+"royal-hogs"
+],
+"hero": []
+},
+{
+"name": "Случайная #155 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"clone",
+"vines",
+"skeleton-king",
+"baby-dragon",
+"executioner",
+"ice-spirit",
+"fire-spirit"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #156 (Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"giant",
+"rune-giant",
+"barbarian-barrel",
+"the-log",
+"ice-wizard",
+"goblin-demolisher",
+"lumberjack",
+"monk"
+],
+"evo": [
+"lumberjack",
+"giant"
+],
+"hero": []
+},
+{
+"name": "Случайная #157 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"goblin-giant",
+"rage",
+"freeze",
+"prince",
+"dart-goblin",
+"berserker",
+"royal-ghost"
+],
+"evo": [],
+"hero": [
+"berserker"
+]
+},
+{
+"name": "Случайная #158 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"poison",
+"royal-delivery",
+"battle-healer",
+"archers",
+"electro-spirit",
+"hunter",
+"guards"
+],
+"evo": [
+"royal-hogs",
+"hunter"
+],
+"hero": []
+},
+{
+"name": "Случайная #159 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"tornado",
+"rocket",
+"witch",
+"ice-spirit",
+"fisherman",
+"rascals",
+"inferno-dragon"
+],
+"evo": [],
+"hero": [
+"balloon"
+]
+},
+{
+"name": "Случайная #160 (Electro Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"electro-giant",
+"royal-hogs",
+"goblin-curse",
+"arrows",
+"pekka",
+"musketeer",
+"valkyrie",
+"princess"
+],
+"evo": [
+"valkyrie"
+],
+"hero": []
+},
+{
+"name": "Случайная #161 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"goblin-curse",
+"barbarian-barrel",
+"night-witch",
+"golden-knight",
+"bowler",
+"princess",
+"tesla"
+],
+"evo": [
+"princess",
+"tesla"
+],
+"hero": []
+},
+{
+"name": "Случайная #162 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"freeze",
+"giant-snowball",
+"goblin-cage",
+"goblin-demolisher",
+"zappies",
+"giant-skeleton",
+"mother-witch"
+],
+"evo": [
+"giant-snowball"
+],
+"hero": []
+},
+{
+"name": "Случайная #163 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"wall-breakers",
+"fireball",
+"zap",
+"bomb-tower",
+"ice-spirit",
+"goblin-hut",
+"skeleton-army"
+],
+"evo": [
+"skeleton-army"
+],
+"hero": []
+},
+{
+"name": "Случайная #164 (Goblin Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-giant",
+"poison",
+"goblin-curse",
+"night-witch",
+"mortar",
+"dark-prince",
+"mega-knight",
+"electro-spirit"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #165 (Ice Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ice-golem",
+"rage",
+"giant-snowball",
+"electro-wizard",
+"electro-spirit",
+"mighty-miner",
+"archers",
+"cannon"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #166 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"the-log",
+"fireball",
+"bowler",
+"skeletons",
+"goblin-machine",
+"royal-recruits",
+"mini-pekka"
+],
+"evo": [
+"royal-recruits",
+"skeletons"
+],
+"hero": [
+"mini-pekka"
+]
+},
+{
+"name": "Случайная #167 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"balloon",
+"zap",
+"fireball",
+"berserker",
+"skeleton-army",
+"monk",
+"minions"
+],
+"evo": [
+"skeleton-army"
+],
+"hero": []
+},
+{
+"name": "Случайная #168 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"rune-giant",
+"zap",
+"poison",
+"hunter",
+"boss-bandit",
+"royal-recruits",
+"tesla"
+],
+"evo": [
+"zap",
+"tesla"
+],
+"hero": []
+},
+{
+"name": "Случайная #169 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"tornado",
+"fireball",
+"tombstone",
+"lumberjack",
+"bomb-tower",
+"spear-goblins",
+"electro-spirit"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #170 (Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"golem",
+"vines",
+"tornado",
+"minions",
+"fire-spirit",
+"bats",
+"ronin",
+"goblin-gang"
+],
+"evo": [
+"bats"
+],
+"hero": []
+},
+{
+"name": "Случайная #171 (Electro Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"electro-giant",
+"skeleton-barrel",
+"void",
+"goblin-curse",
+"bowler",
+"ice-wizard",
+"bats",
+"skeletons"
+],
+"evo": [
+"skeleton-barrel",
+"skeletons"
+],
+"hero": []
+},
+{
+"name": "Случайная #172 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"hog-rider",
+"freeze",
+"rage",
+"barbarians",
+"fire-spirit",
+"inferno-dragon",
+"electro-dragon"
+],
+"evo": [
+"inferno-dragon",
+"barbarians"
+],
+"hero": []
+},
+{
+"name": "Случайная #173 (Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"golem",
+"earthquake",
+"void",
+"electro-spirit",
+"tombstone",
+"princess",
+"baby-dragon",
+"cannon-cart"
+],
+"evo": [
+"baby-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #174 (Elixir Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elixir-golem",
+"earthquake",
+"barbarian-barrel",
+"fire-spirit",
+"pekka",
+"wizard",
+"hunter",
+"rascals"
+],
+"evo": [
+"pekka",
+"hunter"
+],
+"hero": []
+},
+{
+"name": "Случайная #175 (Rune Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"rune-giant",
+"miner",
+"clone",
+"rocket",
+"hunter",
+"bowler",
+"fire-spirit",
+"electro-wizard"
+],
+"evo": [],
+"hero": [
+"bowler"
+]
+},
+{
+"name": "Случайная #176 (Ice Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ice-golem",
+"freeze",
+"lightning",
+"minions",
+"electro-wizard",
+"elixir-collector",
+"tesla",
+"archer-queen"
+],
+"evo": [
+"tesla"
+],
+"hero": []
+},
+{
+"name": "Случайная #177 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"void",
+"giant-snowball",
+"barbarians",
+"dart-goblin",
+"dark-prince",
+"ice-spirit",
+"bowler"
+],
+"evo": [],
+"hero": [
+"bowler"
+]
+},
+{
+"name": "Случайная #178 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"arrows",
+"zap",
+"spear-goblins",
+"ronin",
+"minion-horde",
+"flying-machine",
+"goblin-gang"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #179 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"earthquake",
+"goblin-curse",
+"musketeer",
+"goblin-gang",
+"rascals",
+"bomber",
+"golden-knight"
+],
+"evo": [
+"bomber"
+],
+"hero": []
+},
+{
+"name": "Случайная #180 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"the-log",
+"goblin-barrel",
+"goblin-demolisher",
+"skeleton-dragons",
+"minions",
+"skeletons",
+"princess"
+],
+"evo": [
+"princess"
+],
+"hero": []
+},
+{
+"name": "Случайная #181 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"goblin-curse",
+"rage",
+"mega-knight",
+"goblin-hut",
+"archer-queen",
+"princess",
+"tombstone"
+],
+"evo": [
+"princess",
+"mega-knight"
+],
+"hero": []
+},
+{
+"name": "Случайная #182 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"fireball",
+"earthquake",
+"suspicious-bush",
+"ronin",
+"dark-prince",
+"pekka",
+"rascals"
+],
+"evo": [],
+"hero": [
+"balloon"
+]
+},
+{
+"name": "Случайная #183 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"royal-delivery",
+"arrows",
+"monk",
+"goblin-demolisher",
+"heal-spirit",
+"dart-goblin",
+"barbarians"
+],
+"evo": [
+"dart-goblin"
+],
+"hero": []
+},
+{
+"name": "Случайная #184 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"bandit",
+"void",
+"fireball",
+"skeletons",
+"goblin-machine",
+"goblin-cage",
+"spear-goblins"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #185 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"rage",
+"royal-delivery",
+"skeletons",
+"mega-knight",
+"inferno-dragon",
+"rascals",
+"fire-spirit"
+],
+"evo": [
+"inferno-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #186 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"barbarian-barrel",
+"giant-snowball",
+"skeleton-king",
+"baby-dragon",
+"battle-healer",
+"princess",
+"hunter"
+],
+"evo": [
+"wall-breakers"
+],
+"hero": []
+},
+{
+"name": "Случайная #187 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"miner",
+"freeze",
+"royal-delivery",
+"goblins",
+"archer-queen",
+"guards",
+"three-musketeers"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #188 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"tornado",
+"arrows",
+"royal-ghost",
+"mighty-miner",
+"electro-wizard",
+"minions",
+"elixir-collector"
+],
+"evo": [
+"royal-ghost"
+],
+"hero": []
+},
+{
+"name": "Случайная #189 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"elixir-golem",
+"zap",
+"royal-delivery",
+"bomber",
+"minions",
+"tombstone",
+"elixir-collector"
+],
+"evo": [
+"bomber",
+"zap"
+],
+"hero": []
+},
+{
+"name": "Случайная #190 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"freeze",
+"arrows",
+"dart-goblin",
+"berserker",
+"witch",
+"goblin-machine",
+"electro-wizard"
+],
+"evo": [],
+"hero": [
+"electro-wizard"
+]
+},
+{
+"name": "Случайная #191 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"graveyard",
+"arrows",
+"wizard",
+"mortar",
+"phoenix",
+"sparky",
+"musketeer"
+],
+"evo": [
+"musketeer",
+"mortar"
+],
+"hero": []
+},
+{
+"name": "Случайная #192 (Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"giant",
+"tornado",
+"vines",
+"suspicious-bush",
+"inferno-tower",
+"knight",
+"royal-ghost",
+"monk"
+],
+"evo": [
+"royal-ghost"
+],
+"hero": []
+},
+{
+"name": "Случайная #193 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"freeze",
+"poison",
+"boss-bandit",
+"lumberjack",
+"inferno-dragon",
+"firecracker",
+"zappies"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #194 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"rage",
+"vines",
+"mega-knight",
+"princess",
+"ice-wizard",
+"goblin-hut",
+"night-witch"
+],
+"evo": [
+"mega-knight"
+],
+"hero": []
+},
+{
+"name": "Случайная #195 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"vines",
+"rocket",
+"battle-healer",
+"knight",
+"suspicious-bush",
+"little-prince",
+"bomb-tower"
+],
+"evo": [
+"knight"
+],
+"hero": []
+},
+{
+"name": "Случайная #196 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"clone",
+"graveyard",
+"goblin-demolisher",
+"zappies",
+"barbarians",
+"bats",
+"dart-goblin"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #197 (Rune Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"rune-giant",
+"royal-delivery",
+"goblin-curse",
+"golden-knight",
+"ice-wizard",
+"rascals",
+"fire-spirit",
+"guards"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #198 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"arrows",
+"giant-snowball",
+"flying-machine",
+"dark-prince",
+"royal-ghost",
+"royal-recruits",
+"tesla"
+],
+"evo": [
+"royal-ghost"
+],
+"hero": []
+},
+{
+"name": "Случайная #199 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"lava-hound",
+"goblin-curse",
+"clone",
+"electro-spirit",
+"royal-recruits",
+"minion-horde",
+"lumberjack"
+],
+"evo": [
+"minion-horde",
+"lumberjack"
+],
+"hero": []
+},
+{
+"name": "Случайная #200 (Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"giant",
+"poison",
+"clone",
+"bats",
+"goblins",
+"golden-knight",
+"spear-goblins",
+"royal-recruits"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #201 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"miner",
+"rage",
+"poison",
+"elixir-collector",
+"little-prince",
+"night-witch",
+"fire-spirit"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #202 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"fireball",
+"graveyard",
+"baby-dragon",
+"zappies",
+"goblins",
+"furnace",
+"giant-skeleton"
+],
+"evo": [
+"wall-breakers"
+],
+"hero": [
+"goblins"
+]
+},
+{
+"name": "Случайная #203 (Goblinstein)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblinstein",
+"giant-snowball",
+"vines",
+"goblin-machine",
+"wizard",
+"valkyrie",
+"guards",
+"barbarians"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #204 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"earthquake",
+"barbarian-barrel",
+"musketeer",
+"tombstone",
+"battle-healer",
+"electro-wizard",
+"little-prince"
+],
+"evo": [
+"musketeer"
+],
+"hero": []
+},
+{
+"name": "Случайная #205 (Goblin Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-giant",
+"rocket",
+"tornado",
+"royal-ghost",
+"skeleton-dragons",
+"golden-knight",
+"electro-wizard",
+"zappies"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #206 (Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"giant",
+"wall-breakers",
+"barbarian-barrel",
+"fireball",
+"guards",
+"cannon",
+"lumberjack",
+"inferno-dragon"
+],
+"evo": [
+"inferno-dragon"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #207 (Elixir Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elixir-golem",
+"battle-ram",
+"giant-snowball",
+"earthquake",
+"zappies",
+"rascals",
+"skeleton-king",
+"princess"
+],
+"evo": [
+"battle-ram"
+],
+"hero": []
+},
+{
+"name": "Случайная #208 (Electro Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"electro-giant",
+"balloon",
+"earthquake",
+"giant-snowball",
+"goblin-cage",
+"hunter",
+"electro-spirit",
+"lumberjack"
+],
+"evo": [
+"goblin-cage"
+],
+"hero": []
+},
+{
+"name": "Случайная #209 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"rage",
+"lightning",
+"cannon-cart",
+"mortar",
+"mega-minion",
+"fire-spirit",
+"electro-wizard"
+],
+"evo": [
+"mortar",
+"wall-breakers"
+],
+"hero": []
+},
+{
+"name": "Случайная #210 (Elixir Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elixir-golem",
+"zap",
+"clone",
+"barbarians",
+"suspicious-bush",
+"goblins",
+"cannon",
+"mini-pekka"
+],
+"evo": [
+"zap"
+],
+"hero": [
+"mini-pekka"
+]
+},
+{
+"name": "Случайная #211 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"balloon",
+"giant-snowball",
+"goblin-curse",
+"monk",
+"goblin-machine",
+"valkyrie",
+"bats"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #212 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"giant",
+"earthquake",
+"goblin-barrel",
+"goblin-hut",
+"magic-archer",
+"golden-knight",
+"tombstone"
+],
+"evo": [
+"giant",
+"goblin-barrel"
+],
+"hero": []
+},
+{
+"name": "Случайная #213 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"vines",
+"barbarian-barrel",
+"goblins",
+"royal-recruits",
+"inferno-dragon",
+"lumberjack",
+"wizard"
+],
+"evo": [],
+"hero": [
+"balloon"
+]
+},
+{
+"name": "Случайная #214 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"rage",
+"barbarian-barrel",
+"dark-prince",
+"ice-spirit",
+"archer-queen",
+"firecracker",
+"mega-knight"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #215 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"earthquake",
+"rage",
+"bomb-tower",
+"furnace",
+"electro-dragon",
+"royal-ghost",
+"lumberjack"
+],
+"evo": [
+"electro-dragon",
+"furnace"
+],
+"hero": []
+},
+{
+"name": "Случайная #216 (Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"golem",
+"giant-snowball",
+"royal-delivery",
+"mortar",
+"sparky",
+"battle-healer",
+"bomber",
+"goblin-machine"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #217 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"zap",
+"rocket",
+"electro-wizard",
+"night-witch",
+"mortar",
+"minions",
+"berserker"
+],
+"evo": [
+"mortar",
+"zap"
+],
+"hero": [
+"berserker"
+]
+},
+{
+"name": "Случайная #218 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"skeleton-barrel",
+"freeze",
+"rocket",
+"tesla",
+"archers",
+"little-prince",
+"dart-goblin"
+],
+"evo": [
+"royal-hogs",
+"skeleton-barrel"
+],
+"hero": []
+},
+{
+"name": "Случайная #219 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"zap",
+"poison",
+"goblin-cage",
+"goblin-machine",
+"ice-wizard",
+"bomber",
+"mega-knight"
+],
+"evo": [],
+"hero": [
+"ice-wizard"
+]
+},
+{
+"name": "Случайная #220 (Electro Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"electro-giant",
+"elite-barbarians",
+"giant-snowball",
+"earthquake",
+"skeleton-dragons",
+"inferno-tower",
+"ice-spirit",
+"barbarian-hut"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #221 (Elixir Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elixir-golem",
+"miner",
+"rocket",
+"tornado",
+"barbarian-hut",
+"bomb-tower",
+"ronin",
+"little-prince"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #222 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"zap",
+"freeze",
+"little-prince",
+"mega-knight",
+"skeleton-dragons",
+"firecracker",
+"three-musketeers"
+],
+"evo": [
+"mega-knight"
+],
+"hero": []
+},
+{
+"name": "Случайная #223 (Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"giant",
+"royal-delivery",
+"clone",
+"skeleton-army",
+"tombstone",
+"princess",
+"goblin-gang",
+"fisherman"
+],
+"evo": [
+"giant",
+"princess"
+],
+"hero": [
+"tombstone"
+]
+},
+{
+"name": "Случайная #224 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"goblin-barrel",
+"vines",
+"boss-bandit",
+"skeletons",
+"suspicious-bush",
+"goblins",
+"fisherman"
+],
+"evo": [
+"skeletons"
+],
+"hero": []
+},
+{
+"name": "Случайная #225 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"elite-barbarians",
+"royal-delivery",
+"clone",
+"dark-prince",
+"elixir-collector",
+"ice-wizard",
+"archers"
+],
+"evo": [
+"elite-barbarians"
+],
+"hero": []
+},
+{
+"name": "Случайная #226 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"tornado",
+"clone",
+"bomber",
+"witch",
+"minion-horde",
+"furnace",
+"wizard"
+],
+"evo": [
+"furnace"
+],
+"hero": []
+},
+{
+"name": "Случайная #227 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"royal-delivery",
+"rage",
+"mighty-miner",
+"electro-dragon",
+"cannon",
+"dark-prince",
+"fisherman"
+],
+"evo": [
+"electro-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #228 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"ram-rider",
+"poison",
+"rage",
+"magic-archer",
+"witch",
+"spear-goblins",
+"electro-dragon"
+],
+"evo": [
+"electro-dragon",
+"witch"
+],
+"hero": []
+},
+{
+"name": "Случайная #229 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"freeze",
+"the-log",
+"knight",
+"guards",
+"rascals",
+"ice-spirit",
+"mega-minion"
+],
+"evo": [
+"ice-spirit",
+"knight"
+],
+"hero": [
+"mega-minion"
+]
+},
+{
+"name": "Случайная #230 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"zap",
+"the-log",
+"berserker",
+"firecracker",
+"flying-machine",
+"cannon",
+"bats"
+],
+"evo": [
+"firecracker"
+],
+"hero": [
+"berserker"
+]
+},
+{
+"name": "Случайная #231 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"wall-breakers",
+"poison",
+"rocket",
+"skeleton-army",
+"cannon-cart",
+"elixir-collector",
+"baby-dragon"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #232 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"poison",
+"arrows",
+"mortar",
+"bowler",
+"flying-machine",
+"hunter",
+"goblins"
+],
+"evo": [
+"mortar"
+],
+"hero": []
+},
+{
+"name": "Случайная #233 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"zap",
+"vines",
+"suspicious-bush",
+"ronin",
+"pekka",
+"knight",
+"heal-spirit"
+],
+"evo": [
+"knight"
+],
+"hero": []
+},
+{
+"name": "Случайная #234 (Electro Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"electro-giant",
+"earthquake",
+"clone",
+"goblins",
+"valkyrie",
+"bomb-tower",
+"night-witch",
+"inferno-dragon"
+],
+"evo": [
+"electro-giant",
+"inferno-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #235 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"vines",
+"arrows",
+"prince",
+"mortar",
+"archers",
+"royal-ghost",
+"skeleton-dragons"
+],
+"evo": [
+"archers"
+],
+"hero": []
+},
+{
+"name": "Случайная #236 (Elixir Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elixir-golem",
+"wall-breakers",
+"goblin-barrel",
+"tornado",
+"skeleton-army",
+"inferno-tower",
+"bomber",
+"bomb-tower"
+],
+"evo": [
+"bomber",
+"goblin-barrel"
+],
+"hero": []
+},
+{
+"name": "Случайная #237 (Electro Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"electro-giant",
+"fireball",
+"freeze",
+"suspicious-bush",
+"musketeer",
+"mega-knight",
+"fisherman",
+"monk"
+],
+"evo": [
+"mega-knight",
+"electro-giant"
+],
+"hero": []
+},
+{
+"name": "Случайная #238 (Goblinstein)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblinstein",
+"royal-delivery",
+"rage",
+"elixir-collector",
+"princess",
+"goblin-gang",
+"witch",
+"dark-prince"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #239 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"golem",
+"freeze",
+"barbarian-barrel",
+"tombstone",
+"wizard",
+"spear-goblins",
+"electro-spirit"
+],
+"evo": [
+"wizard"
+],
+"hero": []
+},
+{
+"name": "Случайная #240 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"giant",
+"graveyard",
+"arrows",
+"goblin-demolisher",
+"sparky",
+"witch",
+"bomber"
+],
+"evo": [
+"bomber"
+],
+"hero": []
+},
+{
+"name": "Случайная #241 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"void",
+"poison",
+"witch",
+"tesla",
+"skeleton-dragons",
+"furnace",
+"guards"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #242 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"battle-ram",
+"freeze",
+"earthquake",
+"ice-wizard",
+"guards",
+"mighty-miner",
+"bowler"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #243 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"miner",
+"earthquake",
+"fireball",
+"little-prince",
+"inferno-tower",
+"bats",
+"spear-goblins"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #244 (Rune Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"rune-giant",
+"ice-golem",
+"barbarian-barrel",
+"goblin-curse",
+"guards",
+"knight",
+"spear-goblins",
+"mini-pekka"
+],
+"evo": [
+"knight"
+],
+"hero": [
+"ice-golem"
+]
+},
+{
+"name": "Случайная #245 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"golem",
+"arrows",
+"vines",
+"zappies",
+"barbarians",
+"spear-goblins",
+"mini-pekka"
+],
+"evo": [
+"battle-ram",
+"barbarians"
+],
+"hero": [
+"mini-pekka"
+]
+},
+{
+"name": "Случайная #246 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"freeze",
+"lightning",
+"mortar",
+"suspicious-bush",
+"tesla",
+"minions",
+"night-witch"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #247 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"barbarian-barrel",
+"giant-snowball",
+"goblin-machine",
+"mini-pekka",
+"royal-ghost",
+"berserker",
+"inferno-dragon"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #248 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"barbarian-barrel",
+"rage",
+"goblin-demolisher",
+"archers",
+"mother-witch",
+"inferno-tower",
+"firecracker"
+],
+"evo": [
+"goblin-drill"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #249 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"royal-delivery",
+"earthquake",
+"goblin-machine",
+"furnace",
+"berserker",
+"elixir-collector",
+"mini-pekka"
+],
+"evo": [
+"furnace"
+],
+"hero": []
+},
+{
+"name": "Случайная #250 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"arrows",
+"clone",
+"three-musketeers",
+"valkyrie",
+"cannon-cart",
+"witch",
+"mighty-miner"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #251 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"electro-giant",
+"clone",
+"goblin-curse",
+"prince",
+"ronin",
+"baby-dragon",
+"dark-prince"
+],
+"evo": [
+"wall-breakers"
+],
+"hero": [
+"dark-prince"
+]
+},
+{
+"name": "Случайная #252 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"earthquake",
+"rage",
+"bats",
+"dark-prince",
+"pekka",
+"skeleton-king",
+"princess"
+],
+"evo": [
+"bats"
+],
+"hero": []
+},
+{
+"name": "Случайная #253 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"arrows",
+"zap",
+"executioner",
+"goblin-gang",
+"lumberjack",
+"prince",
+"bowler"
+],
+"evo": [
+"executioner",
+"lumberjack"
+],
+"hero": [
+"bowler"
+]
+},
+{
+"name": "Случайная #254 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"rune-giant",
+"lightning",
+"tornado",
+"bomber",
+"monk",
+"royal-recruits",
+"goblins"
+],
+"evo": [
+"goblin-drill"
+],
+"hero": []
+},
+{
+"name": "Случайная #255 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"goblin-barrel",
+"the-log",
+"elixir-collector",
+"skeletons",
+"knight",
+"goblin-demolisher",
+"witch"
+],
+"evo": [
+"goblin-drill",
+"goblin-barrel"
+],
+"hero": []
+},
+{
+"name": "Случайная #256 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"giant",
+"void",
+"fireball",
+"dark-prince",
+"elixir-collector",
+"mega-minion",
+"electro-spirit"
+],
+"evo": [
+"giant"
+],
+"hero": [
+"dark-prince"
+]
+},
+{
+"name": "Случайная #257 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"zap",
+"tornado",
+"battle-healer",
+"valkyrie",
+"baby-dragon",
+"wizard",
+"inferno-dragon"
+],
+"evo": [],
+"hero": [
+"wizard"
+]
+},
+{
+"name": "Случайная #258 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"goblin-giant",
+"void",
+"the-log",
+"skeleton-army",
+"skeletons",
+"tombstone",
+"night-witch"
+],
+"evo": [],
+"hero": [
+"tombstone"
+]
+},
+{
+"name": "Случайная #259 (Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"golem",
+"ram-rider",
+"clone",
+"graveyard",
+"skeletons",
+"inferno-tower",
+"cannon-cart",
+"knight"
+],
+"evo": [],
+"hero": [
+"knight"
+]
+},
+{
+"name": "Случайная #260 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"tornado",
+"rocket",
+"witch",
+"electro-wizard",
+"lumberjack",
+"bomber",
+"barbarians"
+],
+"evo": [],
+"hero": [
+"electro-wizard"
+]
+},
+{
+"name": "Случайная #261 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"arrows",
+"barbarian-barrel",
+"spear-goblins",
+"royal-ghost",
+"electro-dragon",
+"musketeer",
+"executioner"
+],
+"evo": [
+"electro-dragon"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #262 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"zap",
+"freeze",
+"skeleton-dragons",
+"archers",
+"cannon",
+"hunter",
+"baby-dragon"
+],
+"evo": [
+"hunter",
+"zap"
+],
+"hero": []
+},
+{
+"name": "Случайная #263 (Goblin Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-giant",
+"elite-barbarians",
+"royal-delivery",
+"tornado",
+"furnace",
+"archer-queen",
+"heal-spirit",
+"prince"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #264 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"rocket",
+"poison",
+"executioner",
+"prince",
+"minions",
+"cannon",
+"furnace"
+],
+"evo": [
+"executioner",
+"skeleton-barrel"
+],
+"hero": []
+},
+{
+"name": "Случайная #265 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"miner",
+"earthquake",
+"barbarian-barrel",
+"minion-horde",
+"bats",
+"sparky",
+"pekka"
+],
+"evo": [
+"pekka"
+],
+"hero": []
+},
+{
+"name": "Случайная #266 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"void",
+"fireball",
+"witch",
+"ice-wizard",
+"baby-dragon",
+"cannon-cart",
+"prince"
+],
+"evo": [
+"witch"
+],
+"hero": [
+"ice-wizard"
+]
+},
+{
+"name": "Случайная #267 (Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"golem",
+"ice-golem",
+"void",
+"goblin-curse",
+"tesla",
+"fire-spirit",
+"goblin-gang",
+"bowler"
+],
+"evo": [],
+"hero": [
+"ice-golem"
+]
+},
+{
+"name": "Случайная #268 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"goblin-giant",
+"poison",
+"arrows",
+"berserker",
+"electro-wizard",
+"skeleton-dragons",
+"goblin-cage"
+],
+"evo": [
+"goblin-giant",
+"goblin-drill"
+],
+"hero": []
+},
+{
+"name": "Случайная #269 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"royal-delivery",
+"graveyard",
+"mighty-miner",
+"suspicious-bush",
+"berserker",
+"executioner",
+"baby-dragon"
+],
+"evo": [
+"executioner",
+"baby-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #270 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"electro-giant",
+"goblin-curse",
+"barbarian-barrel",
+"cannon-cart",
+"electro-dragon",
+"goblin-machine",
+"ronin"
+],
+"evo": [
+"electro-dragon"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #271 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"giant-snowball",
+"the-log",
+"baby-dragon",
+"skeleton-king",
+"ice-wizard",
+"minion-horde",
+"elixir-collector"
+],
+"evo": [
+"minion-horde"
+],
+"hero": []
+},
+{
+"name": "Случайная #272 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"earthquake",
+"tornado",
+"knight",
+"inferno-tower",
+"mother-witch",
+"flying-machine",
+"ice-spirit"
+],
+"evo": [
+"ice-spirit"
+],
+"hero": [
+"knight"
+]
+},
+{
+"name": "Случайная #273 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"freeze",
+"graveyard",
+"heal-spirit",
+"musketeer",
+"dart-goblin",
+"tombstone",
+"skeleton-army"
+],
+"evo": [
+"skeleton-army"
+],
+"hero": []
+},
+{
+"name": "Случайная #274 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"arrows",
+"the-log",
+"battle-healer",
+"magic-archer",
+"princess",
+"goblin-demolisher",
+"tesla"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #275 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"vines",
+"giant-snowball",
+"goblin-hut",
+"dart-goblin",
+"goblin-demolisher",
+"furnace",
+"bats"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #276 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"poison",
+"vines",
+"goblin-demolisher",
+"golden-knight",
+"inferno-tower",
+"cannon",
+"electro-wizard"
+],
+"evo": [
+"wall-breakers",
+"cannon"
+],
+"hero": []
+},
+{
+"name": "Случайная #277 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"x-bow",
+"freeze",
+"poison",
+"mortar",
+"princess",
+"wizard",
+"tombstone"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #278 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"ram-rider",
+"earthquake",
+"rage",
+"inferno-tower",
+"magic-archer",
+"royal-recruits",
+"zappies"
+],
+"evo": [
+"royal-hogs"
+],
+"hero": [
+"magic-archer"
+]
+},
+{
+"name": "Случайная #279 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"void",
+"graveyard",
+"bowler",
+"sparky",
+"electro-spirit",
+"fisherman",
+"night-witch"
+],
+"evo": [],
+"hero": [
+"bowler"
+]
+},
+{
+"name": "Случайная #280 (Ice Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ice-golem",
+"wall-breakers",
+"goblin-curse",
+"rage",
+"hunter",
+"tombstone",
+"furnace",
+"cannon"
+],
+"evo": [
+"furnace"
+],
+"hero": [
+"ice-golem"
+]
+},
+{
+"name": "Случайная #281 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"lightning",
+"the-log",
+"electro-spirit",
+"inferno-tower",
+"minions",
+"mighty-miner",
+"lumberjack"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #282 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"lightning",
+"arrows",
+"ice-spirit",
+"ice-wizard",
+"berserker",
+"battle-healer",
+"mini-pekka"
+],
+"evo": [
+"ice-spirit"
+],
+"hero": []
+},
+{
+"name": "Случайная #283 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"battle-ram",
+"poison",
+"the-log",
+"prince",
+"knight",
+"bomber",
+"berserker"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #284 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"skeleton-barrel",
+"royal-delivery",
+"void",
+"suspicious-bush",
+"archers",
+"flying-machine",
+"boss-bandit"
+],
+"evo": [
+"skeleton-barrel",
+"archers"
+],
+"hero": []
+},
+{
+"name": "Случайная #285 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"bandit",
+"lightning",
+"graveyard",
+"tesla",
+"flying-machine",
+"phoenix",
+"ice-spirit"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #286 (Goblinstein)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblinstein",
+"ram-rider",
+"rocket",
+"goblin-barrel",
+"mega-minion",
+"heal-spirit",
+"night-witch",
+"hunter"
+],
+"evo": [
+"hunter"
+],
+"hero": []
+},
+{
+"name": "Случайная #287 (Goblin Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-giant",
+"goblin-barrel",
+"void",
+"goblin-cage",
+"golden-knight",
+"lumberjack",
+"mega-minion",
+"goblin-gang"
+],
+"evo": [
+"goblin-cage"
+],
+"hero": []
+},
+{
+"name": "Случайная #288 (Rune Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"rune-giant",
+"royal-hogs",
+"arrows",
+"fireball",
+"musketeer",
+"monk",
+"dart-goblin",
+"bomber"
+],
+"evo": [
+"bomber",
+"musketeer"
+],
+"hero": []
+},
+{
+"name": "Случайная #289 (Goblinstein)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblinstein",
+"bandit",
+"barbarian-barrel",
+"vines",
+"zappies",
+"phoenix",
+"barbarian-hut",
+"mega-knight"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #290 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"giant-snowball",
+"barbarian-barrel",
+"musketeer",
+"night-witch",
+"archer-queen",
+"goblin-gang",
+"goblin-machine"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #291 (Goblin Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-giant",
+"wall-breakers",
+"graveyard",
+"poison",
+"dart-goblin",
+"magic-archer",
+"tombstone",
+"giant-skeleton"
+],
+"evo": [
+"dart-goblin",
+"wall-breakers"
+],
+"hero": [
+"tombstone"
+]
+},
+{
+"name": "Случайная #292 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"giant-snowball",
+"goblin-barrel",
+"ice-wizard",
+"royal-recruits",
+"goblin-machine",
+"mother-witch",
+"berserker"
+],
+"evo": [
+"goblin-barrel"
+],
+"hero": [
+"berserker"
+]
+},
+{
+"name": "Случайная #293 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"poison",
+"royal-delivery",
+"sparky",
+"minions",
+"skeleton-dragons",
+"barbarians",
+"princess"
+],
+"evo": [
+"princess",
+"barbarians"
+],
+"hero": []
+},
+{
+"name": "Случайная #294 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"royal-delivery",
+"giant-snowball",
+"firecracker",
+"mortar",
+"mighty-miner",
+"executioner",
+"suspicious-bush"
+],
+"evo": [
+"firecracker"
+],
+"hero": []
+},
+{
+"name": "Случайная #295 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"goblin-curse",
+"fireball",
+"battle-healer",
+"valkyrie",
+"firecracker",
+"bomber",
+"wizard"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #296 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"rage",
+"the-log",
+"skeleton-dragons",
+"monk",
+"phoenix",
+"fisherman",
+"goblin-gang"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #297 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"elixir-golem",
+"barbarian-barrel",
+"vines",
+"furnace",
+"rascals",
+"inferno-dragon",
+"firecracker"
+],
+"evo": [
+"inferno-dragon",
+"firecracker"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #298 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"giant",
+"giant-snowball",
+"freeze",
+"musketeer",
+"golden-knight",
+"cannon",
+"wizard"
+],
+"evo": [
+"giant"
+],
+"hero": []
+},
+{
+"name": "Случайная #299 (Electro Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"electro-giant",
+"lightning",
+"barbarian-barrel",
+"goblins",
+"sparky",
+"knight",
+"skeleton-king",
+"archers"
+],
+"evo": [
+"knight",
+"archers"
+],
+"hero": []
+},
+{
+"name": "Случайная #300 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"void",
+"rage",
+"goblin-hut",
+"mini-pekka",
+"princess",
+"goblin-cage",
+"furnace"
+],
+"evo": [],
+"hero": [
+"mini-pekka"
+]
+},
+{
+"name": "Случайная #301 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"fireball",
+"tornado",
+"minions",
+"heal-spirit",
+"ronin",
+"ice-spirit",
+"boss-bandit"
+],
+"evo": [
+"ice-spirit"
+],
+"hero": []
+},
+{
+"name": "Случайная #302 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"tornado",
+"the-log",
+"three-musketeers",
+"inferno-dragon",
+"ice-spirit",
+"mega-minion",
+"princess"
+],
+"evo": [
+"ice-spirit",
+"battle-ram"
+],
+"hero": []
+},
+{
+"name": "Случайная #303 (Goblinstein)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblinstein",
+"graveyard",
+"clone",
+"mother-witch",
+"spear-goblins",
+"phoenix",
+"prince",
+"inferno-dragon"
+],
+"evo": [
+"inferno-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #304 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"barbarian-barrel",
+"graveyard",
+"minions",
+"barbarians",
+"barbarian-hut",
+"minion-horde",
+"mini-pekka"
+],
+"evo": [
+"barbarians"
+],
+"hero": [
+"mini-pekka"
+]
+},
+{
+"name": "Случайная #305 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"arrows",
+"rocket",
+"battle-healer",
+"inferno-dragon",
+"phoenix",
+"goblin-hut",
+"mega-knight"
+],
+"evo": [
+"mega-knight"
+],
+"hero": []
+},
+{
+"name": "Случайная #306 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"royal-hogs",
+"poison",
+"the-log",
+"sparky",
+"heal-spirit",
+"giant-skeleton",
+"goblin-gang"
+],
+"evo": [
+"royal-hogs",
+"elite-barbarians"
+],
+"hero": []
+},
+{
+"name": "Случайная #307 (Ice Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ice-golem",
+"barbarian-barrel",
+"void",
+"golden-knight",
+"bomb-tower",
+"berserker",
+"skeleton-army",
+"bats"
+],
+"evo": [
+"bats"
+],
+"hero": []
+},
+{
+"name": "Случайная #308 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"goblin-barrel",
+"poison",
+"mother-witch",
+"inferno-dragon",
+"baby-dragon",
+"skeleton-army",
+"fire-spirit"
+],
+"evo": [
+"goblin-barrel"
+],
+"hero": [
+"balloon"
+]
+},
+{
+"name": "Случайная #309 (Goblin Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-giant",
+"elite-barbarians",
+"fireball",
+"royal-delivery",
+"guards",
+"ice-spirit",
+"cannon",
+"royal-ghost"
+],
+"evo": [
+"cannon"
+],
+"hero": []
+},
+{
+"name": "Случайная #310 (Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"giant",
+"rocket",
+"zap",
+"goblin-cage",
+"archer-queen",
+"bomb-tower",
+"fisherman",
+"goblin-gang"
+],
+"evo": [
+"giant",
+"goblin-cage"
+],
+"hero": []
+},
+{
+"name": "Случайная #311 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"clone",
+"rage",
+"dark-prince",
+"hunter",
+"knight",
+"bomber",
+"bats"
+],
+"evo": [
+"bomber"
+],
+"hero": [
+"dark-prince"
+]
+},
+{
+"name": "Случайная #312 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"lava-hound",
+"rage",
+"zap",
+"giant-skeleton",
+"barbarian-hut",
+"mega-minion",
+"mother-witch"
+],
+"evo": [
+"zap",
+"royal-giant"
+],
+"hero": [
+"mega-minion"
+]
+},
+{
+"name": "Случайная #313 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"balloon",
+"tornado",
+"barbarian-barrel",
+"magic-archer",
+"goblins",
+"goblin-demolisher",
+"dark-prince"
+],
+"evo": [],
+"hero": [
+"magic-archer"
+]
+},
+{
+"name": "Случайная #314 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"barbarian-barrel",
+"void",
+"royal-ghost",
+"archer-queen",
+"skeleton-army",
+"valkyrie",
+"tesla"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #315 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"royal-giant",
+"the-log",
+"clone",
+"princess",
+"musketeer",
+"guards",
+"dart-goblin"
+],
+"evo": [
+"royal-giant",
+"princess"
+],
+"hero": []
+},
+{
+"name": "Случайная #316 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"goblin-curse",
+"barbarian-barrel",
+"wizard",
+"boss-bandit",
+"lumberjack",
+"cannon",
+"inferno-dragon"
+],
+"evo": [
+"cannon",
+"inferno-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #317 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"fireball",
+"lightning",
+"goblin-machine",
+"skeletons",
+"mortar",
+"pekka",
+"bats"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #318 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"lightning",
+"goblin-barrel",
+"cannon-cart",
+"tombstone",
+"spear-goblins",
+"baby-dragon",
+"ronin"
+],
+"evo": [
+"baby-dragon"
+],
+"hero": [
+"tombstone"
+]
+},
+{
+"name": "Случайная #319 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"lightning",
+"rage",
+"barbarian-hut",
+"bats",
+"ice-wizard",
+"bomber",
+"archer-queen"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #320 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"elixir-golem",
+"clone",
+"rage",
+"battle-healer",
+"elixir-collector",
+"minion-horde",
+"electro-spirit"
+],
+"evo": [
+"minion-horde"
+],
+"hero": []
+},
+{
+"name": "Случайная #321 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"graveyard",
+"clone",
+"inferno-tower",
+"skeletons",
+"elixir-collector",
+"hunter",
+"valkyrie"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #322 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"ice-golem",
+"freeze",
+"clone",
+"cannon-cart",
+"goblin-cage",
+"dart-goblin",
+"skeletons"
+],
+"evo": [
+"goblin-cage"
+],
+"hero": []
+},
+{
+"name": "Случайная #323 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"x-bow",
+"vines",
+"rocket",
+"bomb-tower",
+"cannon",
+"royal-ghost",
+"furnace"
+],
+"evo": [
+"wall-breakers",
+"royal-ghost"
+],
+"hero": []
+},
+{
+"name": "Случайная #324 (Electro Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"electro-giant",
+"fireball",
+"vines",
+"lumberjack",
+"baby-dragon",
+"archer-queen",
+"elixir-collector",
+"princess"
+],
+"evo": [
+"lumberjack",
+"princess"
+],
+"hero": []
+},
+{
+"name": "Случайная #325 (Rune Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"rune-giant",
+"graveyard",
+"tornado",
+"goblin-cage",
+"electro-dragon",
+"guards",
+"zappies",
+"magic-archer"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #326 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"giant-snowball",
+"clone",
+"ice-spirit",
+"mother-witch",
+"inferno-tower",
+"giant-skeleton",
+"bomb-tower"
+],
+"evo": [
+"royal-giant"
+],
+"hero": []
+},
+{
+"name": "Случайная #327 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"goblinstein",
+"rage",
+"giant-snowball",
+"bomb-tower",
+"magic-archer",
+"goblin-cage",
+"fire-spirit"
+],
+"evo": [
+"giant-snowball",
+"goblin-cage"
+],
+"hero": []
+},
+{
+"name": "Случайная #328 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"balloon",
+"earthquake",
+"giant-snowball",
+"prince",
+"guards",
+"night-witch",
+"tombstone"
+],
+"evo": [
+"giant-snowball"
+],
+"hero": []
+},
+{
+"name": "Случайная #329 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"arrows",
+"earthquake",
+"inferno-dragon",
+"magic-archer",
+"princess",
+"boss-bandit",
+"mega-minion"
+],
+"evo": [
+"inferno-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #330 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"zap",
+"tornado",
+"barbarians",
+"skeleton-dragons",
+"mother-witch",
+"electro-dragon",
+"furnace"
+],
+"evo": [
+"barbarians"
+],
+"hero": []
+},
+{
+"name": "Случайная #331 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"giant",
+"graveyard",
+"freeze",
+"ice-wizard",
+"tombstone",
+"dark-prince",
+"tesla"
+],
+"evo": [],
+"hero": [
+"ice-wizard"
+]
+},
+{
+"name": "Случайная #332 (Electro Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"electro-giant",
+"poison",
+"giant-snowball",
+"bats",
+"executioner",
+"princess",
+"ronin",
+"goblins"
+],
+"evo": [],
+"hero": [
+"goblins"
+]
+},
+{
+"name": "Случайная #333 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"bandit",
+"barbarian-barrel",
+"rage",
+"goblin-cage",
+"elixir-collector",
+"knight",
+"firecracker"
+],
+"evo": [],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #334 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"graveyard",
+"clone",
+"musketeer",
+"guards",
+"baby-dragon",
+"knight",
+"magic-archer"
+],
+"evo": [
+"knight",
+"baby-dragon"
+],
+"hero": [
+"musketeer"
+]
+},
+{
+"name": "Случайная #335 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"battle-ram",
+"zap",
+"fireball",
+"goblin-gang",
+"inferno-tower",
+"heal-spirit",
+"skeletons"
+],
+"evo": [
+"battle-ram",
+"zap"
+],
+"hero": []
+},
+{
+"name": "Случайная #336 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"hog-rider",
+"royal-delivery",
+"giant-snowball",
+"elixir-collector",
+"bomber",
+"bats",
+"suspicious-bush"
+],
+"evo": [
+"goblin-drill",
+"giant-snowball"
+],
+"hero": []
+},
+{
+"name": "Случайная #337 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"ram-rider",
+"barbarian-barrel",
+"the-log",
+"boss-bandit",
+"spear-goblins",
+"princess",
+"fisherman"
+],
+"evo": [
+"goblin-drill",
+"princess"
+],
+"hero": []
+},
+{
+"name": "Случайная #338 (Elixir Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elixir-golem",
+"rune-giant",
+"barbarian-barrel",
+"freeze",
+"cannon",
+"pekka",
+"battle-healer",
+"firecracker"
+],
+"evo": [
+"pekka"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #339 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"graveyard",
+"barbarian-barrel",
+"mortar",
+"bowler",
+"dart-goblin",
+"ice-wizard",
+"goblins"
+],
+"evo": [
+"mortar"
+],
+"hero": []
+},
+{
+"name": "Случайная #340 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"barbarian-barrel",
+"void",
+"elixir-collector",
+"night-witch",
+"inferno-tower",
+"skeleton-dragons",
+"dart-goblin"
+],
+"evo": [
+"dart-goblin"
+],
+"hero": []
+},
+{
+"name": "Случайная #341 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"freeze",
+"tornado",
+"wizard",
+"ice-spirit",
+"dark-prince",
+"goblin-machine",
+"cannon-cart"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #342 (Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"giant",
+"zap",
+"barbarian-barrel",
+"dart-goblin",
+"giant-skeleton",
+"bowler",
+"monk",
+"electro-wizard"
+],
+"evo": [
+"zap"
+],
+"hero": []
+},
+{
+"name": "Случайная #343 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"freeze",
+"zap",
+"elixir-collector",
+"cannon-cart",
+"tombstone",
+"giant-skeleton",
+"mega-minion"
+],
+"evo": [
+"zap"
+],
+"hero": [
+"mega-minion"
+]
+},
+{
+"name": "Случайная #344 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"royal-giant",
+"tornado",
+"giant-snowball",
+"phoenix",
+"dark-prince",
+"skeleton-dragons",
+"witch"
+],
+"evo": [
+"giant-snowball"
+],
+"hero": []
+},
+{
+"name": "Случайная #345 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"poison",
+"freeze",
+"elixir-collector",
+"executioner",
+"minions",
+"berserker",
+"wizard"
+],
+"evo": [
+"executioner",
+"skeleton-barrel"
+],
+"hero": [
+"wizard"
+]
+},
+{
+"name": "Случайная #346 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"elixir-golem",
+"barbarian-barrel",
+"rage",
+"minions",
+"electro-wizard",
+"goblins",
+"elixir-collector"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #347 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"giant-snowball",
+"rage",
+"royal-ghost",
+"inferno-tower",
+"pekka",
+"baby-dragon",
+"mega-knight"
+],
+"evo": [
+"baby-dragon",
+"mega-knight"
+],
+"hero": []
+},
+{
+"name": "Случайная #348 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"golem",
+"goblin-curse",
+"goblin-barrel",
+"tombstone",
+"goblin-machine",
+"magic-archer",
+"prince"
+],
+"evo": [
+"battle-ram"
+],
+"hero": []
+},
+{
+"name": "Случайная #349 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"rocket",
+"freeze",
+"fire-spirit",
+"flying-machine",
+"cannon-cart",
+"furnace",
+"witch"
+],
+"evo": [
+"furnace",
+"witch"
+],
+"hero": []
+},
+{
+"name": "Случайная #350 (Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"golem",
+"royal-delivery",
+"giant-snowball",
+"mini-pekka",
+"bomber",
+"electro-spirit",
+"hunter",
+"minions"
+],
+"evo": [
+"bomber"
+],
+"hero": [
+"mini-pekka"
+]
+},
+{
+"name": "Случайная #351 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"royal-giant",
+"goblin-barrel",
+"tornado",
+"baby-dragon",
+"bowler",
+"valkyrie",
+"little-prince"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #352 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"x-bow",
+"tornado",
+"goblin-barrel",
+"royal-recruits",
+"archers",
+"fire-spirit",
+"rascals"
+],
+"evo": [
+"royal-recruits",
+"goblin-barrel"
+],
+"hero": []
+},
+{
+"name": "Случайная #353 (Elite Barbarians)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elite-barbarians",
+"barbarian-barrel",
+"royal-delivery",
+"goblin-demolisher",
+"ice-wizard",
+"firecracker",
+"furnace",
+"knight"
+],
+"evo": [
+"furnace",
+"knight"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #354 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"elite-barbarians",
+"tornado",
+"void",
+"electro-spirit",
+"witch",
+"inferno-dragon",
+"royal-ghost"
+],
+"evo": [
+"inferno-dragon",
+"royal-ghost"
+],
+"hero": []
+},
+{
+"name": "Случайная #355 (Rune Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"rune-giant",
+"goblin-curse",
+"graveyard",
+"skeleton-dragons",
+"skeletons",
+"electro-spirit",
+"battle-healer",
+"monk"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #356 (Goblin Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-giant",
+"balloon",
+"zap",
+"goblin-curse",
+"inferno-dragon",
+"firecracker",
+"dark-prince",
+"mortar"
+],
+"evo": [
+"goblin-giant",
+"inferno-dragon"
+],
+"hero": [
+"dark-prince"
+]
+},
+{
+"name": "Случайная #357 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"graveyard",
+"rage",
+"spear-goblins",
+"battle-healer",
+"electro-dragon",
+"witch",
+"zappies"
+],
+"evo": [
+"electro-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #358 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"freeze",
+"earthquake",
+"rascals",
+"fisherman",
+"cannon",
+"inferno-tower",
+"electro-dragon"
+],
+"evo": [
+"cannon",
+"electro-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #359 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"barbarian-barrel",
+"rocket",
+"night-witch",
+"hunter",
+"battle-healer",
+"goblin-hut",
+"boss-bandit"
+],
+"evo": [
+"hunter"
+],
+"hero": []
+},
+{
+"name": "Случайная #360 (Wall Breakers)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"wall-breakers",
+"royal-giant",
+"graveyard",
+"barbarian-barrel",
+"zappies",
+"tesla",
+"goblin-hut",
+"goblin-demolisher"
+],
+"evo": [
+"royal-giant"
+],
+"hero": []
+},
+{
+"name": "Случайная #361 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"lightning",
+"earthquake",
+"suspicious-bush",
+"furnace",
+"ronin",
+"inferno-dragon",
+"goblin-demolisher"
+],
+"evo": [
+"goblin-drill"
+],
+"hero": []
+},
+{
+"name": "Случайная #362 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"barbarian-barrel",
+"vines",
+"magic-archer",
+"goblin-hut",
+"bomb-tower",
+"minion-horde",
+"dark-prince"
+],
+"evo": [
+"minion-horde"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #363 (Goblin Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-giant",
+"zap",
+"rage",
+"night-witch",
+"valkyrie",
+"musketeer",
+"bowler",
+"giant-skeleton"
+],
+"evo": [],
+"hero": [
+"bowler"
+]
+},
+{
+"name": "Случайная #364 (Goblin Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-giant",
+"rage",
+"earthquake",
+"minion-horde",
+"heal-spirit",
+"knight",
+"skeleton-dragons",
+"monk"
+],
+"evo": [
+"minion-horde"
+],
+"hero": []
+},
+{
+"name": "Случайная #365 (Battle Ram)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"battle-ram",
+"royal-hogs",
+"goblin-barrel",
+"vines",
+"wizard",
+"skeleton-king",
+"tombstone",
+"electro-dragon"
+],
+"evo": [
+"electro-dragon",
+"battle-ram"
+],
+"hero": []
+},
+{
+"name": "Случайная #366 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"lightning",
+"goblin-barrel",
+"lumberjack",
+"bomber",
+"executioner",
+"musketeer",
+"minion-horde"
+],
+"evo": [
+"minion-horde",
+"executioner"
+],
+"hero": [
+"musketeer"
+]
+},
+{
+"name": "Случайная #367 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"zap",
+"poison",
+"goblin-demolisher",
+"mortar",
+"barbarians",
+"royal-ghost",
+"mighty-miner"
+],
+"evo": [
+"barbarians"
+],
+"hero": []
+},
+{
+"name": "Случайная #368 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"skeleton-barrel",
+"rocket",
+"royal-delivery",
+"suspicious-bush",
+"bowler",
+"electro-wizard",
+"golden-knight"
+],
+"evo": [
+"skeleton-barrel"
+],
+"hero": []
+},
+{
+"name": "Случайная #369 (Goblin Drill)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-drill",
+"balloon",
+"fireball",
+"tornado",
+"inferno-dragon",
+"zappies",
+"guards",
+"mega-minion"
+],
+"evo": [
+"goblin-drill",
+"inferno-dragon"
+],
+"hero": [
+"mega-minion"
+]
+},
+{
+"name": "Случайная #370 (Bandit)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"bandit",
+"giant-snowball",
+"the-log",
+"dark-prince",
+"three-musketeers",
+"skeletons",
+"goblin-cage",
+"boss-bandit"
+],
+"evo": [
+"goblin-cage"
+],
+"hero": []
+},
+{
+"name": "Случайная #371 (Hog Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"hog-rider",
+"the-log",
+"giant-snowball",
+"suspicious-bush",
+"goblin-demolisher",
+"ice-spirit",
+"inferno-dragon",
+"minion-horde"
+],
+"evo": [
+"inferno-dragon",
+"minion-horde"
+],
+"hero": []
+},
+{
+"name": "Случайная #372 (Rune Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"rune-giant",
+"graveyard",
+"royal-delivery",
+"phoenix",
+"cannon-cart",
+"berserker",
+"spear-goblins",
+"fisherman"
+],
+"evo": [],
+"hero": [
+"berserker"
+]
+},
+{
+"name": "Случайная #373 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"earthquake",
+"goblin-curse",
+"musketeer",
+"ronin",
+"witch",
+"valkyrie",
+"bomb-tower"
+],
+"evo": [
+"valkyrie"
+],
+"hero": []
+},
+{
+"name": "Случайная #374 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"golem",
+"goblin-curse",
+"rage",
+"phoenix",
+"heal-spirit",
+"giant-skeleton",
+"berserker"
+],
+"evo": [],
+"hero": [
+"berserker"
+]
+},
+{
+"name": "Случайная #375 (Rune Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"rune-giant",
+"lightning",
+"zap",
+"goblin-gang",
+"mini-pekka",
+"inferno-dragon",
+"heal-spirit",
+"suspicious-bush"
+],
+"evo": [
+"inferno-dragon",
+"zap"
+],
+"hero": [
+"mini-pekka"
+]
+},
+{
+"name": "Случайная #376 (Ice Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ice-golem",
+"battle-ram",
+"void",
+"barbarian-barrel",
+"inferno-dragon",
+"lumberjack",
+"musketeer",
+"suspicious-bush"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #377 (Goblin Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblin-giant",
+"goblin-curse",
+"giant-snowball",
+"royal-ghost",
+"ice-spirit",
+"battle-healer",
+"firecracker",
+"ice-wizard"
+],
+"evo": [
+"giant-snowball",
+"ice-spirit"
+],
+"hero": []
+},
+{
+"name": "Случайная #378 (Electro Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"electro-giant",
+"clone",
+"fireball",
+"bomber",
+"three-musketeers",
+"princess",
+"spear-goblins",
+"executioner"
+],
+"evo": [
+"electro-giant"
+],
+"hero": []
+},
+{
+"name": "Случайная #379 (Skeleton Barrel)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"skeleton-barrel",
+"goblin-barrel",
+"rage",
+"executioner",
+"minion-horde",
+"tombstone",
+"barbarians",
+"bats"
+],
+"evo": [
+"executioner",
+"bats"
+],
+"hero": [
+"tombstone"
+]
+},
+{
+"name": "Случайная #380 (Royal Hogs)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-hogs",
+"rune-giant",
+"arrows",
+"graveyard",
+"inferno-tower",
+"goblin-machine",
+"electro-wizard",
+"wizard"
+],
+"evo": [],
+"hero": [
+"electro-wizard"
+]
+},
+{
+"name": "Случайная #381 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"balloon",
+"lightning",
+"the-log",
+"skeleton-dragons",
+"berserker",
+"bomb-tower",
+"princess"
+],
+"evo": [
+"princess"
+],
+"hero": [
+"balloon"
+]
+},
+{
+"name": "Случайная #382 (Ice Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ice-golem",
+"rune-giant",
+"arrows",
+"royal-delivery",
+"tombstone",
+"fire-spirit",
+"fisherman",
+"goblin-cage"
+],
+"evo": [
+"goblin-cage"
+],
+"hero": [
+"ice-golem"
+]
+},
+{
+"name": "Случайная #383 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"void",
+"graveyard",
+"mini-pekka",
+"executioner",
+"barbarians",
+"royal-ghost",
+"electro-spirit"
+],
+"evo": [
+"barbarians"
+],
+"hero": []
+},
+{
+"name": "Случайная #384 (Ice Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ice-golem",
+"earthquake",
+"clone",
+"minion-horde",
+"mega-knight",
+"spear-goblins",
+"inferno-dragon",
+"bomb-tower"
+],
+"evo": [
+"minion-horde"
+],
+"hero": []
+},
+{
+"name": "Случайная #385 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"arrows",
+"barbarian-barrel",
+"fisherman",
+"bomb-tower",
+"monk",
+"goblin-machine",
+"lumberjack"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #386 (Elixir Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"elixir-golem",
+"tornado",
+"freeze",
+"mega-knight",
+"mortar",
+"night-witch",
+"cannon",
+"magic-archer"
+],
+"evo": [
+"mortar",
+"cannon"
+],
+"hero": [
+"magic-archer"
+]
+},
+{
+"name": "Случайная #387 (X-Bow)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"x-bow",
+"fireball",
+"rage",
+"firecracker",
+"spear-goblins",
+"skeletons",
+"prince",
+"inferno-dragon"
+],
+"evo": [
+"inferno-dragon"
+],
+"hero": []
+},
+{
+"name": "Случайная #388 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"lava-hound",
+"barbarian-barrel",
+"rage",
+"skeletons",
+"fire-spirit",
+"flying-machine",
+"rascals"
+],
+"evo": [
+"skeletons"
+],
+"hero": [
+"barbarian-barrel"
+]
+},
+{
+"name": "Случайная #389 (Goblinstein)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"goblinstein",
+"freeze",
+"goblin-barrel",
+"suspicious-bush",
+"mega-minion",
+"mother-witch",
+"barbarian-hut",
+"archers"
+],
+"evo": [
+"archers",
+"goblin-barrel"
+],
+"hero": []
+},
+{
+"name": "Случайная #390 (Balloon)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"balloon",
+"clone",
+"lightning",
+"mini-pekka",
+"baby-dragon",
+"bomber",
+"barbarian-hut",
+"bowler"
+],
+"evo": [
+"bomber",
+"baby-dragon"
+],
+"hero": [
+"balloon"
+]
+},
+{
+"name": "Случайная #391 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"golem",
+"arrows",
+"earthquake",
+"mega-knight",
+"berserker",
+"mini-pekka",
+"fire-spirit"
+],
+"evo": [
+"mega-knight"
+],
+"hero": []
+},
+{
+"name": "Случайная #392 (Ice Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ice-golem",
+"void",
+"rocket",
+"giant-skeleton",
+"electro-spirit",
+"goblin-demolisher",
+"bomber",
+"barbarians"
+],
+"evo": [
+"bomber",
+"barbarians"
+],
+"hero": []
+},
+{
+"name": "Случайная #393 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"arrows",
+"goblin-barrel",
+"fisherman",
+"goblin-gang",
+"inferno-tower",
+"mortar",
+"dark-prince"
+],
+"evo": [
+"mortar",
+"goblin-barrel"
+],
+"hero": []
+},
+{
+"name": "Случайная #394 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"goblin-barrel",
+"arrows",
+"little-prince",
+"mega-knight",
+"ronin",
+"mini-pekka",
+"phoenix"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #395 (Minion Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"minion-giant",
+"giant-snowball",
+"clone",
+"phoenix",
+"goblin-hut",
+"musketeer",
+"inferno-dragon",
+"goblin-gang"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #396 (Miner)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"miner",
+"graveyard",
+"void",
+"skeleton-king",
+"goblin-demolisher",
+"bomb-tower",
+"heal-spirit",
+"three-musketeers"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #397 (Ice Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ice-golem",
+"battle-ram",
+"earthquake",
+"goblin-curse",
+"firecracker",
+"mother-witch",
+"goblin-demolisher",
+"bats"
+],
+"evo": [],
+"hero": [
+"ice-golem"
+]
+},
+{
+"name": "Случайная #398 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"rage",
+"poison",
+"princess",
+"ronin",
+"tesla",
+"golden-knight",
+"cannon"
+],
+"evo": [
+"princess",
+"cannon"
+],
+"hero": []
+},
+{
+"name": "Случайная #399 (Ram Rider)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ram-rider",
+"goblin-barrel",
+"goblin-curse",
+"battle-healer",
+"skeleton-army",
+"dart-goblin",
+"guards",
+"goblin-machine"
+],
+"evo": [
+"skeleton-army",
+"goblin-barrel"
+],
+"hero": []
+},
+{
+"name": "Случайная #400 (Lava Hound)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"lava-hound",
+"balloon",
+"freeze",
+"graveyard",
+"goblin-gang",
+"electro-dragon",
+"archers",
+"ice-spirit"
+],
+"evo": [
+"electro-dragon",
+"ice-spirit"
+],
+"hero": [
+"balloon"
+]
+},
+{
+"name": "Случайная #401 (Rune Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"rune-giant",
+"lightning",
+"freeze",
+"fisherman",
+"phoenix",
+"goblin-hut",
+"battle-healer",
+"furnace"
+],
+"evo": [
+"furnace"
+],
+"hero": []
+},
+{
+"name": "Случайная #402 (Ice Golem)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"ice-golem",
+"balloon",
+"vines",
+"royal-delivery",
+"magic-archer",
+"three-musketeers",
+"fire-spirit",
+"mega-knight"
+],
+"evo": [
+"mega-knight"
+],
+"hero": [
+"ice-golem"
+]
+},
+{
+"name": "Случайная #403 (Royal Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"royal-giant",
+"miner",
+"freeze",
+"barbarian-barrel",
+"phoenix",
+"wizard",
+"executioner",
+"little-prince"
+],
+"evo": [
+"royal-giant",
+"wizard"
+],
+"hero": []
+},
+{
+"name": "Случайная #404 (Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"giant",
+"clone",
+"fireball",
+"skeletons",
+"heal-spirit",
+"fire-spirit",
+"mini-pekka",
+"spear-goblins"
+],
+"evo": [],
+"hero": []
+},
+{
+"name": "Случайная #405 (Giant)",
+"group": "Случайные",
+"src": "random",
+"cards": [
+"giant",
+"tornado",
+"void",
+"zappies",
+"fisherman",
+"mega-minion",
+"baby-dragon",
+"goblin-machine"
+],
+"evo": [
+"baby-dragon",
+"giant"
+],
+"hero": [
+"mega-minion"
+]
+}
+]
