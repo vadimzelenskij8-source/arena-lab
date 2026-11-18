@@ -525,10 +525,10 @@ def main():
             ADV = (adv - adv.mean()) / (adv.std() + 1e-8); RET = ret / std
             AH, AE = np.stack(buf["ah"]), np.stack(buf["ae"])
             torch.set_num_threads(4)  # the simulator is idle while learning
-            for ep in range(2):
+            for ep in range(1):
                 perm = np.random.permutation(N)
-                for j in range(0, N, 32):
-                    ix = perm[j:j + 32]; nb = len(ix)
+                for j in range(0, N, 16):
+                    ix = perm[j:j + 16]; nb = len(ix)
                     flat = {k: torch.from_numpy(np.ascontiguousarray(B[k][:, ix].reshape(T * nb, *B[k].shape[2:]))) for k in keys}
                     z, tf, hand = net.encode(flat)
                     z = z.view(T, nb, -1)
