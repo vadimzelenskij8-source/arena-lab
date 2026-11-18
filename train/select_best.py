@@ -22,7 +22,7 @@ for d in sorted(wd.iterdir()):
         ev = json.load(open(e))
         cfg = json.load(open(d / "metrics.json")).get("config", {}) if (d / "metrics.json").exists() else {}
         rows.append({"dir": d, "wr": ev.get("winrate") or 0.0, "games": ev.get("games", 0), "ev": ev,
-                     "lr": cfg.get("lr"), "ent": cfg.get("ent"), "anchor": cfg.get("anchor"), "seed": ev.get("seed")})
+                     "lr": cfg.get("lr"), "ent": cfg.get("ent"), "anchor": cfg.get("anchor"), "cap": cfg.get("cap", 99.0), "seed": ev.get("seed")})
 if not rows:
     sys.exit("no finished workers")
 rows.sort(key=lambda r: -r["wr"])
@@ -34,12 +34,12 @@ if not keep_old:
         if (b["dir"] / f).exists():
             shutil.copy(b["dir"] / f, base / f)
 if not keep_old and b["lr"] is not None:
-    json.dump({"lr": b["lr"], "ent": b["ent"], "anchor": b["anchor"]}, open(base / "hparams.json", "w"))
+    json.dump({"lr": b["lr"], "ent": b["ent"], "anchor": b["anchor"], "cap": b["cap"]}, open(base / "hparams.json", "w"))
 stag = (hist[-1].get("stagnation", 0) + 1) if (hist and (keep_old or b["wr"] <= (prev or 0) + 0.005)) else 0
 hist.append({"stagnation": stag, "gen": len(hist) + 1, "run": run, "t": round(time.time()),
              "best": b["wr"] if not keep_old else prev, "gen_best": b["wr"],
              "mean": round(sum(r["wr"] for r in rows) / len(rows), 4),
-             "workers": [{"wr": r["wr"], "games": r["games"], "lr": r["lr"], "ent": r["ent"], "anchor": r["anchor"], "seed": r["seed"]} for r in rows],
+             "workers": [{"wr": r["wr"], "games": r["games"], "lr": r["lr"], "ent": r["ent"], "anchor": r["anchor"], "cap": r["cap"], "seed": r["seed"]} for r in rows],
              "kept_previous": keep_old})
 json.dump(hist, open(hist_p, "w"), indent=1)
 print(json.dumps(hist[-1], indent=1))

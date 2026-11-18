@@ -6,7 +6,7 @@ on:
       minutes: { description: "training minutes per worker", default: "95" }
       chain: { description: "start the next generation when done (yes/no)", default: "yes" }
 permissions: { contents: write, actions: write }
-concurrency: { group: train2, cancel-in-progress: false }
+concurrency: { group: "train2-${{ github.event.inputs.chain || 'yes' }}", cancel-in-progress: false }
 env:
   CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
   DATA_VERSION: "16.635.8"
@@ -81,8 +81,8 @@ jobs:
           git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
           if git fetch origin results 2>/dev/null; then git worktree add ../res origin/results && cd ../res && git checkout -B results
           else git worktree add --detach ../res && cd ../res && git checkout --orphan results && git rm -rqf . ; fi
-          python ../${{ github.event.repository.name }}/train/select_best.py ../${{ github.event.repository.name }}/workers g2 ${{ github.run_id }}
-          python ../${{ github.event.repository.name }}/train/report.py g2
+          python ../${{ github.event.repository.name }}/train/select_best.py ../${{ github.event.repository.name }}/workers ${{ github.event.inputs.chain == 'no' && 'smoke' || 'g2' }} ${{ github.run_id }}
+          python ../${{ github.event.repository.name }}/train/report.py ${{ github.event.inputs.chain == 'no' && 'smoke' || 'g2' }}
           mkdir -p runs/${{ github.run_id }} && for d in ../${{ github.event.repository.name }}/workers/*; do n=$(basename $d); mkdir -p runs/${{ github.run_id }}/$n; cp $d/eval.json $d/log.txt runs/${{ github.run_id }}/$n/ 2>/dev/null || true; done
           git add -A && git commit -q -m "gen ${{ github.run_id }}" && git push origin results
       - name: next generation

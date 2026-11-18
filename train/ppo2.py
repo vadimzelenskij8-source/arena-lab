@@ -166,6 +166,7 @@ class Net(nn.Module):
         super().__init__()
         D = 128
         self.na = na
+        self.cap = 99.0
         self.card = nn.Embedding(enc.V, 32)
         self.state = nn.Embedding(enc.S, 8)
         self.kind = nn.Embedding(6, 4)
@@ -223,6 +224,9 @@ class Net(nn.Module):
         tiles = torch.einsum("bct,bsc->bst", tf, q[:, :, :32]) + q[:, :, 32:]  # [B,4,576]
         lg = torch.cat([self.wait(h), tiles.reshape(B, -1), self.abil(h), self.dele(h)], -1)
         lg = lg.masked_fill(~mask, -1e9)
+        if self.cap < 50:  # P(delegate) <= sigmoid(cap): the agent always keeps some own moves to learn from
+            lse = torch.logsumexp(lg[:, :-1], -1)
+            lg = torch.cat([lg[:, :-1], torch.minimum(lg[:, -1], lse + self.cap).unsqueeze(-1)], -1)
         return lg, self.v(h).squeeze(-1)
 
 
@@ -245,6 +249,7 @@ def main():
     ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--ent", type=float, default=0.003)
     ap.add_argument("--anchor", type=float, default=0.02)
+    ap.add_argument("--cap", type=float, default=99.0)
     ap.add_argument("--mini-eval-min", type=float, default=25)
     ap.add_argument("--T", type=int, default=64)
     a = ap.parse_args()
@@ -301,6 +306,7 @@ def main():
                 print("resumed", flush=True)
             except Exception as e:  # noqa: BLE001  другая архитектура — старт заново
                 print("resume skipped", e, flush=True)
+        net.cap = a.cap
         opt = torch.optim.Adam(net.parameters(), lr=a.lr, eps=1e-5)
 
         # ---- per-env state ----
