@@ -57,14 +57,15 @@ jobs:
           ls -la out
       - name: train
         run: |
+          set -o pipefail
           W=${{ matrix.w }}
           LR=$(python3 -c "print([1e-4,3e-4,5e-5,2e-4][$W%4])")
           ENT=$(python3 -c "print([0.002,0.005,0.01,0.001][($W//4)%4])")
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           python train/ppo.py --install sim/env --tables sim/tables --out out --envs 32 --threads 4 \
             --minutes ${{ github.event.inputs.minutes || '300' }} --eval-minutes 25 --eval-games 640 \
-            --seed $(( ${{ github.run_number }} * 100 + W )) --lr $LR --ent $ENT $R 2>&1 | tail -c 20000 > out/log.txt
-          tail -3 out/log.txt
+            --seed $(( ${{ github.run_number }} * 100 + W )) --lr $LR --ent $ENT $R 2>&1 | tee out/full.txt | grep -v "^{'iter'" ; R=$?; tail -c 20000 out/full.txt > out/log.txt; rm out/full.txt; exit $R
+          
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: "w${{ matrix.w }}", path: out/, retention-days: 3 }

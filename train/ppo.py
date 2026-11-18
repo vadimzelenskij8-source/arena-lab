@@ -183,7 +183,7 @@ def main():
             d1 = [d_rows[i] if seats[i] == 0 else my_rows for i in range(N)]
             s0 = [my_slots if seats[i] == 0 else sl[i] for i in range(N)]
             s1 = [sl[i] if seats[i] == 0 else my_slots for i in range(N)]
-            vec.reset([seed * 1000 + i for i in range(N)], d0, d1, slots0=s0, slots1=s1)
+            vec.reset([(seed * 1000 + i) % 2_000_000_000 for i in range(N)], d0, d1, slots0=s0, slots1=s1)
             return seats
 
         def safe_decks(seed, ds=None):
