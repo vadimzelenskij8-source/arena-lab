@@ -31,7 +31,7 @@ MY = {"cards": ["x-bow", "tesla", "archers", "knight", "skeletons", "electro-spi
 DECKS = json.load(open(ROOT / "decks.json", encoding="utf-8"))
 META = [d for d in DECKS if d.get("src") == "meta"]
 OTHER = [d for d in DECKS if d.get("src") != "meta"]
-EM = 64  # entity rows read
+EM = 48  # entity rows read (towers and characters come first)
 ENT_NUM = ["x", "y", "hp", "max_hp", "shield", "dx", "dy", "target", "target_x", "target_y", "deploy_ms",
            "attack_ms", "load_ms", "speed_percent", "hit_speed_percent", "buff_count", "aim_x", "aim_y",
            "time_left_ms", "radius", "level", "ability_ticks", "flags"]
@@ -173,9 +173,8 @@ class Net(nn.Module):
         self.ent = nn.Sequential(nn.Linear(32 + 8 + 4 + 4 + enc.num_dim, D), nn.ReLU(), nn.Linear(D, D), nn.ReLU())
         self.att = nn.MultiheadAttention(D, 4, batch_first=True)
         self.ln = nn.LayerNorm(D)
-        self.to_grid = nn.Linear(D, 24)
-        self.cnn = nn.Sequential(nn.Conv2d(26, 32, 3, padding=1), nn.ReLU(), nn.Conv2d(32, 32, 3, padding=1), nn.ReLU(),
-                                 nn.Conv2d(32, 32, 3, padding=1), nn.ReLU())
+        self.to_grid = nn.Linear(D, 16)
+        self.cnn = nn.Sequential(nn.Conv2d(18, 24, 3, padding=1), nn.ReLU(), nn.Conv2d(24, 32, 3, padding=1), nn.ReLU())
         gin = enc.g_dim + 32 * 4 + 32 + 32 + 32
         self.glob = nn.Sequential(nn.Linear(gin, 256), nn.ReLU())
         self.trunk = nn.Sequential(nn.Linear(2 * D + 256 + 32, 256), nn.ReLU())
@@ -205,9 +204,9 @@ class Net(nn.Module):
         mean = (x * m).sum(1) / m.sum(1).clamp(min=1)
         mx = x.masked_fill(~valid.unsqueeze(-1), -1e4).max(1).values.clamp(min=-10)
         gv = self.to_grid(x) * m
-        grid = torch.zeros(B, 24, 576, device=x.device)
-        grid.scatter_add_(2, b["tile"].unsqueeze(1).expand(-1, 24, -1), gv.transpose(1, 2))
-        grid = torch.cat([grid.view(B, 24, 32, 18), self.coords.expand(B, -1, -1, -1)], 1)
+        grid = torch.zeros(B, 16, 576, device=x.device)
+        grid.scatter_add_(2, b["tile"].unsqueeze(1).expand(-1, 16, -1), gv.transpose(1, 2))
+        grid = torch.cat([grid.view(B, 16, 32, 18), self.coords.expand(B, -1, -1, -1)], 1)
         tf = self.cnn(grid)  # [B,32,32,18]
         hand = self.card(b["hand"])  # [B,4,32]
         g = torch.cat([b["g"], hand.flatten(1), self.card(b["nxt"]).mean(1), self.card(b["seen"]).mean(1),
@@ -525,7 +524,8 @@ def main():
             Mm = np.stack(buf["m"]); A = np.stack(buf["a"]); LP = np.stack(buf["lp"])
             ADV = (adv - adv.mean()) / (adv.std() + 1e-8); RET = ret / std
             AH, AE = np.stack(buf["ah"]), np.stack(buf["ae"])
-            for ep in range(3):
+            torch.set_num_threads(4)  # the simulator is idle while learning
+            for ep in range(2):
                 perm = np.random.permutation(N)
                 for j in range(0, N, 32):
                     ix = perm[j:j + 32]; nb = len(ix)
@@ -551,6 +551,7 @@ def main():
                     le = F.mse_loss(net.aux_el(H).squeeze(-1), torch.from_numpy(AE[:, ix].reshape(-1)))
                     loss = l1 + l2 - ent_c * ent + a.anchor * anchor + 0.1 * la + 0.1 * le
                     opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(net.parameters(), 0.5); opt.step()
+            torch.set_num_threads(2)
             tm["learn"] += time.time() - t1
             it += 1
             last = results[-300:]
