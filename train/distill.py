@@ -21,6 +21,7 @@ from crforge_env import LadderConfig, ScriptedBot, SideSetup, VectorBattle
 
 from ppo2 import META, MY, OTHER, ROW, Enc, Net, to_t
 from teacher import ForkTeacher, Teacher
+from jbot import PlayoutTeacher, make_policy
 
 
 def main():
@@ -41,10 +42,12 @@ def main():
     ap.add_argument("--wait-w", type=float, default=0.15)
     ap.add_argument("--horizon", type=int, default=160)
     ap.add_argument("--play-thr", type=float, default=0.5)
-    ap.add_argument("--fork", type=int, default=1)
+    ap.add_argument("--fork", type=int, default=2)
+    ap.add_argument("--play-ticks", type=int, default=240)
+    ap.add_argument("--reps", type=int, default=1)
     ap.add_argument("--fork-steps", type=int, default=24)
     ap.add_argument("--fork-envs", type=int, default=96)
-    ap.add_argument("--top", type=int, default=3)
+    ap.add_argument("--top", type=int, default=4)
     ap.add_argument("--soft-w", type=float, default=0.5)
     ap.add_argument("--val-w", type=float, default=0.5)
     ap.add_argument("--noise", type=float, default=0.15)
@@ -72,7 +75,10 @@ def main():
         my_slots = [(s.slot_evolution if k in MY["evo"] else 0) | (s.slot_hero if k in MY["hero"] else 0) for k in MY["cards"]]
         slots_of = lambda d: [(s.slot_evolution if k in d.get("evo", []) else 0) | (s.slot_hero if k in d.get("hero", []) else 0) for k in d["cards"]]
         bots = [ScriptedBot().bind(vec), ScriptedBot().bind(vec)]
-        if a.fork:
+        if a.fork == 2:  # Java playouts: both sides keep playing inside the simulator
+            teacher = PlayoutTeacher(vec, make_policy(vec, bots[0]), horizon=a.horizon, play_ticks=a.play_ticks, top=a.top,
+                                     reps=a.reps, margin=a.margin, rng=np.random.default_rng(a.seed + 99))
+        elif a.fork:
             scratch = VectorBattle(a.fork_envs, a.threads, install=a.install, tables=a.tables, config=LadderConfig(decision_ticks=5))
             scratch.set_autoreset(True)  # finished forks restart on their own; results are read at the done step
             scratch.reset(list(range(a.fork_envs)), my_rows, my_rows, slots0=my_slots, slots1=my_slots)
