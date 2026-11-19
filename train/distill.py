@@ -41,7 +41,7 @@ def main():
     ap.add_argument("--wait-w", type=float, default=0.15)
     ap.add_argument("--horizon", type=int, default=160)
     ap.add_argument("--play-thr", type=float, default=0.5)
-    ap.add_argument("--margin", type=float, default=1.0)
+    ap.add_argument("--margin", type=float, default=0.3)
     ap.add_argument("--mini-eval-min", type=float, default=25)
     ap.add_argument("--T", type=int, default=64)
     # accepted for compatibility with hparams.py
