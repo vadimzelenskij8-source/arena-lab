@@ -35,16 +35,10 @@ jobs:
       fail-fast: false
       matrix:
         c:
-          - { n: off, a: "--off" }
-          - { n: h40, a: "--horizon 40" }
-          - { n: h60, a: "--horizon 60" }
-          - { n: h100, a: "--horizon 100" }
-          - { n: h160, a: "--horizon 160" }
-          - { n: h60s3, a: "--horizon 60 --spread 3" }
-          - { n: h100m0, a: "--horizon 100 --margin 0" }
-          - { n: h100e05, a: "--horizon 100 --w-elixir 0.5" }
-          - { n: h100m1, a: "--horizon 100 --margin 1.0" }
-          - { n: h60s1, a: "--horizon 60 --spread 1" }
+          - { n: h160m1, a: "--horizon 160 --margin 1.0" }
+          - { n: h240m1, a: "--horizon 240 --margin 1.0" }
+          - { n: h160m2, a: "--horizon 160 --margin 2.0" }
+          - { n: h320m1, a: "--horizon 320 --margin 1.0" }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
