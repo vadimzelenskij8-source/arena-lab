@@ -46,6 +46,10 @@ def main():
     ap.add_argument("--fork", type=int, default=2)
     ap.add_argument("--xbow-share", type=float, default=0.1)
     ap.add_argument("--replay-size", type=int, default=6)
+    ap.add_argument("--carry", default="")
+    ap.add_argument("--final", type=int, default=1)
+    ap.add_argument("--p0", type=float, default=0.0)
+    ap.add_argument("--p1", type=float, default=1.0)
     ap.add_argument("--league", default="league")
     ap.add_argument("--league-share", type=float, default=0.5)
     ap.add_argument("--vteach", type=float, default=0.0)
@@ -264,10 +268,18 @@ def main():
         seats = reset_all(1 + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh(); st_o = fresh(); assign_opps()
         results = []
         best_sd, best_wr, last_mini, it = None, -1.0, time.time(), 0
+        cdir = Path(a.carry) if a.carry else None  # a long generation runs in segments: carry on where the last stopped
+        if cdir and (cdir / "metrics.json").exists():
+            old = json.load(open(cdir / "metrics.json"))
+            metrics["iters"] = old.get("iters", []); metrics["mini_evals"] = old.get("mini_evals", [])
+            it = metrics["iters"][-1]["iter"] if metrics["iters"] else 0
+            if (cdir / "best.pt").exists() and (cdir / "best.json").exists():
+                best_sd = torch.load(cdir / "best.pt"); best_wr = json.load(open(cdir / "best.json"))["winrate"]
+            print("carried", it, best_wr, flush=True)
         replay = []
         tm = defaultdict(float)
         while time.time() < t_train_end:
-            frac = min(1.0, (time.time() - t0) / max(1, t_train_end - t0))
+            frac = a.p0 + (a.p1 - a.p0) * min(1.0, (time.time() - t0) / max(1, t_train_end - t0))
             beta = a.beta0 + (a.beta1 - a.beta0) * frac
             buf = defaultdict(list); h0 = st["h"].clone(); n_own = n_t = 0
             for t in range(T):
@@ -424,6 +436,13 @@ def main():
                 seats = reset_all(100 + it + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh(); st_o = fresh(); assign_opps()
             elif it % 40 == 0:
                 seats = reset_all(200 + it + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh(); st_o = fresh(); assign_opps()
+        if not a.final:  # middle segment: keep the run going, no exam
+            torch.save(net.state_dict(), out / "policy.pt")
+            if best_sd is not None:
+                torch.save(best_sd, out / "best.pt"); json.dump({"winrate": best_wr}, open(out / "best.json", "w"))
+            json.dump(metrics, open(out / "metrics.json", "w"))
+            print("segment saved", it, best_wr, flush=True)
+            return
         ev_last = run_eval(N * 2, 777)
         metrics["mini_evals"].append({"iter": it, "winrate": ev_last["winrate"], "final": True})
         if best_sd is not None and best_wr > ev_last["winrate"]:
