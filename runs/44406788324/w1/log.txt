@@ -1,0 +1,6 @@
+spells 27
+resumed
+{'iter': 10, 't': 1795043313, 'episodes': 1, 'winrate_last200': 0.0, 'entropy': 0.0, 'value_loss': 0.0361, 'aux_hand': 0.1159, 'delegate': 1.0, 'own_plays_per_100': 0.0, 'anchor': 0.0} {'obs': 1.6, 'net': 28.9, 'bots': 6.0, 'sim': 11.3, 'reward': 7.8, 'learn': 106.1}
+{'iter': 20, 't': 1795043467, 'episodes': 128, 'winrate_last200': 0.391, 'entropy': 0.0, 'value_loss': 0.1791, 'aux_hand': 0.1058, 'delegate': 1.0, 'own_plays_per_100': 0.0, 'anchor': 0.0} {'obs': 3.0, 'net': 55.0, 'bots': 12.1, 'sim': 21.5, 'reward': 14.2, 'learn': 209.1}
+{'iter': 30, 't': 1795043620, 'episodes': 192, 'winrate_last200': 0.354, 'entropy': 0.0, 'value_loss': 0.0369, 'aux_hand': 0.0957, 'delegate': 1.0, 'own_plays_per_100': 0.0, 'anchor': 0.0} {'obs': 4.4, 'net': 80.9, 'bots': 18.0, 'sim': 30.9, 'reward': 21.6, 'learn': 311.6}
+eval {'games': 640, 'winrate': 0.3391, 'wins': 217, 'losses': 414, 'draws': 9, 'faults': 0}

@@ -1,0 +1,32 @@
+[
+ {
+  "stagnation": 0,
+  "gen": 1,
+  "run": "44406788324",
+  "t": 1795048752,
+  "best": 0.3594,
+  "gen_best": 0.3594,
+  "mean": 0.3493,
+  "workers": [
+   {
+    "wr": 0.3594,
+    "games": 640,
+    "lr": 5e-05,
+    "ent": 0.003,
+    "anchor": 0.028,
+    "cap": 99.0,
+    "seed": 600
+   },
+   {
+    "wr": 0.3391,
+    "games": 640,
+    "lr": 5e-05,
+    "ent": 0.006,
+    "anchor": 0.005,
+    "cap": 99.0,
+    "seed": 601
+   }
+  ],
+  "kept_previous": false
+ }
+]
