@@ -76,6 +76,25 @@ class Enc:
         self.tick = h["tick"][0]
         self.ab = [h[n][0] for n in ("ability_state", "ability_cooldown_ms", "ability_charges") if n in h]
         self.vocab = vec.vocabulary
+        # card knowledge from the game tables: type, hit points, range, targets, spell area/damage
+        cf = np.zeros((self.V, 14), np.float32)
+        types = vec.card_types(); uf = vec.unit_facts(); sf = vec.spell_facts()
+        for cid, t in (types.items() if isinstance(types, dict) else enumerate(types)):
+            j = int(cid) + 1
+            if not 0 <= j < self.V:
+                continue
+            cf[j, {"troop": 0, "building": 1, "spell": 2}.get(str(t), 0)] = 1.0
+            u = uf.get(cid) if hasattr(uf, "get") else None
+            if u is not None:
+                cf[j, 3] = np.log1p(max(0, u.hitpoints)) / 9.0; cf[j, 4] = u.range / 10000.0
+                cf[j, 5] = float(u.buildings_only); cf[j, 6] = float(u.building)
+            f = sf.get(cid) if hasattr(sf, "get") else None
+            if f is not None:
+                cf[j, 7] = np.log1p(max(0, f.damage)) / 8.0; cf[j, 8] = np.log1p(max(0, f.tower_damage)) / 8.0
+                cf[j, 9] = f.radius / 5000.0; cf[j, 10] = float(f.hits_air); cf[j, 11] = float(f.hits_ground)
+                cf[j, 12] = float(f.roll > 0); cf[j, 13] = f.max_targets / 10.0
+        self.cf = cf
+        self.deck = list(h.get("deck", ())); self.dlev = list(h.get("deck_level", ())); self.dslot = list(h.get("deck_slot", ()))
         z = np.zeros((1, s.seat_ints), np.int32)
         self.num_dim = self.entities(z)["num"].shape[-1]
         self.g_dim = self.header(z, np.full((1, 8), -1, np.int64))[0].shape[-1]
@@ -112,6 +131,14 @@ class Enc:
         tr = np.clip((y // 1000).astype(np.int64), 0, 31)
         return dict(rid=rid.astype(np.int64), st=st.astype(np.int64), kind=kind.astype(np.int64),
                     side=side.astype(np.int64), num=feats, valid=valid, tile=(tr * 18 + tc), rows=rows, n=n)
+
+    def deck_feats(self, O):
+        """The seat's own deck: 8 card ids (+1) and per-card level / slot flags."""
+        B = O.shape[0]
+        ids = np.clip(O[:, self.deck] + 1, 0, self.V - 1).astype(np.int64) if self.deck else np.zeros((B, 8), np.int64)
+        lv = O[:, self.dlev].astype(np.float32) / 16.0 if self.dlev else np.zeros((B, 8), np.float32)
+        sl = np.clip(O[:, self.dslot], 0, 3).astype(np.float32) / 3.0 if self.dslot else np.zeros((B, 8), np.float32)
+        return ids, np.concatenate([lv, sl], 1)
 
     def header(self, O, last_play):
         """last_play: [B, 8] tick each enemy-seen card was last played (memory), -1 never."""
@@ -168,6 +195,11 @@ class Net(nn.Module):
         self.na = na
         self.cap = 99.0
         self.card = nn.Embedding(enc.V, 32)
+        self.register_buffer("cf", torch.from_numpy(enc.cf))
+        self.card_f = nn.Linear(14, 32)
+        self.deck_l = nn.Linear(64 + 16, 256)
+        for m_ in (self.card_f, self.deck_l):  # zero: an old network keeps its function, then learns to use them
+            nn.init.zeros_(m_.weight); nn.init.zeros_(m_.bias)
         self.state = nn.Embedding(enc.S, 8)
         self.kind = nn.Embedding(6, 4)
         self.side = nn.Embedding(4, 4)
@@ -190,11 +222,14 @@ class Net(nn.Module):
         ys, xs = torch.meshgrid(torch.linspace(0, 1, 32), torch.linspace(0, 1, 18), indexing="ij")
         self.register_buffer("coords", torch.stack([xs, ys])[None])
 
+    def cv(self, ids):
+        return self.card(ids) + self.card_f(self.cf[ids])
+
     def encode(self, b):
         """b: dict of tensors for B samples -> features before the GRU [B,256], tile feats [B,32,576]."""
         rid, valid = b["rid"], b["valid"]
         B = rid.shape[0]
-        x = torch.cat([self.card(rid), self.state(b["st"]), self.kind(b["kind"]), self.side(b["side"]), b["num"]], -1)
+        x = torch.cat([self.cv(rid), self.state(b["st"]), self.kind(b["kind"]), self.side(b["side"]), b["num"]], -1)
         x = self.ent(x)
         pad = ~valid
         allpad = pad.all(1)
@@ -209,10 +244,13 @@ class Net(nn.Module):
         grid.scatter_add_(2, b["tile"].unsqueeze(1).expand(-1, 16, -1), gv.transpose(1, 2))
         grid = torch.cat([grid.view(B, 16, 32, 18), self.coords.expand(B, -1, -1, -1)], 1)
         tf = self.cnn(grid)  # [B,32,32,18]
-        hand = self.card(b["hand"])  # [B,4,32]
-        g = torch.cat([b["g"], hand.flatten(1), self.card(b["nxt"]).mean(1), self.card(b["seen"]).mean(1),
-                       self.card(b["play"]).mean(1)], -1)
+        hand = self.cv(b["hand"])  # [B,4,32]
+        g = torch.cat([b["g"], hand.flatten(1), self.cv(b["nxt"]).mean(1), self.cv(b["seen"]).mean(1),
+                       self.cv(b["play"]).mean(1)], -1)
         g = self.glob(g)
+        if "deck" in b:
+            dv = self.cv(b["deck"])
+            g = g + self.deck_l(torch.cat([dv.mean(1), dv.max(1).values, b["dstat"]], -1))
         sp = tf.mean((2, 3))
         z = self.trunk(torch.cat([mean, mx, g, sp], -1))
         return z, tf.flatten(2), hand

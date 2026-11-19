@@ -10,7 +10,7 @@ permissions: { contents: write, actions: write }
 concurrency: { group: "train2-${{ github.event.inputs.chain || 'yes' }}", cancel-in-progress: false }
 env:
   ALGO: ${{ github.event.inputs.algo || 'distill' }}
-  DIR: ${{ github.event.inputs.chain == 'no' && 'smoke' || ((github.event.inputs.algo || 'distill') == 'distill' && 'd3' || 'g2') }}
+  DIR: ${{ github.event.inputs.chain == 'no' && 'smoke' || ((github.event.inputs.algo || 'distill') == 'distill' && 'u1' || 'g2') }}
   CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
   DATA_VERSION: "16.635.8"
 jobs:
@@ -57,8 +57,8 @@ jobs:
       - name: base checkpoint
         run: |
           mkdir -p out
-          git fetch origin results 2>/dev/null && SRC=$DIR; [ "$DIR" = smoke ] && SRC=$([ "$ALGO" = distill ] && echo d3 || echo g2)
-          (git show origin/results:$SRC/policy.pt > out/policy.pt 2>/dev/null || git show origin/results:g2/policy.pt > out/policy.pt 2>/dev/null) || rm -f out/policy.pt
+          git fetch origin results 2>/dev/null && SRC=$DIR; [ "$DIR" = smoke ] && SRC=$([ "$ALGO" = distill ] && echo u1 || echo g2)
+          (git show origin/results:$SRC/policy.pt > out/policy.pt 2>/dev/null || git show origin/results:d3/policy.pt > out/policy.pt 2>/dev/null) || rm -f out/policy.pt
           mkdir -p b2 && for f in hparams.json history.json; do git show origin/results:$SRC/$f > b2/$f 2>/dev/null || rm -f b2/$f; done
           ls -la out
       - name: train2
@@ -70,7 +70,7 @@ jobs:
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/$ALGO.py --install sim/env --tables sim/tables --out out --envs $E --threads 4 \
-            --minutes ${{ github.event.inputs.minutes || '95' }} --eval-minutes 12 --eval-games 640 \
+            --minutes ${{ github.event.inputs.minutes || '95' }} --eval-minutes 18 --eval-games 640 \
             --seed $(( ${{ github.run_number }} * 100 + W )) $HP $R 2>&1 | tee out/full.txt | grep -v "^{'iter'" ; R=$?; tail -c 20000 out/full.txt > out/log.txt; rm out/full.txt; exit $R
           
       - uses: actions/upload-artifact@v4

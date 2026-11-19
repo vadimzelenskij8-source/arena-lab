@@ -22,6 +22,7 @@ from crforge_env import LadderConfig, ScriptedBot, SideSetup, VectorBattle
 from ppo2 import META, MY, OTHER, ROW, Enc, Net, to_t
 from teacher import ForkTeacher, Teacher
 from jbot import PlayoutTeacher, make_policy
+import decks_gen
 
 
 def main():
@@ -43,6 +44,7 @@ def main():
     ap.add_argument("--horizon", type=int, default=160)
     ap.add_argument("--play-thr", type=float, default=0.5)
     ap.add_argument("--fork", type=int, default=2)
+    ap.add_argument("--xbow-share", type=float, default=0.1)
     ap.add_argument("--play-ticks", type=int, default=240)
     ap.add_argument("--reps", type=int, default=1)
     ap.add_argument("--fork-steps", type=int, default=24)
@@ -88,7 +90,13 @@ def main():
             teacher = Teacher(vec, horizon=a.horizon, margin=a.margin)
         TOWERS = ["King_PrincessTowers", "King_CannonTowers", "King_KnifeTowers", "King_ChefTowers"]
 
-        def reset_all(seed, ds, setups=False):
+        MYD = {"name": "X-Bow 3.0", "group": "X-Bow", "cards": MY["cards"], "evo": MY["evo"], "hero": MY["hero"]}
+        ANY = decks_gen.fixed_set(max(a.eval_games, 2 * N), meta=META)  # exam decks training never sees
+        grng = random.Random(a.seed * 7919 + 13)
+
+        def reset_all(seed, ds, setups=False, mine=None):
+            """ds: the opponents' decks; mine: the agent's decks (None: X-Bow)."""
+            mine = mine or [MYD] * N
             seats = np.array([i % 2 for i in range(N)])
             for k in range(10):
                 try:
@@ -97,25 +105,31 @@ def main():
                         opp = [SideSetup(towers=random.choice(TOWERS), card_levels=[random.choice([11, 11, 12, 13]) for _ in range(8)]) for _ in range(N)]
                         st0 = [None if seats[i] == 0 else opp[i] for i in range(N)]
                         st1 = [opp[i] if seats[i] == 0 else None for i in range(N)]
-                    d0 = [my_rows if seats[i] == 0 else [ROW[c] for c in ds[i]["cards"]] for i in range(N)]
-                    d1 = [[ROW[c] for c in ds[i]["cards"]] if seats[i] == 0 else my_rows for i in range(N)]
-                    s0 = [my_slots if seats[i] == 0 else slots_of(ds[i]) for i in range(N)]
-                    s1 = [slots_of(ds[i]) if seats[i] == 0 else my_slots for i in range(N)]
+                    rows_ = lambda d: [ROW[c] for c in d["cards"]]
+                    d0 = [rows_(mine[i]) if seats[i] == 0 else rows_(ds[i]) for i in range(N)]
+                    d1 = [rows_(ds[i]) if seats[i] == 0 else rows_(mine[i]) for i in range(N)]
+                    s0 = [slots_of(mine[i]) if seats[i] == 0 else slots_of(ds[i]) for i in range(N)]
+                    s1 = [slots_of(ds[i]) if seats[i] == 0 else slots_of(mine[i]) for i in range(N)]
                     vec.reset([((seed + k * 7919) * 1000 + i) % 2_000_000_000 for i in range(N)], d0, d1, slots0=s0, slots1=s1,
                               setup0=st0, setup1=st1)
                     return seats
                 except Exception as e:  # noqa: BLE001
                     print("reset", e, flush=True)
                     ds = [random.choice(META) for _ in range(N)]
+                    if k >= 2:
+                        mine = [random.choice(META) for _ in range(N)]
             raise RuntimeError("no valid decks")
 
         def train_decks():
-            return [random.choice(META) if random.random() < 0.8 else random.choice(OTHER) for _ in range(N)]
+            return [decks_gen.generate(grng, META, p_meta=0.35) for _ in range(N)]
+
+        def train_mine():  # any deck for the agent: a new one every battle, X-Bow now and then
+            return [MYD if grng.random() < a.xbow_share else decks_gen.generate(grng, META) for _ in range(N)]
 
         net = Net(enc, NA + 1)
         if a.resume and Path(a.resume).exists():
             try:
-                net.load_state_dict(torch.load(a.resume)); print("resumed", flush=True)
+                miss = net.load_state_dict(torch.load(a.resume), strict=False); print("resumed", miss, flush=True)
             except Exception as e:  # noqa: BLE001
                 print("resume skipped", e, flush=True)
         opt = torch.optim.Adam(net.parameters(), lr=a.lr, eps=1e-5)
@@ -134,8 +148,9 @@ def main():
             st["last_play"] = np.maximum(st["last_play"], np.where(match, (tick - pt)[:, None, :], -1).max(-1))
             en = enc.entities(O); g, ids = enc.header(O, st["last_play"])
             hst = np.stack([O[:, enc.hcost] / 10.0, O[:, enc.hform] / 2.0, O[:, enc.hpend]], -1).astype(np.float32)
+            dk, dst = enc.deck_feats(O)
             return O, M, dict(rid=en["rid"], st=en["st"], kind=en["kind"], side=en["side"], num=en["num"], valid=en["valid"],
-                              tile=en["tile"], g=g, hstat=hst, **ids)
+                              tile=en["tile"], g=g, hstat=hst, deck=dk, dstat=dst, **ids)
 
         def opp_targets(seats):
             Oo = np.stack([vec.observations[i, 1 - seats[i]] for i in range(N)])
@@ -146,13 +161,14 @@ def main():
             hand[:, 0] = 0
             return hand, Oo[:, enc.h["elixir"][0]].astype(np.float32) / 100000.0
 
-        def run_eval(n_games, seed_base):
+        def run_eval(n_games, seed_base, any_deck=True):
             ev = {"wins": 0, "losses": 0, "draws": 0, "faults": 0, "by_deck": {}, "by_group": {}, "by_phase": {}}
             erng = np.random.default_rng(12345)
             net.eval()
             for bi in range(max(1, n_games // N)):
                 ds = [META[(bi * N + i) % len(META)] for i in range(N)]
-                seats = reset_all(seed_base + bi * 1009, ds)
+                mine = [ANY[(bi * N + i) % len(ANY)] for i in range(N)] if any_deck else None
+                seats = reset_all(seed_base + bi * 1009, ds, mine=mine)
                 st = fresh(); done = np.zeros(N, bool); ot = np.zeros(N, bool)
                 for _ in range(1800):
                     O, M, b = batch_obs(seats, st)
@@ -186,7 +202,7 @@ def main():
             net.train()
             return ev
 
-        seats = reset_all(1 + a.seed * 7, train_decks(), a.levels); st = fresh()
+        seats = reset_all(1 + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh()
         results = []
         best_sd, best_wr, last_mini, it = None, -1.0, time.time(), 0
         tm = defaultdict(float)
@@ -328,16 +344,19 @@ def main():
                 if ev["winrate"] > best_wr:
                     best_wr = ev["winrate"]; best_sd = {k: v_.clone() for k, v_ in net.state_dict().items()}
                 last_mini = time.time()
-                seats = reset_all(100 + it + a.seed * 7, train_decks(), a.levels); st = fresh()
+                seats = reset_all(100 + it + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh()
             elif it % 40 == 0:
-                seats = reset_all(200 + it + a.seed * 7, train_decks(), a.levels); st = fresh()
+                seats = reset_all(200 + it + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh()
         ev_last = run_eval(N * 2, 777)
         metrics["mini_evals"].append({"iter": it, "winrate": ev_last["winrate"], "final": True})
         if best_sd is not None and best_wr > ev_last["winrate"]:
             net.load_state_dict(best_sd)
         torch.save(net.state_dict(), out / "policy.pt")
         json.dump(metrics, open(out / "metrics.json", "w"))
-        ev = run_eval(a.eval_games, 10 ** 6); ev["seed"] = a.seed
+        ev = run_eval(a.eval_games, 10 ** 6)  # any deck vs meta decks (selection metric)
+        evx = run_eval(a.eval_games // 2, 10 ** 6, any_deck=False)  # X-Bow vs meta, comparable with earlier generations
+        ev["xbow"] = {k: evx[k] for k in ("games", "winrate", "wins", "losses", "by_group")}
+        ev["seed"] = a.seed
         json.dump(ev, open(out / "eval.json", "w"), ensure_ascii=False)
         print("eval", {k: ev[k] for k in ("games", "winrate", "wins", "losses", "draws", "faults")}, flush=True)
 
