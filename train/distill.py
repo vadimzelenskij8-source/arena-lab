@@ -74,7 +74,7 @@ def main():
         bots = [ScriptedBot().bind(vec), ScriptedBot().bind(vec)]
         if a.fork:
             scratch = VectorBattle(a.fork_envs, a.threads, install=a.install, tables=a.tables, config=LadderConfig(decision_ticks=5))
-            scratch.set_autoreset(False)
+            scratch.set_autoreset(True)  # finished forks restart on their own; results are read at the done step
             scratch.reset(list(range(a.fork_envs)), my_rows, my_rows, slots0=my_slots, slots1=my_slots)
             teacher = ForkTeacher(vec, scratch, [ScriptedBot().bind(scratch), ScriptedBot().bind(scratch)], horizon=a.horizon,
                                   fork_steps=a.fork_steps, top=a.top, margin=a.margin, rng=np.random.default_rng(a.seed + 99))
