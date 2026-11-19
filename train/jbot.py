@@ -69,6 +69,7 @@ class PlayoutTeacher(Teacher):
         self.rng = rng or np.random.default_rng(0)
         self.win_i = vec.schema.info["winner"]
         self.stats.update({"playouts": 0, "delayed": 0})
+        self.value_fn, self.vw = None, 0.0  # optional: the network's value of the playout's end, mixed in
 
     def playout(self, idx, seats, acts, delays):
         s = self.s
@@ -81,6 +82,8 @@ class PlayoutTeacher(Teacher):
         flat = np.asarray(out, dtype=np.int32).reshape(n, s.seat_ints + s.info_ints)
         obs, info = flat[:, :s.seat_ints], flat[:, s.seat_ints:]
         v = self.value(obs)
+        if self.value_fn is not None and self.vw > 0:
+            v = v + self.vw * 20.0 * self.value_fn(obs)
         w = info[:, self.win_i]
         seats = np.asarray(seats)
         ended = (w == 0) | (w == 1)

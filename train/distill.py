@@ -45,6 +45,11 @@ def main():
     ap.add_argument("--play-thr", type=float, default=0.5)
     ap.add_argument("--fork", type=int, default=2)
     ap.add_argument("--xbow-share", type=float, default=0.1)
+    ap.add_argument("--replay-size", type=int, default=6)
+    ap.add_argument("--league", default="league")
+    ap.add_argument("--league-share", type=float, default=0.5)
+    ap.add_argument("--vteach", type=float, default=0.0)
+    ap.add_argument("--replay-chunks", type=int, default=4)
     ap.add_argument("--play-ticks", type=int, default=240)
     ap.add_argument("--reps", type=int, default=1)
     ap.add_argument("--fork-steps", type=int, default=24)
@@ -133,6 +138,60 @@ def main():
             except Exception as e:  # noqa: BLE001
                 print("resume skipped", e, flush=True)
         opt = torch.optim.Adam(net.parameters(), lr=a.lr, eps=1e-5)
+        # league: frozen earlier best versions play the opponent seat (prioritised by how often they beat us)
+        league = []
+        for f_ in sorted(Path(a.league).glob("*.pt")) if a.league else []:
+            try:
+                m_ = Net(enc, NA + 1); m_.load_state_dict(torch.load(f_), strict=False); m_.eval()
+                league.append((f_.stem, m_))
+            except Exception as e:  # noqa: BLE001
+                print("league skip", f_, e, flush=True)
+        lstats = {nm: [0, 0] for nm, _ in league}
+        print("league", [nm for nm, _ in league], flush=True)
+        opp_kind = np.full(N, -1)
+
+        def assign_opps():
+            opp_kind[:] = -1
+            if not league:
+                return
+            w_ = np.array([(1 - (lstats[nm][0] + 1) / (lstats[nm][1] + 2)) ** 2 + 0.05 for nm, _ in league]); w_ /= w_.sum()
+            for i in range(N):
+                if rng.random() < a.league_share:
+                    opp_kind[i] = int(rng.choice(len(league), p=w_))
+
+        def league_acts(oseats, st_o):
+            """Actions of the league opponents (pure network play, as at evaluation)."""
+            out_ = {}
+            if not league or (opp_kind < 0).all():
+                return out_
+            O_o, M_o, b_o = batch_obs(oseats, st_o)
+            for mi, (_nm, m_) in enumerate(league):
+                idx = np.flatnonzero(opp_kind == mi)
+                if not len(idx):
+                    continue
+                sub = {k: v[idx] for k, v in b_o.items()}
+                with torch.no_grad():
+                    bt = to_t(sub); z, tf, hd = m_.encode(bt); hn_ = m_.gru(z, st_o["h"][idx])
+                    lg, _ = m_.heads(hn_, tf, hd, bt, torch.from_numpy(M_o[idx]))
+                    pr = torch.softmax(lg, 1); play = pr[:, 1:].clone(); play[:, -1] = 0
+                    ac = torch.where(play.sum(1) > a.play_thr, play.argmax(1) + 1, torch.zeros_like(pr[:, 0]).long()).numpy()
+                st_o["h"][idx] = hn_
+                for j, i in enumerate(idx):
+                    out_[int(i)] = int(ac[j])
+            return out_
+
+        def vfn(O):
+            """The network's value of positions reached by the teacher's playouts (no history: fresh memory)."""
+            en = enc.entities(O); g, ids = enc.header(O, np.full((len(O), 8), -1, np.int64))
+            hst = np.stack([O[:, enc.hcost] / 10.0, O[:, enc.hform] / 2.0, O[:, enc.hpend]], -1).astype(np.float32)
+            dk, dst = enc.deck_feats(O)
+            b = dict(rid=en["rid"], st=en["st"], kind=en["kind"], side=en["side"], num=en["num"], valid=en["valid"],
+                     tile=en["tile"], g=g, hstat=hst, deck=dk, dstat=dst, **ids)
+            with torch.no_grad():
+                z, _tf, _hd = net.encode(to_t(b)); h = net.gru(z, torch.zeros(len(O), 256))
+                return net.v(h).squeeze(-1).numpy()
+        if a.vteach > 0 and a.fork == 2:
+            teacher.value_fn, teacher.vw = vfn, a.vteach
 
         def fresh():
             return dict(h=torch.zeros(N, 256), last_play=np.full((N, 8), -1, np.int64), prev_seen=np.full((N, 8), -1, np.int64))
@@ -202,9 +261,10 @@ def main():
             net.train()
             return ev
 
-        seats = reset_all(1 + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh()
+        seats = reset_all(1 + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh(); st_o = fresh(); assign_opps()
         results = []
         best_sd, best_wr, last_mini, it = None, -1.0, time.time(), 0
+        replay = []
         tm = defaultdict(float)
         while time.time() < t_train_end:
             frac = min(1.0, (time.time() - t0) / max(1, t_train_end - t0))
@@ -223,10 +283,11 @@ def main():
                     okp = (pl.gather(1, torch.from_numpy(gk - 1)) > -1e8).numpy()
                 tm["net"] += time.time() - t1; t1 = time.time()
                 prop = np.zeros(N, np.int64); acts = np.zeros((N, 2), np.int32)
+                la_ = league_acts(1 - seats, st_o)
                 for i in range(N):
                     me = seats[i]
                     prop[i] = bots[me](vec.observations[i, me], vec.masks[i, me], rng)
-                    acts[i, 1 - me] = bots[1 - me](vec.observations[i, 1 - me], vec.masks[i, 1 - me], rng)
+                    acts[i, 1 - me] = la_[i] if i in la_ else bots[1 - me](vec.observations[i, 1 - me], vec.masks[i, 1 - me], rng)
                 tm["bots"] += time.time() - t1; t1 = time.time()
                 if a.fork:
                     extra = [[int(x) for x, ok in zip(gk[i], okp[i]) if ok] for i in range(N)]
@@ -268,6 +329,9 @@ def main():
                             rr[i] = 1.0 if w_ == seats[i] else (-1.0 if w_ in (0, 1) else 0.0)
                         if not int(vec.infos[i, I["fault"]]):
                             results.append((int(vec.infos[i, I["winner"]]) == seats[i]))
+                            if opp_kind[i] >= 0:
+                                ls_ = lstats[league[opp_kind[i]][0]]; ls_[0] += int(results[-1]); ls_[1] += 1
+                        st_o["h"][i] = 0; st_o["last_play"][i] = -1; st_o["prev_seen"][i] = -1
                         st["last_play"][i] = -1; st["prev_seen"][i] = -1
                 st["h"] = hn * torch.from_numpy(1 - d).unsqueeze(1)
                 for k, val in (("b", b), ("m", M), ("y", tact), ("d", d), ("ah", ah), ("ae", ae), ("sk", SK), ("sp", SP),
@@ -289,39 +353,51 @@ def main():
                 RET[t] = g_
             torch.set_num_threads(4)
             acc_p = []; acc_w = []
+            pack = dict(B=B, Mm=Mm, Y=Y, D=D, AH=AH, AE=AE, SKa=SKa, SPa=SPa, RET=RET, h0=h0)
+
+            def step_chunk(pk, ix):
+                nb = len(ix)
+                Bk = pk["B"]
+                flat = {k: torch.from_numpy(np.ascontiguousarray(Bk[k][:, ix].reshape(T * nb, *Bk[k].shape[2:]))) for k in keys}
+                z, tf, hand = net.encode(flat); z = z.view(T, nb, -1)
+                h = pk["h0"][ix]; hs = []; Dm = torch.from_numpy(pk["D"][:, ix])
+                for t in range(T):
+                    h = net.gru(z[t], h); hs.append(h); h = h * (1 - Dm[t]).unsqueeze(1)
+                H = torch.stack(hs).view(T * nb, -1)
+                mk = torch.from_numpy(pk["Mm"][:, ix].reshape(T * nb, -1))
+                y = torch.from_numpy(pk["Y"][:, ix].reshape(-1)).long()
+                mk[torch.arange(len(y)), y] = True  # the teacher's move is always legal for the seat
+                sk = torch.from_numpy(pk["SKa"][:, ix].reshape(T * nb, -1)); sp = torch.from_numpy(pk["SPa"][:, ix].reshape(T * nb, -1))
+                rows_ = torch.arange(len(y)).unsqueeze(1).expand_as(sk)
+                mk[rows_[sk >= 0], sk[sk >= 0]] = True
+                lg, vv_ = net.heads(H, tf, hand, flat, mk)
+                wts = torch.where(y == 0, a.wait_w, 1.0)
+                lbc = (F.cross_entropy(lg, y, reduction="none") * wts).sum() / wts.sum()
+                la = F.binary_cross_entropy_with_logits(net.aux_hand(H), torch.from_numpy(pk["AH"][:, ix].reshape(T * nb, -1)))
+                le = F.mse_loss(net.aux_el(H).squeeze(-1), torch.from_numpy(pk["AE"][:, ix].reshape(-1)))
+                logp = F.log_softmax(lg, -1)
+                has = sk[:, 0] >= 0
+                lsoft = -(sp * logp.gather(1, sk.clamp(min=0)) * (sk >= 0)).sum(1)
+                lsoft = lsoft[has].mean() if has.any() else torch.zeros(())
+                lval = F.mse_loss(vv_, torch.from_numpy(pk["RET"][:, ix].reshape(-1)))
+                loss = lbc + a.soft_w * lsoft + a.val_w * lval + 0.1 * la + 0.1 * le
+                opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(net.parameters(), 1.0); opt.step()
+                with torch.no_grad():
+                    pr = lg.argmax(1); pl = y != 0
+                    if pl.any():
+                        acc_p.append((pr[pl] == y[pl]).float().mean().item())
+                    acc_w.append((pr[~pl] == 0).float().mean().item() if (~pl).any() else 1.0)
+                return lbc, lsoft, lval, la
+
             for ep in range(2):
                 perm = np.random.permutation(N)
                 for j in range(0, N, 16):
-                    ix = perm[j:j + 16]; nb = len(ix)
-                    flat = {k: torch.from_numpy(np.ascontiguousarray(B[k][:, ix].reshape(T * nb, *B[k].shape[2:]))) for k in keys}
-                    z, tf, hand = net.encode(flat); z = z.view(T, nb, -1)
-                    h = h0[ix]; hs = []; Dm = torch.from_numpy(D[:, ix])
-                    for t in range(T):
-                        h = net.gru(z[t], h); hs.append(h); h = h * (1 - Dm[t]).unsqueeze(1)
-                    H = torch.stack(hs).view(T * nb, -1)
-                    mk = torch.from_numpy(Mm[:, ix].reshape(T * nb, -1))
-                    y = torch.from_numpy(Y[:, ix].reshape(-1)).long()
-                    mk[torch.arange(len(y)), y] = True  # the teacher's move is always legal for the seat
-                    sk = torch.from_numpy(SKa[:, ix].reshape(T * nb, -1)); sp = torch.from_numpy(SPa[:, ix].reshape(T * nb, -1))
-                    rows_ = torch.arange(len(y)).unsqueeze(1).expand_as(sk)
-                    mk[rows_[sk >= 0], sk[sk >= 0]] = True
-                    lg, vv_ = net.heads(H, tf, hand, flat, mk)
-                    wts = torch.where(y == 0, a.wait_w, 1.0)
-                    lbc = (F.cross_entropy(lg, y, reduction="none") * wts).sum() / wts.sum()
-                    la = F.binary_cross_entropy_with_logits(net.aux_hand(H), torch.from_numpy(AH[:, ix].reshape(T * nb, -1)))
-                    le = F.mse_loss(net.aux_el(H).squeeze(-1), torch.from_numpy(AE[:, ix].reshape(-1)))
-                    logp = F.log_softmax(lg, -1)
-                    has = sk[:, 0] >= 0
-                    lsoft = -(sp * logp.gather(1, sk.clamp(min=0)) * (sk >= 0)).sum(1)
-                    lsoft = lsoft[has].mean() if has.any() else torch.zeros(())
-                    lval = F.mse_loss(vv_, torch.from_numpy(RET[:, ix].reshape(-1)))
-                    loss = lbc + a.soft_w * lsoft + a.val_w * lval + 0.1 * la + 0.1 * le
-                    opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(net.parameters(), 1.0); opt.step()
-                    with torch.no_grad():
-                        pr = lg.argmax(1); pl = y != 0
-                        if pl.any():
-                            acc_p.append((pr[pl] == y[pl]).float().mean().item())
-                        acc_w.append((pr[~pl] == 0).float().mean().item() if (~pl).any() else 1.0)
+                    lbc, lsoft, lval, la = step_chunk(pack, perm[j:j + 16])
+            # replay: the teacher's labels are expensive, so recent batches are trained on again
+            for _ in range(a.replay_chunks if replay else 0):
+                old = replay[rng.integers(len(replay))]
+                step_chunk(old, rng.permutation(N)[:16])
+            replay.append(pack); del replay[:-a.replay_size]
             torch.set_num_threads(2)
             tm["learn"] += time.time() - t1
             it += 1
@@ -332,7 +408,8 @@ def main():
                  "acc_wait": round(float(np.mean(acc_w)), 3), "aux_hand": round(la.item(), 4),
                  "teacher_changed": round(teacher.stats["changed"] / max(1, teacher.stats["searched"]), 3),
                  "soft": round(float(lsoft), 4), "value_loss": round(float(lval), 4),
-                 "forks": teacher.stats.get("forks", 0), "delayed": teacher.stats.get("delayed", 0)}
+                 "forks": teacher.stats.get("forks", 0), "delayed": teacher.stats.get("delayed", 0),
+                 "league": {k: v[:] for k, v in lstats.items()}}
             metrics["iters"].append(m); metrics["timing"] = {k: round(v_, 1) for k, v_ in tm.items()}
             if it % 10 == 0:
                 print(m, metrics["timing"], flush=True)
@@ -344,9 +421,9 @@ def main():
                 if ev["winrate"] > best_wr:
                     best_wr = ev["winrate"]; best_sd = {k: v_.clone() for k, v_ in net.state_dict().items()}
                 last_mini = time.time()
-                seats = reset_all(100 + it + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh()
+                seats = reset_all(100 + it + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh(); st_o = fresh(); assign_opps()
             elif it % 40 == 0:
-                seats = reset_all(200 + it + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh()
+                seats = reset_all(200 + it + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh(); st_o = fresh(); assign_opps()
         ev_last = run_eval(N * 2, 777)
         metrics["mini_evals"].append({"iter": it, "winrate": ev_last["winrate"], "final": True})
         if best_sd is not None and best_wr > ev_last["winrate"]:
@@ -357,6 +434,7 @@ def main():
         evx = run_eval(a.eval_games // 2, 10 ** 6, any_deck=False)  # X-Bow vs meta, comparable with earlier generations
         ev["xbow"] = {k: evx[k] for k in ("games", "winrate", "wins", "losses", "by_group")}
         ev["seed"] = a.seed
+        ev["league"] = lstats
         json.dump(ev, open(out / "eval.json", "w"), ensure_ascii=False)
         print("eval", {k: ev[k] for k in ("games", "winrate", "wins", "losses", "draws", "faults")}, flush=True)
 
