@@ -39,7 +39,8 @@ def main():
     ap.add_argument("--beta0", type=float, default=0.8)
     ap.add_argument("--beta1", type=float, default=0.3)
     ap.add_argument("--wait-w", type=float, default=0.15)
-    ap.add_argument("--horizon", type=int, default=100)
+    ap.add_argument("--horizon", type=int, default=160)
+    ap.add_argument("--play-thr", type=float, default=0.5)
     ap.add_argument("--margin", type=float, default=1.0)
     ap.add_argument("--mini-eval-min", type=float, default=25)
     ap.add_argument("--T", type=int, default=64)
@@ -130,7 +131,9 @@ def main():
                     with torch.no_grad():
                         bt = to_t(b); z, tf, hand = net.encode(bt); st["h"] = net.gru(z, st["h"])
                         lg, _ = net.heads(st["h"], tf, hand, bt, torch.from_numpy(M))
-                        ac = lg.argmax(1).numpy()
+                        pr = torch.softmax(lg, 1)
+                        play = pr[:, 1:].clone(); play[:, -1] = 0  # never the delegate
+                        ac = torch.where(play.sum(1) > a.play_thr, play.argmax(1) + 1, torch.zeros_like(pr[:, 0]).long()).numpy()
                     acts = np.zeros((N, 2), np.int32)
                     for i in range(N):
                         me = seats[i]
