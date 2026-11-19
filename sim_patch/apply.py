@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+"""Adds the Java scripted policy and VectorEnv.playout to a crforge checkout: apply.py <crforge dir>"""
+import shutil
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1]) / "env/src/main/java/org/crforge/env"
+here = Path(__file__).resolve().parent
+shutil.copy(here / "ScriptedPolicy.java", root / "ScriptedPolicy.java")
+
+lad = root / "LadderEnv.java"
+s = lad.read_text()
+if "void copyMask(" not in s:
+    anchor = "  /** The info record as last written"
+    assert anchor in s
+    s = s.replace(anchor, """  /** A seat's mask as last written, {@link Schema#ACTIONS} bytes, into an array. */
+  void copyMask(int seat, byte[] into, int at) {
+    masks.get(seat * Schema.ACTIONS, into, at, Schema.ACTIONS);
+  }
+
+""" + anchor, 1)
+    lad.write_text(s)
+
+vec = root / "VectorEnv.java"
+s = vec.read_text()
+if "public int[] playout(" not in s:
+    anchor = "  private void stepEnv(int index) {"
+    assert anchor in s
+    s = s.replace(anchor, """  /**
+   * Playouts with both sides playing (arena-lab): per request a fork of environment
+   * {@code indices[r]} as {@code seats[r]} knows it (the enemy's unseen hand shuffled with
+   * {@code shuffles[r]}, random source {@code seeds[r]}); the seat waits {@code delays[r]}
+   * decisions, then plays {@code actions[r]} (a wait when the mask closes it), then both seats
+   * follow {@code policy} until {@code horizonTicks} ticks passed or the battle ended.
+   *
+   * @return per request the seat's final observation then the fork's info record, as
+   *     {@link #lookahead}
+   */
+  public int[] playout(int[] indices, int[] seats, int[] actions, int[] delays, int horizonTicks,
+      long[] shuffles, long[] seeds, ScriptedPolicy policy) {
+    int count = indices.length;
+    LadderEnv[] sources = new LadderEnv[count];
+    for (int r = 0; r < count; r++) {
+      if (!(envs[indices[r]] instanceof LadderEnv ladder) || ladder.done()) {
+        throw new IllegalArgumentException("environment " + indices[r] + " is not running");
+      }
+      sources[r] = ladder;
+    }
+    int stride = Schema.SEAT_INTS + Schema.INFO_INTS;
+    int[] out = new int[count * stride];
+    run(
+        count,
+        r -> {
+          int seat = seats[r];
+          try {
+            LadderEnv fork = sources[r].fork(seat);
+            SplittableRandom rng = new SplittableRandom(seeds[r] ^ 0x9E3779B97F4A7C15L);
+            if (shuffles != null) {
+              fork.shuffleUnseenEnemyCards(seat, new SplittableRandom(shuffles[r]));
+            }
+            fork.reseed((int) seeds[r]);
+            int[] obs = new int[2 * Schema.SEAT_INTS];
+            byte[] mask = new byte[2 * Schema.ACTIONS];
+            int until = fork.tick() + horizonTicks;
+            int step = 0;
+            while (!fork.done() && fork.tick() < until) {
+              fork.copyObservation(0, obs, 0);
+              fork.copyObservation(1, obs, Schema.SEAT_INTS);
+              fork.copyMask(0, mask, 0);
+              fork.copyMask(1, mask, Schema.ACTIONS);
+              int[] a = new int[2];
+              for (int s = 0; s < 2; s++) {
+                if (s == seat && step < delays[r]) {
+                  a[s] = Schema.WAIT;
+                } else if (s == seat && step == delays[r]) {
+                  int act = actions[r];
+                  a[s] = act >= 0 && act < Schema.ACTIONS && mask[s * Schema.ACTIONS + act] != 0 ? act : Schema.WAIT;
+                } else {
+                  a[s] = policy.act(obs, s * Schema.SEAT_INTS, mask, s * Schema.ACTIONS, rng);
+                }
+              }
+              fork.step(a[0], a[1]);
+              step++;
+            }
+            fork.copyObservation(seat, out, r * stride);
+            fork.copyInfo(out, r * stride + Schema.SEAT_INTS);
+          } catch (RuntimeException | AssertionError | StackOverflowError e) {
+            Arrays.fill(out, r * stride, (r + 1) * stride, 0);
+            out[r * stride + Schema.SEAT_INTS + Schema.I_FAULT] = EnvFault.of(e, -1).kind().code();
+          }
+        });
+    return out;
+  }
+
+""" + anchor, 1)
+    vec.write_text(s)
+print("patched")

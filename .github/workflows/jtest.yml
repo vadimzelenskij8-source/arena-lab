@@ -1,0 +1,60 @@
+name: jtest
+on:
+  workflow_dispatch: {}
+permissions: { contents: write }
+concurrency: { group: jtest, cancel-in-progress: false }
+env:
+  CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
+  DATA_VERSION: "16.635.8"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - id: m
+        run: |
+          W=${{ github.event.inputs.workers || '20' }}
+          echo "matrix=$(python3 -c "import json;print(json.dumps(list(range(min(20,max(1,int('$W')))))))")" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v4
+        with: { path: lab }
+      - run: git clone https://github.com/voonhous/crforge crforge && git -C crforge checkout "$CRFORGE_SHA" && python3 lab/sim_patch/apply.py crforge
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: gradle/actions/setup-gradle@v4
+      - working-directory: crforge
+        run: ./gradlew --no-daemon :env:installDist :tables:dataVersionTables -Pcrforge.assetSource=cdn -Pcrforge.dataVersion=$DATA_VERSION
+      - run: |
+          mkdir -p sim && cp -r crforge/env/build/install/env sim/env && cp -r crforge/python sim/python && cp -r ~/.crforge/tables/$DATA_VERSION sim/tables
+          tar czf sim.tgz sim
+      - uses: actions/upload-artifact@v4
+        with: { name: sim, path: sim.tgz, retention-days: 1 }
+  work:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        c:
+          - { n: p160t4r2, a: "--play-ticks 160 --top 4 --reps 2" }
+          - { n: p240t4r1, a: "--play-ticks 240 --top 4 --reps 1" }
+          - { n: p100t3r3, a: "--play-ticks 100 --top 3 --reps 3" }
+          - { n: p160t6r2m0, a: "--play-ticks 160 --top 6 --reps 2 --margin 0" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q ./sim/python
+      - run: python train/jtest.py --install sim/env --tables sim/tables --out out --games 320 --envs 64 --threads 4 ${{ matrix.c.a }}
+      - run: |
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          for k in 1 2 3 4 5; do
+            git fetch -q origin results && git checkout -q -B results origin/results && mkdir -p search/${{ github.run_id }} && cp out/jtest.json search/${{ github.run_id }}/${{ matrix.c.n }}.json && git add search && git commit -qm "search ${{ matrix.c.n }}" && git push -q origin results && break
+            sleep $((RANDOM % 20 + 5))
+          done

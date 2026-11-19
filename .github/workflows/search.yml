@@ -16,7 +16,9 @@ jobs:
         run: |
           W=${{ github.event.inputs.workers || '20' }}
           echo "matrix=$(python3 -c "import json;print(json.dumps(list(range(min(20,max(1,int('$W')))))))")" >> $GITHUB_OUTPUT
-      - run: git clone https://github.com/voonhous/crforge crforge && git -C crforge checkout "$CRFORGE_SHA"
+      - uses: actions/checkout@v4
+        with: { path: lab }
+      - run: git clone https://github.com/voonhous/crforge crforge && git -C crforge checkout "$CRFORGE_SHA" && python3 lab/sim_patch/apply.py crforge
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: "21" }
       - uses: gradle/actions/setup-gradle@v4
