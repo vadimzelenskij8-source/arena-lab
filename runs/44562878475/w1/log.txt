@@ -1,0 +1,9 @@
+resumed _IncompatibleKeys(missing_keys=['cf', 'card_f.weight', 'card_f.bias', 'deck_l.weight', 'deck_l.bias'], unexpected_keys=[])
+league ['v0-xbow']
+/home/runner/work/arena-lab/arena-lab/train/distill.py:410: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  "soft": round(float(lsoft), 4), "value_loss": round(float(lval), 4),
+{'iter': 10, 't': 1795105128, 'episodes': 16, 'beta': 0.656, 'winrate_last200': 0.562, 'bc_loss': 1.313, 'acc_play': 0.002, 'acc_wait': 0.999, 'aux_hand': 0.0248, 'teacher_changed': 0.486, 'soft': 4.0205, 'value_loss': 0.0291, 'forks': 0, 'delayed': 347, 'league': {'v0-xbow': [8, 10]}} {'net': 14.0, 'bots': 6.8, 'teacher': 312.6, 'sim': 4.3, 'learn': 100.2}
+{'iter': 20, 't': 1795105624, 'episodes': 88, 'beta': 0.461, 'winrate_last200': 0.5, 'bc_loss': 1.207, 'acc_play': 0.0, 'acc_wait': 1.0, 'aux_hand': 0.0282, 'teacher_changed': 0.494, 'soft': 3.9417, 'value_loss': 0.0065, 'forks': 0, 'delayed': 695, 'league': {'v0-xbow': [28, 37]}} {'net': 27.6, 'bots': 13.6, 'teacher': 678.5, 'sim': 8.3, 'learn': 205.5}
+{'iter': 30, 't': 1795106034, 'episodes': 154, 'beta': 0.302, 'winrate_last200': 0.416, 'bc_loss': 0.8641, 'acc_play': 0.007, 'acc_wait': 1.0, 'aux_hand': 0.023, 'teacher_changed': 0.51, 'soft': 3.7439, 'value_loss': 0.0033, 'forks': 0, 'delayed': 994, 'league': {'v0-xbow': [41, 61]}} {'net': 40.9, 'bots': 20.2, 'teacher': 961.0, 'sim': 12.7, 'learn': 309.2}
+eval {'games': 640, 'winrate': 0.1828, 'wins': 117, 'losses': 523, 'draws': 0, 'faults': 0}

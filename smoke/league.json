@@ -1,0 +1,63 @@
+{
+ "members": {
+  "v0-xbow": 979.1
+ },
+ "scripted": 1000.0,
+ "workers": [
+  {
+   "worker": "w3",
+   "elo": 841.0,
+   "winrate": 0.2266,
+   "league": {
+    "v0-xbow": [
+     94,
+     148
+    ]
+   }
+  },
+  {
+   "worker": "w2",
+   "elo": 805.4,
+   "winrate": 0.2066,
+   "league": {
+    "v0-xbow": [
+     53,
+     73
+    ]
+   }
+  },
+  {
+   "worker": "w1",
+   "elo": 771.5,
+   "winrate": 0.1828,
+   "league": {
+    "v0-xbow": [
+     41,
+     61
+    ]
+   }
+  },
+  {
+   "worker": "w0",
+   "elo": 767.2,
+   "winrate": 0.1784,
+   "league": {
+    "v0-xbow": [
+     42,
+     64
+    ]
+   }
+  },
+  {
+   "worker": "w4",
+   "elo": 752.7,
+   "winrate": 0.1875,
+   "league": {
+    "v0-xbow": [
+     18,
+     60
+    ]
+   }
+  }
+ ]
+}
