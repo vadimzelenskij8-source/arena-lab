@@ -10,7 +10,11 @@ import numpy as np
 from crforge_env import LadderConfig, ScriptedBot, VectorBattle
 
 from jbot import PlayoutTeacher, java_act, make_policy
-from ppo2 import META, MY, ROW
+ROOT = Path(__file__).resolve().parent
+ROW = json.load(open(ROOT / "cards.json", encoding="utf-8"))
+MY = {"cards": ["x-bow", "tesla", "archers", "knight", "skeletons", "electro-spirit", "fireball", "the-log"],
+      "evo": ["tesla", "archers"], "hero": ["knight"]}
+META = [d for d in json.load(open(ROOT / "decks.json", encoding="utf-8")) if d.get("src") == "meta"]
 
 
 def main():
