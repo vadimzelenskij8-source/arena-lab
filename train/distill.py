@@ -17,10 +17,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from crforge_env import LadderConfig, ScriptedBot, VectorBattle
+from crforge_env import LadderConfig, ScriptedBot, SideSetup, VectorBattle
 
 from ppo2 import META, MY, OTHER, ROW, Enc, Net, to_t
-from teacher import Teacher
+from teacher import ForkTeacher, Teacher
 
 
 def main():
@@ -41,6 +41,14 @@ def main():
     ap.add_argument("--wait-w", type=float, default=0.15)
     ap.add_argument("--horizon", type=int, default=160)
     ap.add_argument("--play-thr", type=float, default=0.5)
+    ap.add_argument("--fork", type=int, default=1)
+    ap.add_argument("--fork-steps", type=int, default=24)
+    ap.add_argument("--fork-envs", type=int, default=96)
+    ap.add_argument("--top", type=int, default=3)
+    ap.add_argument("--soft-w", type=float, default=0.5)
+    ap.add_argument("--val-w", type=float, default=0.5)
+    ap.add_argument("--noise", type=float, default=0.15)
+    ap.add_argument("--levels", type=int, default=1)
     ap.add_argument("--margin", type=float, default=0.3)
     ap.add_argument("--mini-eval-min", type=float, default=25)
     ap.add_argument("--T", type=int, default=64)
@@ -64,17 +72,31 @@ def main():
         my_slots = [(s.slot_evolution if k in MY["evo"] else 0) | (s.slot_hero if k in MY["hero"] else 0) for k in MY["cards"]]
         slots_of = lambda d: [(s.slot_evolution if k in d.get("evo", []) else 0) | (s.slot_hero if k in d.get("hero", []) else 0) for k in d["cards"]]
         bots = [ScriptedBot().bind(vec), ScriptedBot().bind(vec)]
-        teacher = Teacher(vec, horizon=a.horizon, margin=a.margin)
+        if a.fork:
+            scratch = VectorBattle(a.fork_envs, a.threads, install=a.install, tables=a.tables, config=LadderConfig(decision_ticks=5))
+            scratch.set_autoreset(False)
+            scratch.reset(list(range(a.fork_envs)), my_rows, my_rows, slots0=my_slots, slots1=my_slots)
+            teacher = ForkTeacher(vec, scratch, [ScriptedBot().bind(scratch), ScriptedBot().bind(scratch)], horizon=a.horizon,
+                                  fork_steps=a.fork_steps, top=a.top, margin=a.margin, rng=np.random.default_rng(a.seed + 99))
+        else:
+            teacher = Teacher(vec, horizon=a.horizon, margin=a.margin)
+        TOWERS = ["King_PrincessTowers", "King_CannonTowers", "King_KnifeTowers", "King_ChefTowers"]
 
-        def reset_all(seed, ds):
+        def reset_all(seed, ds, setups=False):
             seats = np.array([i % 2 for i in range(N)])
             for k in range(10):
                 try:
+                    st0 = st1 = None
+                    if setups and k < 3:  # ladder-like opponents: tower troop and card levels vary
+                        opp = [SideSetup(towers=random.choice(TOWERS), card_levels=[random.choice([11, 11, 12, 13]) for _ in range(8)]) for _ in range(N)]
+                        st0 = [None if seats[i] == 0 else opp[i] for i in range(N)]
+                        st1 = [opp[i] if seats[i] == 0 else None for i in range(N)]
                     d0 = [my_rows if seats[i] == 0 else [ROW[c] for c in ds[i]["cards"]] for i in range(N)]
                     d1 = [[ROW[c] for c in ds[i]["cards"]] if seats[i] == 0 else my_rows for i in range(N)]
                     s0 = [my_slots if seats[i] == 0 else slots_of(ds[i]) for i in range(N)]
                     s1 = [slots_of(ds[i]) if seats[i] == 0 else my_slots for i in range(N)]
-                    vec.reset([((seed + k * 7919) * 1000 + i) % 2_000_000_000 for i in range(N)], d0, d1, slots0=s0, slots1=s1)
+                    vec.reset([((seed + k * 7919) * 1000 + i) % 2_000_000_000 for i in range(N)], d0, d1, slots0=s0, slots1=s1,
+                              setup0=st0, setup1=st1)
                     return seats
                 except Exception as e:  # noqa: BLE001
                     print("reset", e, flush=True)
@@ -158,7 +180,7 @@ def main():
             net.train()
             return ev
 
-        seats = reset_all(1 + a.seed * 7, train_decks()); st = fresh()
+        seats = reset_all(1 + a.seed * 7, train_decks(), a.levels); st = fresh()
         results = []
         best_sd, best_wr, last_mini, it = None, -1.0, time.time(), 0
         tm = defaultdict(float)
@@ -171,8 +193,12 @@ def main():
                 O, M, b = batch_obs(seats, st)
                 with torch.no_grad():
                     bt = to_t(b); z, tf, hand = net.encode(bt); hn = net.gru(z, st["h"])
-                    lg, _ = net.heads(hn, tf, hand, bt, torch.from_numpy(M))
+                    lg, vpred = net.heads(hn, tf, hand, bt, torch.from_numpy(M))
                     own = torch.distributions.Categorical(logits=lg).sample().numpy()
+                    # Gumbel-top-k proposals of the network for the teacher (expert iteration)
+                    pl = lg[:, 1:1 + 4 * enc.s.cols * enc.s.rows]
+                    gk = (pl - torch.log(-torch.log(torch.rand_like(pl).clamp(1e-9, 1 - 1e-9)))).topk(a.top, 1).indices.numpy() + 1
+                    okp = (pl.gather(1, torch.from_numpy(gk - 1)) > -1e8).numpy()
                 tm["net"] += time.time() - t1; t1 = time.time()
                 prop = np.zeros(N, np.int64); acts = np.zeros((N, 2), np.int32)
                 for i in range(N):
@@ -180,30 +206,65 @@ def main():
                     prop[i] = bots[me](vec.observations[i, me], vec.masks[i, me], rng)
                     acts[i, 1 - me] = bots[1 - me](vec.observations[i, 1 - me], vec.masks[i, 1 - me], rng)
                 tm["bots"] += time.time() - t1; t1 = time.time()
-                tact = teacher.refine(prop, seats, np.ones(N, bool))
+                if a.fork:
+                    extra = [[int(x) for x, ok in zip(gk[i], okp[i]) if ok] for i in range(N)]
+                    active = np.array([(0 < prop[i] < 2305) or (0 < own[i] < 2305) for i in range(N)])
+                    tact, soft = teacher.refine2(prop, seats, active, extra)
+                else:
+                    tact = teacher.refine(prop, seats, np.ones(N, bool)); soft = [None] * N
+                SK = np.full((N, 12), -1, np.int64); SP = np.zeros((N, 12), np.float32)
+                for i in range(N):
+                    if soft[i] is not None:
+                        ks, ps = soft[i]
+                        ks, ps = ks[:12], ps[:12]
+                        SK[i, :len(ks)] = ks; SP[i, :len(ks)] = ps
                 tm["teacher"] += time.time() - t1; t1 = time.time()
                 use_t = rng.random(N) < beta
                 for i in range(N):
-                    acts[i, seats[i]] = tact[i] if use_t[i] else own[i]
+                    if use_t[i]:
+                        acts[i, seats[i]] = tact[i]
+                    else:  # the network's own move, with phone-like reaction delay and tap error
+                        x = int(own[i]); mk_ = vec.masks[i, seats[i]]
+                        if 0 < x < 2305 and rng.random() < a.noise:
+                            x = 0
+                        elif 0 < x < 2305 and rng.random() < a.noise:
+                            sl, tl = divmod(x - 1, 576); r_, c_ = divmod(tl, 18)
+                            r2, c2 = min(31, max(0, r_ + int(rng.integers(-1, 2)))), min(17, max(0, c_ + int(rng.integers(-1, 2))))
+                            y = 1 + sl * 576 + r2 * 18 + c2
+                            x = y if mk_[y] else x
+                        acts[i, seats[i]] = x
                 n_own += int((~use_t).sum()); n_t += N
                 ah, ae = opp_targets(seats)
                 vec.step(acts)
                 tm["sim"] += time.time() - t1
-                d = np.zeros(N, np.float32)
+                d = np.zeros(N, np.float32); rr = np.zeros(N, np.float32)
                 for i in range(N):
                     if vec.dones[i]:
                         d[i] = 1
+                        w_ = int(vec.infos[i, I["winner"]])
+                        if not int(vec.infos[i, I["fault"]]):
+                            rr[i] = 1.0 if w_ == seats[i] else (-1.0 if w_ in (0, 1) else 0.0)
                         if not int(vec.infos[i, I["fault"]]):
                             results.append((int(vec.infos[i, I["winner"]]) == seats[i]))
                         st["last_play"][i] = -1; st["prev_seen"][i] = -1
                 st["h"] = hn * torch.from_numpy(1 - d).unsqueeze(1)
-                for k, val in (("b", b), ("m", M), ("y", tact), ("d", d), ("ah", ah), ("ae", ae)):
+                for k, val in (("b", b), ("m", M), ("y", tact), ("d", d), ("ah", ah), ("ae", ae), ("sk", SK), ("sp", SP),
+                               ("v", vpred.numpy()), ("r", rr)):
                     buf[k].append(val)
             t1 = time.time()
             keys = buf["b"][0].keys()
             B = {k: np.stack([x[k] for x in buf["b"]]) for k in keys}
             Mm = np.stack(buf["m"]); Y = np.stack(buf["y"]); D = np.stack(buf["d"])
             AH, AE = np.stack(buf["ah"]), np.stack(buf["ae"])
+            SKa, SPa = np.stack(buf["sk"]), np.stack(buf["sp"])
+            O_, M_, b_ = batch_obs(seats, st)
+            with torch.no_grad():
+                bt_ = to_t(b_); z_, tf_, hd_ = net.encode(bt_); _, lv = net.heads(net.gru(z_, st["h"]), tf_, hd_, bt_, torch.from_numpy(M_))
+            Vv = np.concatenate([np.stack(buf["v"]), lv.numpy()[None]]); Rr = np.stack(buf["r"])
+            RET = np.zeros((T, N), np.float32); g_ = Vv[-1]
+            for t in reversed(range(T)):  # TD(lambda) value targets from game results
+                g_ = Rr[t] + 0.997 * (1 - D[t]) * (0.9 * g_ + 0.1 * Vv[t + 1])
+                RET[t] = g_
             torch.set_num_threads(4)
             acc_p = []; acc_w = []
             for ep in range(2):
@@ -219,12 +280,20 @@ def main():
                     mk = torch.from_numpy(Mm[:, ix].reshape(T * nb, -1))
                     y = torch.from_numpy(Y[:, ix].reshape(-1)).long()
                     mk[torch.arange(len(y)), y] = True  # the teacher's move is always legal for the seat
-                    lg, _ = net.heads(H, tf, hand, flat, mk)
+                    sk = torch.from_numpy(SKa[:, ix].reshape(T * nb, -1)); sp = torch.from_numpy(SPa[:, ix].reshape(T * nb, -1))
+                    rows_ = torch.arange(len(y)).unsqueeze(1).expand_as(sk)
+                    mk[rows_[sk >= 0], sk[sk >= 0]] = True
+                    lg, vv_ = net.heads(H, tf, hand, flat, mk)
                     wts = torch.where(y == 0, a.wait_w, 1.0)
                     lbc = (F.cross_entropy(lg, y, reduction="none") * wts).sum() / wts.sum()
                     la = F.binary_cross_entropy_with_logits(net.aux_hand(H), torch.from_numpy(AH[:, ix].reshape(T * nb, -1)))
                     le = F.mse_loss(net.aux_el(H).squeeze(-1), torch.from_numpy(AE[:, ix].reshape(-1)))
-                    loss = lbc + 0.1 * la + 0.1 * le
+                    logp = F.log_softmax(lg, -1)
+                    has = sk[:, 0] >= 0
+                    lsoft = -(sp * logp.gather(1, sk.clamp(min=0)) * (sk >= 0)).sum(1)
+                    lsoft = lsoft[has].mean() if has.any() else torch.zeros(())
+                    lval = F.mse_loss(vv_, torch.from_numpy(RET[:, ix].reshape(-1)))
+                    loss = lbc + a.soft_w * lsoft + a.val_w * lval + 0.1 * la + 0.1 * le
                     opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(net.parameters(), 1.0); opt.step()
                     with torch.no_grad():
                         pr = lg.argmax(1); pl = y != 0
@@ -239,7 +308,9 @@ def main():
                  "winrate_last200": round(float(np.mean(last)), 3) if last else None,
                  "bc_loss": round(lbc.item(), 4), "acc_play": round(float(np.mean(acc_p)), 3) if acc_p else None,
                  "acc_wait": round(float(np.mean(acc_w)), 3), "aux_hand": round(la.item(), 4),
-                 "teacher_changed": round(teacher.stats["changed"] / max(1, teacher.stats["searched"]), 3)}
+                 "teacher_changed": round(teacher.stats["changed"] / max(1, teacher.stats["searched"]), 3),
+                 "soft": round(float(lsoft), 4), "value_loss": round(float(lval), 4),
+                 "forks": teacher.stats.get("forks", 0), "delayed": teacher.stats.get("delayed", 0)}
             metrics["iters"].append(m); metrics["timing"] = {k: round(v_, 1) for k, v_ in tm.items()}
             if it % 10 == 0:
                 print(m, metrics["timing"], flush=True)
@@ -251,9 +322,9 @@ def main():
                 if ev["winrate"] > best_wr:
                     best_wr = ev["winrate"]; best_sd = {k: v_.clone() for k, v_ in net.state_dict().items()}
                 last_mini = time.time()
-                seats = reset_all(100 + it + a.seed * 7, train_decks()); st = fresh()
+                seats = reset_all(100 + it + a.seed * 7, train_decks(), a.levels); st = fresh()
             elif it % 40 == 0:
-                seats = reset_all(200 + it + a.seed * 7, train_decks()); st = fresh()
+                seats = reset_all(200 + it + a.seed * 7, train_decks(), a.levels); st = fresh()
         ev_last = run_eval(N * 2, 777)
         metrics["mini_evals"].append({"iter": it, "winrate": ev_last["winrate"], "final": True})
         if best_sd is not None and best_wr > ev_last["winrate"]:

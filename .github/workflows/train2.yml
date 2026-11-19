@@ -37,7 +37,7 @@ jobs:
   work:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 200
+    timeout-minutes: 300
     strategy:
       fail-fast: false
       matrix:
