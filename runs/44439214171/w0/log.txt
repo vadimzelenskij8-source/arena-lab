@@ -1,0 +1,7 @@
+resumed
+{'iter': 10, 't': 1795052960, 'episodes': 4, 'beta': 0.705, 'winrate_last200': 0.0, 'bc_loss': 1.3897, 'acc_play': 0.046, 'acc_wait': 0.997, 'aux_hand': 0.1119, 'teacher_changed': 0.523} {'net': 17.0, 'bots': 3.4, 'teacher': 58.7, 'sim': 8.2, 'learn': 81.6}
+{'iter': 20, 't': 1795053113, 'episodes': 68, 'beta': 0.601, 'winrate_last200': 0.029, 'bc_loss': 1.3884, 'acc_play': 0.301, 'acc_wait': 0.989, 'aux_hand': 0.0753, 'teacher_changed': 0.507} {'net': 31.7, 'bots': 6.4, 'teacher': 111.3, 'sim': 12.9, 'learn': 159.7}
+{'iter': 30, 't': 1795053268, 'episodes': 131, 'beta': 0.5, 'winrate_last200': 0.038, 'bc_loss': 0.6367, 'acc_play': 0.207, 'acc_wait': 0.995, 'aux_hand': 0.0631, 'teacher_changed': 0.486} {'net': 46.5, 'bots': 9.4, 'teacher': 164.5, 'sim': 18.3, 'learn': 238.8}
+{'iter': 40, 't': 1795053421, 'episodes': 188, 'beta': 0.402, 'winrate_last200': 0.032, 'bc_loss': 0.1762, 'acc_play': 0.348, 'acc_wait': 0.991, 'aux_hand': 0.0474, 'teacher_changed': 0.471} {'net': 61.1, 'bots': 12.4, 'teacher': 216.0, 'sim': 23.5, 'learn': 316.7}
+{'iter': 50, 't': 1795053557, 'episodes': 192, 'beta': 0.318, 'winrate_last200': 0.031, 'bc_loss': 1.2329, 'acc_play': 0.196, 'acc_wait': 0.993, 'aux_hand': 0.0529, 'teacher_changed': 0.455} {'net': 75.3, 'bots': 15.2, 'teacher': 251.3, 'sim': 28.2, 'learn': 395.5}
+eval {'games': 640, 'winrate': 0.0016, 'wins': 1, 'losses': 636, 'draws': 3, 'faults': 0}
