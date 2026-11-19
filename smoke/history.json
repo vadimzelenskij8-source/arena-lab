@@ -70,5 +70,26 @@
    }
   ],
   "kept_previous": true
+ },
+ {
+  "stagnation": 3,
+  "gen": 4,
+  "run": "44556617016",
+  "t": 1795103999,
+  "best": 0.3594,
+  "gen_best": 0.0797,
+  "mean": 0.0797,
+  "workers": [
+   {
+    "wr": 0.0797,
+    "games": 640,
+    "lr": 0.000196,
+    "ent": 0.0084,
+    "anchor": 0.0056,
+    "cap": 5.0,
+    "seed": 1700
+   }
+  ],
+  "kept_previous": true
  }
 ]

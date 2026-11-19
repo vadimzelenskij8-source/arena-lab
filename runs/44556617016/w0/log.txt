@@ -1,0 +1,6 @@
+resumed
+/home/runner/work/arena-lab/arena-lab/train/distill.py:318: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  "soft": round(float(lsoft), 4), "value_loss": round(float(lval), 4),
+{'iter': 10, 't': 1795103310, 'episodes': 2, 'beta': 0.463, 'winrate_last200': 0.0, 'bc_loss': 1.9712, 'acc_play': 0.058, 'acc_wait': 0.997, 'aux_hand': 0.0288, 'teacher_changed': 0.53, 'soft': 3.8991, 'value_loss': 0.0059, 'forks': 0, 'delayed': 433} {'net': 18.6, 'bots': 4.7, 'teacher': 481.5, 'sim': 6.0, 'learn': 109.8}
+eval {'games': 640, 'winrate': 0.0797, 'wins': 51, 'losses': 589, 'draws': 0, 'faults': 0}
