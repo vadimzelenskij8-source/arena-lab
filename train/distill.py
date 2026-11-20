@@ -238,7 +238,7 @@ def main():
                 mine = [ANY[(bi * N + i) % len(ANY)] for i in range(N)] if any_deck else None
                 seats = reset_all(seed_base + bi * 1009, ds, mine=mine)
                 st = fresh(); done = np.zeros(N, bool); ot = np.zeros(N, bool)
-                for _ in range(1800):
+                for step_ in range(1800):
                     O, M, b = batch_obs(seats, st)
                     with torch.no_grad():
                         bt = to_t(b); z, tf, hand = net.encode(bt); st["h"] = net.gru(z, st["h"])
@@ -247,7 +247,7 @@ def main():
                         play = pr[:, 1:].clone(); play[:, -1] = 0  # never the delegate
                         ac = torch.where(play.sum(1) > a.play_thr, play.argmax(1) + 1, torch.zeros_like(pr[:, 0]).long()).numpy()
                     acts = np.zeros((N, 2), np.int32)
-                    oppa = scripted_batch(vec, jpol, 1 - seats, seed_base + bi * 31 + _)
+                    oppa = scripted_batch(vec, jpol, 1 - seats, seed_base + bi * 31 + step_)
                     for i in range(N):
                         me = seats[i]
                         acts[i, me] = ac[i]
