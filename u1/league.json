@@ -1,0 +1,185 @@
+{
+ "members": {
+  "v0-xbow": 979.1,
+  "gen001": 965.1
+ },
+ "scripted": 1000.0,
+ "workers": [
+  {
+   "worker": "w11-s3",
+   "elo": 1102.8,
+   "winrate": 0.45,
+   "league": {
+    "v0-xbow": [
+     1103,
+     1488
+    ]
+   }
+  },
+  {
+   "worker": "w3-s3",
+   "elo": 1094.1,
+   "winrate": 0.4422,
+   "league": {
+    "v0-xbow": [
+     938,
+     1265
+    ]
+   }
+  },
+  {
+   "worker": "w7-s3",
+   "elo": 1078.5,
+   "winrate": 0.4437,
+   "league": {
+    "v0-xbow": [
+     929,
+     1305
+    ]
+   }
+  },
+  {
+   "worker": "w15-s3",
+   "elo": 1074.5,
+   "winrate": 0.4031,
+   "league": {
+    "v0-xbow": [
+     987,
+     1376
+    ]
+   }
+  },
+  {
+   "worker": "w14-s3",
+   "elo": 987.1,
+   "winrate": 0.3203,
+   "league": {
+    "v0-xbow": [
+     478,
+     730
+    ]
+   }
+  },
+  {
+   "worker": "w13-s3",
+   "elo": 984.0,
+   "winrate": 0.3531,
+   "league": {
+    "v0-xbow": [
+     470,
+     768
+    ]
+   }
+  },
+  {
+   "worker": "w6-s3",
+   "elo": 976.3,
+   "winrate": 0.35,
+   "league": {
+    "v0-xbow": [
+     525,
+     904
+    ]
+   }
+  },
+  {
+   "worker": "w12-s3",
+   "elo": 971.4,
+   "winrate": 0.3,
+   "league": {
+    "v0-xbow": [
+     472,
+     747
+    ]
+   }
+  },
+  {
+   "worker": "w4-s3",
+   "elo": 967.1,
+   "winrate": 0.3172,
+   "league": {
+    "v0-xbow": [
+     463,
+     770
+    ]
+   }
+  },
+  {
+   "worker": "w1-s3",
+   "elo": 964.1,
+   "winrate": 0.3563,
+   "league": {
+    "v0-xbow": [
+     390,
+     687
+    ]
+   }
+  },
+  {
+   "worker": "w2-s3",
+   "elo": 959.9,
+   "winrate": 0.3344,
+   "league": {
+    "v0-xbow": [
+     337,
+     560
+    ]
+   }
+  },
+  {
+   "worker": "w10-s3",
+   "elo": 959.7,
+   "winrate": 0.325,
+   "league": {
+    "v0-xbow": [
+     414,
+     709
+    ]
+   }
+  },
+  {
+   "worker": "w8-s3",
+   "elo": 958.4,
+   "winrate": 0.3109,
+   "league": {
+    "v0-xbow": [
+     388,
+     638
+    ]
+   }
+  },
+  {
+   "worker": "w0-s3",
+   "elo": 955.5,
+   "winrate": 0.3016,
+   "league": {
+    "v0-xbow": [
+     421,
+     705
+    ]
+   }
+  },
+  {
+   "worker": "w5-s3",
+   "elo": 952.5,
+   "winrate": 0.3172,
+   "league": {
+    "v0-xbow": [
+     367,
+     625
+    ]
+   }
+  },
+  {
+   "worker": "w9-s3",
+   "elo": 945.4,
+   "winrate": 0.3203,
+   "league": {
+    "v0-xbow": [
+     352,
+     625
+    ]
+   }
+  }
+ ]
+}
