@@ -19,7 +19,7 @@ jobs:
     steps:
       - id: m
         run: |
-          W=${{ github.event.inputs.workers || '16' }}
+          W=${{ github.event.inputs.workers || '20' }}
           echo "matrix=$(python3 -c "import json;print(json.dumps(list(range(min(20,max(1,int('$W')))))))")" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v4
         with: { path: lab }
@@ -67,7 +67,7 @@ jobs:
           set +e -o pipefail
           W=${{ matrix.w }}
           HP=$(python3 train/hparams.py b2 $W ${{ github.run_number }}); echo "hparams $HP"
-          [ "$ALGO" = distill ] && HP="$HP --fork $([ $((W % 4)) = 3 ] && echo 0 || echo 2) --vteach $(python3 -c "print([0,0.5,1.0][($W//4)%3])")"  # 3/4 Java playout teacher, 1/4 old; value mix varies
+          [ "$ALGO" = distill ] && HP="$HP --fork 0 --vteach $(python3 -c "print([0,0.5,1.0][($W//4)%3])")"  # 3/4 Java playout teacher, 1/4 old; value mix varies
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/$ALGO.py --install sim/env --tables sim/tables --out out --envs $E --threads 4 \
@@ -115,7 +115,7 @@ jobs:
           set +e -o pipefail
           W=${{ matrix.w }}
           HP=$(python3 train/hparams.py b2 $W ${{ github.run_number }}); echo "hparams $HP"
-          [ "$ALGO" = distill ] && HP="$HP --fork $([ $((W % 4)) = 3 ] && echo 0 || echo 2) --vteach $(python3 -c "print([0,0.5,1.0][($W//4)%3])")"  # 3/4 Java playout teacher, 1/4 old; value mix varies
+          [ "$ALGO" = distill ] && HP="$HP --fork 0 --vteach $(python3 -c "print([0,0.5,1.0][($W//4)%3])")"  # 3/4 Java playout teacher, 1/4 old; value mix varies
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/$ALGO.py --install sim/env --tables sim/tables --out out --envs $E --threads 4 \
@@ -163,11 +163,11 @@ jobs:
           set +e -o pipefail
           W=${{ matrix.w }}
           HP=$(python3 train/hparams.py b2 $W ${{ github.run_number }}); echo "hparams $HP"
-          [ "$ALGO" = distill ] && HP="$HP --fork $([ $((W % 4)) = 3 ] && echo 0 || echo 2) --vteach $(python3 -c "print([0,0.5,1.0][($W//4)%3])")"  # 3/4 Java playout teacher, 1/4 old; value mix varies
+          [ "$ALGO" = distill ] && HP="$HP --fork 0 --vteach $(python3 -c "print([0,0.5,1.0][($W//4)%3])")"  # 3/4 Java playout teacher, 1/4 old; value mix varies
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/$ALGO.py --install sim/env --tables sim/tables --out out --envs $E --threads 4 \
-            --minutes $(( ${{ github.event.inputs.seg_minutes || '280' }} + 18 )) --eval-minutes 18 --eval-games 640 --final 1 --p0 0.6667 --p1 1.0000 --carry carry \
+            --minutes $(( ${{ github.event.inputs.seg_minutes || '280' }} + 35 )) --eval-minutes 35 --eval-games 1280 --final 1 --p0 0.6667 --p1 1.0000 --carry carry \
             --seed $(( ${{ github.run_number }} * 100 + W + 3000 )) $HP $R 2>&1 | tee out/full.txt | grep -v "^{'iter'" ; R=$?; tail -c 20000 out/full.txt > out/log.txt; rm out/full.txt; exit $R
           
       - uses: actions/upload-artifact@v4

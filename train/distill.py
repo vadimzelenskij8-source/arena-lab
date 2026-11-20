@@ -21,7 +21,7 @@ from crforge_env import LadderConfig, ScriptedBot, SideSetup, VectorBattle
 
 from ppo2 import META, MY, OTHER, ROW, Enc, Net, to_t
 from teacher import ForkTeacher, Teacher
-from jbot import PlayoutTeacher, make_policy
+from jbot import PlayoutTeacher, make_policy, scripted_batch
 import decks_gen
 
 
@@ -43,9 +43,11 @@ def main():
     ap.add_argument("--wait-w", type=float, default=0.15)
     ap.add_argument("--horizon", type=int, default=160)
     ap.add_argument("--play-thr", type=float, default=0.5)
-    ap.add_argument("--fork", type=int, default=2)
-    ap.add_argument("--xbow-share", type=float, default=0.1)
-    ap.add_argument("--replay-size", type=int, default=6)
+    ap.add_argument("--fork", type=int, default=0)
+    ap.add_argument("--xbow-share", type=float, default=0.2)
+    ap.add_argument("--weak-share", type=float, default=0.15)
+    ap.add_argument("--both", type=int, default=1)
+    ap.add_argument("--replay-size", type=int, default=32)
     ap.add_argument("--carry", default="")
     ap.add_argument("--final", type=int, default=1)
     ap.add_argument("--p0", type=float, default=0.0)
@@ -53,7 +55,7 @@ def main():
     ap.add_argument("--league", default="league")
     ap.add_argument("--league-share", type=float, default=0.5)
     ap.add_argument("--vteach", type=float, default=0.0)
-    ap.add_argument("--replay-chunks", type=int, default=4)
+    ap.add_argument("--replay-chunks", type=int, default=8)
     ap.add_argument("--play-ticks", type=int, default=240)
     ap.add_argument("--reps", type=int, default=1)
     ap.add_argument("--fork-steps", type=int, default=24)
@@ -86,6 +88,7 @@ def main():
         my_slots = [(s.slot_evolution if k in MY["evo"] else 0) | (s.slot_hero if k in MY["hero"] else 0) for k in MY["cards"]]
         slots_of = lambda d: [(s.slot_evolution if k in d.get("evo", []) else 0) | (s.slot_hero if k in d.get("hero", []) else 0) for k in d["cards"]]
         bots = [ScriptedBot().bind(vec), ScriptedBot().bind(vec)]
+        jpol = make_policy(vec, bots[0])  # the scripted policy in Java: batched, inside the simulator's threads
         if a.fork == 2:  # Java playouts: both sides keep playing inside the simulator
             teacher = PlayoutTeacher(vec, make_policy(vec, bots[0]), horizon=a.horizon, play_ticks=a.play_ticks, top=a.top,
                                      reps=a.reps, margin=a.margin, rng=np.random.default_rng(a.seed + 99))
@@ -101,6 +104,8 @@ def main():
 
         MYD = {"name": "X-Bow 3.0", "group": "X-Bow", "cards": MY["cards"], "evo": MY["evo"], "hero": MY["hero"]}
         ANY = decks_gen.fixed_set(max(a.eval_games, 2 * N), meta=META)  # exam decks training never sees
+        ANY_OPP = decks_gen.fixed_set(max(a.eval_games, 2 * N), seed=777, meta=META)  # opponents for the any-vs-any exam
+        WEAK = [d for d in META if d.get("group") in ("Triple Elixir", "Mega Knight", "Mirror", "Seasonal Arena I", "Wall Breakers", "Giant")] or META
         grng = random.Random(a.seed * 7919 + 13)
 
         def reset_all(seed, ds, setups=False, mine=None):
@@ -129,8 +134,8 @@ def main():
                         mine = [random.choice(META) for _ in range(N)]
             raise RuntimeError("no valid decks")
 
-        def train_decks():
-            return [decks_gen.generate(grng, META, p_meta=0.35) for _ in range(N)]
+        def train_decks():  # opponents: endless generated decks, real meta decks, and extra weak matchups
+            return [grng.choice(WEAK) if grng.random() < a.weak_share else decks_gen.generate(grng, META, p_meta=0.35) for _ in range(N)]
 
         def train_mine():  # any deck for the agent: a new one every battle, X-Bow now and then
             return [MYD if grng.random() < a.xbow_share else decks_gen.generate(grng, META) for _ in range(N)]
@@ -224,12 +229,12 @@ def main():
             hand[:, 0] = 0
             return hand, Oo[:, enc.h["elixir"][0]].astype(np.float32) / 100000.0
 
-        def run_eval(n_games, seed_base, any_deck=True):
+        def run_eval(n_games, seed_base, any_deck=True, opp_any=False):
             ev = {"wins": 0, "losses": 0, "draws": 0, "faults": 0, "by_deck": {}, "by_group": {}, "by_phase": {}}
             erng = np.random.default_rng(12345)
             net.eval()
             for bi in range(max(1, n_games // N)):
-                ds = [META[(bi * N + i) % len(META)] for i in range(N)]
+                ds = [(ANY_OPP if opp_any else META)[(bi * N + i) % len(ANY_OPP if opp_any else META)] for i in range(N)]
                 mine = [ANY[(bi * N + i) % len(ANY)] for i in range(N)] if any_deck else None
                 seats = reset_all(seed_base + bi * 1009, ds, mine=mine)
                 st = fresh(); done = np.zeros(N, bool); ot = np.zeros(N, bool)
@@ -242,10 +247,11 @@ def main():
                         play = pr[:, 1:].clone(); play[:, -1] = 0  # never the delegate
                         ac = torch.where(play.sum(1) > a.play_thr, play.argmax(1) + 1, torch.zeros_like(pr[:, 0]).long()).numpy()
                     acts = np.zeros((N, 2), np.int32)
+                    oppa = scripted_batch(vec, jpol, 1 - seats, seed_base + bi * 31 + _)
                     for i in range(N):
                         me = seats[i]
                         acts[i, me] = ac[i]
-                        acts[i, 1 - me] = bots[1 - me](vec.observations[i, 1 - me], vec.masks[i, 1 - me], erng)
+                        acts[i, 1 - me] = oppa[i]
                         ot[i] |= bool(O[i, enc.h["overtime"][0]])
                     vec.step(acts)
                     for i in range(N):
@@ -278,44 +284,74 @@ def main():
             print("carried", it, best_wr, flush=True)
         replay = []
         tm = defaultdict(float)
+        st_b = fresh()  # the network's own memory when it plays the opponent's seat (labels for both sides)
+        jseed = a.seed * 7919
+
+        def soft_arrays(soft):
+            SK = np.full((N, 12), -1, np.int64); SP = np.zeros((N, 12), np.float32)
+            for i in range(N):
+                if soft[i] is not None:
+                    ks, ps = soft[i]
+                    ks, ps = list(ks)[:12], np.asarray(ps)[:12]
+                    SK[i, :len(ks)] = ks; SP[i, :len(ks)] = ps
+            return SK, SP
+
+        def make_pack(bf, h0_, st_, side):
+            keys_ = bf["b"][0].keys()
+            Bk = {k: np.stack([x[k] for x in bf["b"]]) for k in keys_}
+            Bk["num"] = Bk["num"].astype(np.float16)  # half the memory: the archive keeps many batches
+            D_ = np.stack(bf["d"])
+            O_, M_, b_ = batch_obs(side, st_)
+            with torch.no_grad():
+                bt_ = to_t(b_); z_, tf_, hd_ = net.encode(bt_); _, lv = net.heads(net.gru(z_, st_["h"]), tf_, hd_, bt_, torch.from_numpy(M_))
+            Vv = np.concatenate([np.stack(bf["v"]), lv.numpy()[None]]); Rr = np.stack(bf["r"])
+            RET_ = np.zeros((T, N), np.float32); g_ = Vv[-1]
+            for t in reversed(range(T)):  # TD(lambda) value targets from game results
+                g_ = Rr[t] + 0.997 * (1 - D_[t]) * (0.9 * g_ + 0.1 * Vv[t + 1])
+                RET_[t] = g_
+            return dict(B=Bk, Mm=np.stack(bf["m"]), Y=np.stack(bf["y"]), D=D_, AH=np.stack(bf["ah"]), AE=np.stack(bf["ae"]),
+                        SKa=np.stack(bf["sk"]), SPa=np.stack(bf["sp"]), RET=RET_, h0=h0_)
+
         while time.time() < t_train_end:
             frac = a.p0 + (a.p1 - a.p0) * min(1.0, (time.time() - t0) / max(1, t_train_end - t0))
             beta = a.beta0 + (a.beta1 - a.beta0) * frac
-            buf = defaultdict(list); h0 = st["h"].clone(); n_own = n_t = 0
+            buf = defaultdict(list); bufB = defaultdict(list); h0 = st["h"].clone(); h0B = st_b["h"].clone(); n_own = n_t = 0
             for t in range(T):
                 t1 = time.time()
+                oseat = 1 - seats
                 O, M, b = batch_obs(seats, st)
+                Ob, Mb, bb = batch_obs(oseat, st_b)
                 with torch.no_grad():
                     bt = to_t(b); z, tf, hand = net.encode(bt); hn = net.gru(z, st["h"])
                     lg, vpred = net.heads(hn, tf, hand, bt, torch.from_numpy(M))
                     own = torch.distributions.Categorical(logits=lg).sample().numpy()
-                    # Gumbel-top-k proposals of the network for the teacher (expert iteration)
                     pl = lg[:, 1:1 + 4 * enc.s.cols * enc.s.rows]
                     gk = (pl - torch.log(-torch.log(torch.rand_like(pl).clamp(1e-9, 1 - 1e-9)))).topk(a.top, 1).indices.numpy() + 1
                     okp = (pl.gather(1, torch.from_numpy(gk - 1)) > -1e8).numpy()
+                    btb = to_t(bb); zb, tfb, hdb = net.encode(btb); hnb = net.gru(zb, st_b["h"])
+                    _, vpb = net.heads(hnb, tfb, hdb, btb, torch.from_numpy(Mb))
                 tm["net"] += time.time() - t1; t1 = time.time()
-                prop = np.zeros(N, np.int64); acts = np.zeros((N, 2), np.int32)
-                la_ = league_acts(1 - seats, st_o)
-                for i in range(N):
-                    me = seats[i]
-                    prop[i] = bots[me](vec.observations[i, me], vec.masks[i, me], rng)
-                    acts[i, 1 - me] = la_[i] if i in la_ else bots[1 - me](vec.observations[i, 1 - me], vec.masks[i, 1 - me], rng)
+                acts = np.zeros((N, 2), np.int32)
+                jseed += 1
+                prop = scripted_batch(vec, jpol, seats, jseed)
+                propB = scripted_batch(vec, jpol, oseat, jseed + 7777)
+                la_ = league_acts(oseat, st_o)
                 tm["bots"] += time.time() - t1; t1 = time.time()
                 if a.fork:
                     extra = [[int(x) for x, ok in zip(gk[i], okp[i]) if ok] for i in range(N)]
                     active = np.array([(0 < prop[i] < 2305) or (0 < own[i] < 2305) for i in range(N)])
                     tact, soft = teacher.refine2(prop, seats, active, extra)
                 else:
-                    tact = teacher.refine(prop, seats, np.ones(N, bool)); soft = [None] * N
-                SK = np.full((N, 12), -1, np.int64); SP = np.zeros((N, 12), np.float32)
-                for i in range(N):
-                    if soft[i] is not None:
-                        ks, ps = soft[i]
-                        ks, ps = ks[:12], ps[:12]
-                        SK[i, :len(ks)] = ks; SP[i, :len(ks)] = ps
+                    tact = teacher.refine(prop, seats, np.ones(N, bool)); soft = teacher.soft
+                SK, SP = soft_arrays(soft)
+                if a.both:  # the teacher also plays/labels the opponent's seat: twice the labels, a stronger opponent
+                    tactB = teacher.refine(propB, oseat, np.ones(N, bool)); SKB, SPB = soft_arrays(teacher.soft)
+                else:
+                    tactB = propB; SKB, SPB = soft_arrays([None] * N)
                 tm["teacher"] += time.time() - t1; t1 = time.time()
                 use_t = rng.random(N) < beta
                 for i in range(N):
+                    acts[i, oseat[i]] = la_[i] if i in la_ else tactB[i]
                     if use_t[i]:
                         acts[i, seats[i]] = tact[i]
                     else:  # the network's own move, with phone-like reaction delay and tap error
@@ -330,6 +366,7 @@ def main():
                         acts[i, seats[i]] = x
                 n_own += int((~use_t).sum()); n_t += N
                 ah, ae = opp_targets(seats)
+                ahB, aeB = opp_targets(oseat)
                 vec.step(acts)
                 tm["sim"] += time.time() - t1
                 d = np.zeros(N, np.float32); rr = np.zeros(N, np.float32)
@@ -339,38 +376,34 @@ def main():
                         w_ = int(vec.infos[i, I["winner"]])
                         if not int(vec.infos[i, I["fault"]]):
                             rr[i] = 1.0 if w_ == seats[i] else (-1.0 if w_ in (0, 1) else 0.0)
-                        if not int(vec.infos[i, I["fault"]]):
-                            results.append((int(vec.infos[i, I["winner"]]) == seats[i]))
+                            results.append((w_ == seats[i]))
                             if opp_kind[i] >= 0:
                                 ls_ = lstats[league[opp_kind[i]][0]]; ls_[0] += int(results[-1]); ls_[1] += 1
-                        st_o["h"][i] = 0; st_o["last_play"][i] = -1; st_o["prev_seen"][i] = -1
-                        st["last_play"][i] = -1; st["prev_seen"][i] = -1
-                st["h"] = hn * torch.from_numpy(1 - d).unsqueeze(1)
+                        for s_ in (st_o, st, st_b):
+                            s_["last_play"][i] = -1; s_["prev_seen"][i] = -1
+                        st_o["h"][i] = 0
+                keep = torch.from_numpy(1 - d).unsqueeze(1)
+                st["h"] = hn * keep; st_b["h"] = hnb * keep
                 for k, val in (("b", b), ("m", M), ("y", tact), ("d", d), ("ah", ah), ("ae", ae), ("sk", SK), ("sp", SP),
                                ("v", vpred.numpy()), ("r", rr)):
                     buf[k].append(val)
+                MbL = Mb.copy()
+                for k, val in (("b", bb), ("m", MbL), ("y", tactB), ("d", d), ("ah", ahB), ("ae", aeB), ("sk", SKB), ("sp", SPB),
+                               ("v", vpb.numpy()), ("r", -rr)):
+                    bufB[k].append(val)
             t1 = time.time()
             keys = buf["b"][0].keys()
-            B = {k: np.stack([x[k] for x in buf["b"]]) for k in keys}
-            Mm = np.stack(buf["m"]); Y = np.stack(buf["y"]); D = np.stack(buf["d"])
-            AH, AE = np.stack(buf["ah"]), np.stack(buf["ae"])
-            SKa, SPa = np.stack(buf["sk"]), np.stack(buf["sp"])
-            O_, M_, b_ = batch_obs(seats, st)
-            with torch.no_grad():
-                bt_ = to_t(b_); z_, tf_, hd_ = net.encode(bt_); _, lv = net.heads(net.gru(z_, st["h"]), tf_, hd_, bt_, torch.from_numpy(M_))
-            Vv = np.concatenate([np.stack(buf["v"]), lv.numpy()[None]]); Rr = np.stack(buf["r"])
-            RET = np.zeros((T, N), np.float32); g_ = Vv[-1]
-            for t in reversed(range(T)):  # TD(lambda) value targets from game results
-                g_ = Rr[t] + 0.997 * (1 - D[t]) * (0.9 * g_ + 0.1 * Vv[t + 1])
-                RET[t] = g_
+            packs = [make_pack(buf, h0, st, seats)]
+            if a.both:
+                packs.append(make_pack(bufB, h0B, st_b, 1 - seats))
             torch.set_num_threads(4)
             acc_p = []; acc_w = []
-            pack = dict(B=B, Mm=Mm, Y=Y, D=D, AH=AH, AE=AE, SKa=SKa, SPa=SPa, RET=RET, h0=h0)
 
             def step_chunk(pk, ix):
                 nb = len(ix)
                 Bk = pk["B"]
                 flat = {k: torch.from_numpy(np.ascontiguousarray(Bk[k][:, ix].reshape(T * nb, *Bk[k].shape[2:]))) for k in keys}
+                flat["num"] = flat["num"].float()
                 z, tf, hand = net.encode(flat); z = z.view(T, nb, -1)
                 h = pk["h0"][ix]; hs = []; Dm = torch.from_numpy(pk["D"][:, ix])
                 for t in range(T):
@@ -401,15 +434,16 @@ def main():
                     acc_w.append((pr[~pl] == 0).float().mean().item() if (~pl).any() else 1.0)
                 return lbc, lsoft, lval, la
 
-            for ep in range(2):
-                perm = np.random.permutation(N)
-                for j in range(0, N, 16):
-                    lbc, lsoft, lval, la = step_chunk(pack, perm[j:j + 16])
+            for pack in packs:
+                for ep in range(2):
+                    perm = np.random.permutation(N)
+                    for j in range(0, N, 16):
+                        lbc, lsoft, lval, la = step_chunk(pack, perm[j:j + 16])
             # replay: the teacher's labels are expensive, so recent batches are trained on again
             for _ in range(a.replay_chunks if replay else 0):
                 old = replay[rng.integers(len(replay))]
                 step_chunk(old, rng.permutation(N)[:16])
-            replay.append(pack); del replay[:-a.replay_size]
+            replay.extend(packs); del replay[:-a.replay_size]
             torch.set_num_threads(2)
             tm["learn"] += time.time() - t1
             it += 1
@@ -451,11 +485,14 @@ def main():
         json.dump(metrics, open(out / "metrics.json", "w"))
         ev = run_eval(a.eval_games, 10 ** 6)  # any deck vs meta decks (selection metric)
         evx = run_eval(a.eval_games // 2, 10 ** 6, any_deck=False)  # X-Bow vs meta, comparable with earlier generations
+        eva = run_eval(a.eval_games // 2, 2 * 10 ** 6, opp_any=True)  # any deck vs any deck: both unseen
         ev["xbow"] = {k: evx[k] for k in ("games", "winrate", "wins", "losses", "by_group")}
+        ev["any_vs_any"] = {k: eva[k] for k in ("games", "winrate", "wins", "losses", "by_phase")}
         ev["seed"] = a.seed
         ev["league"] = lstats
         json.dump(ev, open(out / "eval.json", "w"), ensure_ascii=False)
-        print("eval", {k: ev[k] for k in ("games", "winrate", "wins", "losses", "draws", "faults")}, flush=True)
+        print("eval", {k: ev[k] for k in ("games", "winrate", "wins", "losses", "draws", "faults")}, "xbow", evx["winrate"],
+              "any_vs_any", eva["winrate"], flush=True)
 
 
 if __name__ == "__main__":

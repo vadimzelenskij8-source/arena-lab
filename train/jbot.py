@@ -55,6 +55,17 @@ def java_act(vec, policy, obs, mask, seed=1):
     return int(policy.act(o, 0, m, 0, R))
 
 
+def scripted_batch(vec, policy, seats, seed=0, indices=None):
+    """Java scripted actions for env i at seat seats[i] (all envs, or the given indices)."""
+    idx = np.arange(vec.count) if indices is None else np.asarray(indices)
+    if len(idx) == 0:
+        return np.zeros(0, np.int64)
+    JI = jpype.JArray(jpype.JInt)
+    out = vec._env.scriptedActs(JI(idx.astype(np.int32)), JI(np.asarray(seats, np.int32)[idx] if indices is None else np.asarray(seats, np.int32)),
+                                int(seed), policy)
+    return np.asarray(out, dtype=np.int64)
+
+
 class PlayoutTeacher(Teacher):
     """Lookahead screens candidates (scripted proposal, the network's Gumbel-top-k plays, nearby
     tiles, other cards, wait); the best few plus delayed versions of the best are then played out

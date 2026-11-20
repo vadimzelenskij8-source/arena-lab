@@ -94,4 +94,30 @@ if "public int[] playout(" not in s:
 
 """ + anchor, 1)
     vec.write_text(s)
+
+s = vec.read_text()
+if "public int[] scriptedActs(" not in s:
+    anchor = "  private void stepEnv(int index) {"
+    s = s.replace(anchor, """  /** The scripted policy's action for every (environment, seat) pair, computed in parallel (arena-lab). */
+  public int[] scriptedActs(int[] indices, int[] seats, long seed, ScriptedPolicy policy) {
+    int count = indices.length;
+    int[] out = new int[count];
+    run(
+        count,
+        r -> {
+          if (!(envs[indices[r]] instanceof LadderEnv ladder) || ladder.done()) {
+            out[r] = Schema.WAIT;
+            return;
+          }
+          int[] obs = new int[Schema.SEAT_INTS];
+          byte[] mask = new byte[Schema.ACTIONS];
+          ladder.copyObservation(seats[r], obs, 0);
+          ladder.copyMask(seats[r], mask, 0);
+          out[r] = policy.act(obs, 0, mask, 0, new SplittableRandom(seed * 1_000_003L + r));
+        });
+    return out;
+  }
+
+""" + anchor, 1)
+    vec.write_text(s)
 print("patched")

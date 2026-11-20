@@ -69,7 +69,7 @@ jobs:
           set +e -o pipefail
           W=${{ matrix.w }}
           HP=$(python3 train/hparams.py b2 $W ${{ github.run_number }}); echo "hparams $HP"
-          [ "$ALGO" = distill ] && HP="$HP --fork $([ $((W % 4)) = 3 ] && echo 0 || echo 2) --vteach $(python3 -c "print([0,0.5,1.0][($W//4)%3])")"  # 3/4 Java playout teacher, 1/4 old; value mix varies
+          [ "$ALGO" = distill ] && HP="$HP --fork 0 --vteach $(python3 -c "print([0,0.5,1.0][($W//4)%3])")"  # 3/4 Java playout teacher, 1/4 old; value mix varies
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/$ALGO.py --install sim/env --tables sim/tables --out out --envs $E --threads 4 \

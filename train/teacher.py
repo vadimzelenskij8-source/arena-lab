@@ -57,6 +57,7 @@ class Teacher:
         """proposals: [N] scripted actions for the seat; returns the teacher's actions."""
         vec = self.vec
         out = np.array(proposals, dtype=np.int64)
+        self.soft = [None] * len(out)
         req_i, req_a, owner = [], [], []
         for i in range(len(out)):
             a = int(out[i])
@@ -70,6 +71,7 @@ class Teacher:
         obs, info = vec.lookahead(np.array(req_i), np.asarray(seats)[np.array(req_i)], np.array(req_a), self.horizon)
         v = self.value(obs)
         v[info[:, self.fault] != 0] = -1e9
+        self.soft = [None] * len(out)
         for i, st, cs in owner:
             vv = v[st:st + len(cs)]
             base = vv[cs.index(int(out[i]))]
@@ -77,6 +79,11 @@ class Teacher:
             self.stats["searched"] += 1
             if vv[j] > base + self.margin:
                 out[i] = cs[j]; self.stats["changed"] += 1
+            ok = vv > -1e8
+            if ok.sum() > 1:  # soft target: how good every checked move is, not only the best
+                ks = [c for c, o in zip(cs, ok) if o]; vs = vv[ok]
+                p = np.exp((vs - vs.max()) / 1.0); p /= p.sum()
+                self.soft[i] = (ks, p)
         return out
 
 
