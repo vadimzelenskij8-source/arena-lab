@@ -1,183 +1,217 @@
 {
  "members": {
   "v0-xbow": 979.1,
-  "gen001": 965.1
+  "gen001": 965.1,
+  "gen002": 1005.4
  },
  "scripted": 1000.0,
  "workers": [
   {
-   "worker": "w11-s3",
-   "elo": 1102.8,
-   "winrate": 0.45,
+   "worker": "w1-s3",
+   "elo": 974.0,
+   "winrate": 0.5016,
    "league": {
-    "v0-xbow": [
-     1103,
-     1488
-    ]
-   }
-  },
-  {
-   "worker": "w3-s3",
-   "elo": 1094.1,
-   "winrate": 0.4422,
-   "league": {
-    "v0-xbow": [
-     938,
-     1265
-    ]
-   }
-  },
-  {
-   "worker": "w7-s3",
-   "elo": 1078.5,
-   "winrate": 0.4437,
-   "league": {
-    "v0-xbow": [
-     929,
-     1305
-    ]
-   }
-  },
-  {
-   "worker": "w15-s3",
-   "elo": 1074.5,
-   "winrate": 0.4031,
-   "league": {
-    "v0-xbow": [
-     987,
-     1376
-    ]
-   }
-  },
-  {
-   "worker": "w14-s3",
-   "elo": 987.1,
-   "winrate": 0.3203,
-   "league": {
-    "v0-xbow": [
-     478,
-     730
-    ]
-   }
-  },
-  {
-   "worker": "w13-s3",
-   "elo": 984.0,
-   "winrate": 0.3531,
-   "league": {
-    "v0-xbow": [
-     470,
-     768
+    "gen001": [
+     67,
+     223
     ]
    }
   },
   {
    "worker": "w6-s3",
-   "elo": 976.3,
-   "winrate": 0.35,
+   "elo": 965.0,
+   "winrate": 0.5031,
    "league": {
-    "v0-xbow": [
-     525,
-     904
+    "gen001": [
+     64,
+     253
     ]
    }
   },
   {
-   "worker": "w12-s3",
-   "elo": 971.4,
-   "winrate": 0.3,
+   "worker": "w18-s3",
+   "elo": 963.1,
+   "winrate": 0.5078,
    "league": {
-    "v0-xbow": [
-     472,
-     747
-    ]
-   }
-  },
-  {
-   "worker": "w4-s3",
-   "elo": 967.1,
-   "winrate": 0.3172,
-   "league": {
-    "v0-xbow": [
-     463,
-     770
-    ]
-   }
-  },
-  {
-   "worker": "w1-s3",
-   "elo": 964.1,
-   "winrate": 0.3563,
-   "league": {
-    "v0-xbow": [
-     390,
-     687
-    ]
-   }
-  },
-  {
-   "worker": "w2-s3",
-   "elo": 959.9,
-   "winrate": 0.3344,
-   "league": {
-    "v0-xbow": [
-     337,
-     560
-    ]
-   }
-  },
-  {
-   "worker": "w10-s3",
-   "elo": 959.7,
-   "winrate": 0.325,
-   "league": {
-    "v0-xbow": [
-     414,
-     709
-    ]
-   }
-  },
-  {
-   "worker": "w8-s3",
-   "elo": 958.4,
-   "winrate": 0.3109,
-   "league": {
-    "v0-xbow": [
-     388,
-     638
-    ]
-   }
-  },
-  {
-   "worker": "w0-s3",
-   "elo": 955.5,
-   "winrate": 0.3016,
-   "league": {
-    "v0-xbow": [
-     421,
-     705
+    "gen001": [
+     40,
+     214
     ]
    }
   },
   {
    "worker": "w5-s3",
-   "elo": 952.5,
-   "winrate": 0.3172,
+   "elo": 961.9,
+   "winrate": 0.4875,
    "league": {
-    "v0-xbow": [
-     367,
-     625
+    "gen001": [
+     67,
+     237
     ]
    }
   },
   {
    "worker": "w9-s3",
-   "elo": 945.4,
-   "winrate": 0.3203,
+   "elo": 955.6,
+   "winrate": 0.4766,
    "league": {
-    "v0-xbow": [
-     352,
-     625
+    "gen001": [
+     63,
+     228
+    ]
+   }
+  },
+  {
+   "worker": "w3-s3",
+   "elo": 947.7,
+   "winrate": 0.4773,
+   "league": {
+    "gen001": [
+     119,
+     384
+    ]
+   }
+  },
+  {
+   "worker": "w14-s3",
+   "elo": 947.0,
+   "winrate": 0.4906,
+   "league": {
+    "gen001": [
+     76,
+     321
+    ]
+   }
+  },
+  {
+   "worker": "w2-s3",
+   "elo": 946.2,
+   "winrate": 0.4766,
+   "league": {
+    "gen001": [
+     86,
+     316
+    ]
+   }
+  },
+  {
+   "worker": "w4-s3",
+   "elo": 940.9,
+   "winrate": 0.4797,
+   "league": {
+    "gen001": [
+     58,
+     278
+    ]
+   }
+  },
+  {
+   "worker": "w10-s3",
+   "elo": 940.7,
+   "winrate": 0.4523,
+   "league": {
+    "gen001": [
+     79,
+     266
+    ]
+   }
+  },
+  {
+   "worker": "w8-s3",
+   "elo": 939.3,
+   "winrate": 0.4742,
+   "league": {
+    "gen001": [
+     78,
+     320
+    ]
+   }
+  },
+  {
+   "worker": "w16-s3",
+   "elo": 936.3,
+   "winrate": 0.4492,
+   "league": {
+    "gen001": [
+     72,
+     261
+    ]
+   }
+  },
+  {
+   "worker": "w11-s3",
+   "elo": 935.4,
+   "winrate": 0.4808,
+   "league": {
+    "gen001": [
+     93,
+     386
+    ]
+   }
+  },
+  {
+   "worker": "w15-s3",
+   "elo": 934.2,
+   "winrate": 0.443,
+   "league": {
+    "gen001": [
+     60,
+     227
+    ]
+   }
+  },
+  {
+   "worker": "w12-s3",
+   "elo": 929.0,
+   "winrate": 0.4484,
+   "league": {
+    "gen001": [
+     61,
+     262
+    ]
+   }
+  },
+  {
+   "worker": "w17-s3",
+   "elo": 928.3,
+   "winrate": 0.4773,
+   "league": {
+    "gen001": [
+     78,
+     371
+    ]
+   }
+  },
+  {
+   "worker": "w13-s3",
+   "elo": 926.3,
+   "winrate": 0.4664,
+   "league": {
+    "gen001": [
+     86,
+     375
+    ]
+   }
+  },
+  {
+   "worker": "w7-s3",
+   "elo": 918.7,
+   "winrate": 0.4477,
+   "league": {
+    "gen001": [
+     107,
+     416
+    ]
+   }
+  },
+  {
+   "worker": "w0-s3",
+   "elo": 911.6,
+   "winrate": 0.4414,
+   "league": {
+    "gen001": [
+     104,
+     426
     ]
    }
   }
