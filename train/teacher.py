@@ -53,23 +53,38 @@ class Teacher:
             cand.add(1 + o * per + tile)
         return [x for x in cand if mask[x]]
 
-    def refine(self, proposals, seats, active):
-        """proposals: [N] scripted actions for the seat; returns the teacher's actions."""
+    value_fn = None  # AlphaZero loop: the network's value of the looked-ahead position, mixed in
+    vw = 0.0
+
+    def refine(self, proposals, seats, active, extra=None):
+        """proposals: [N] scripted actions for the seat; extra: per env the network's own candidate plays
+        (expert iteration: the search improves the network's ideas too). Returns the teacher's actions."""
         vec = self.vec
         out = np.array(proposals, dtype=np.int64)
         self.soft = [None] * len(out)
         req_i, req_a, owner = [], [], []
         for i in range(len(out)):
             a = int(out[i])
+            mask = vec.masks[i, seats[i]]
+            cs = set()
             if active[i] and 0 < a < 1 + 4 * self.per:
-                cs = self.candidates(a, vec.masks[i, seats[i]])
-                if len(cs) > 1:
-                    owner.append((i, len(req_a), cs))
-                    req_i += [i] * len(cs); req_a += cs
+                cs.update(self.candidates(a, mask))
+            if active[i] and extra is not None:
+                for x in extra[i]:
+                    x = int(x)
+                    if 0 < x < 1 + 4 * self.per and mask[x]:
+                        cs.update(self.candidates(x, mask))
+            if len(cs) > 1:
+                cs.add(0); cs.add(a)
+                cs = sorted(c for c in cs if mask[c])
+                owner.append((i, len(req_a), cs))
+                req_i += [i] * len(cs); req_a += cs
         if not req_i:
             return out
         obs, info = vec.lookahead(np.array(req_i), np.asarray(seats)[np.array(req_i)], np.array(req_a), self.horizon)
         v = self.value(obs)
+        if self.value_fn is not None and self.vw > 0:
+            v = v + self.vw * 20.0 * self.value_fn(obs)
         v[info[:, self.fault] != 0] = -1e9
         self.soft = [None] * len(out)
         for i, st, cs in owner:

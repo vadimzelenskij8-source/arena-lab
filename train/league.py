@@ -33,7 +33,7 @@ for d in sorted(wd.iterdir()):
     ev = json.load(open(e))
     parts = [(perf(ev.get("winrate") or 0.0, L["scripted"]), ev.get("games", 0))]
     for nm, (w, g) in (ev.get("league") or {}).items():
-        if g >= 5:
+        if g >= 5 and nm != "self":
             L["members"].setdefault(nm, round(perf(0.47, L["scripted"]), 1))
             parts.append((perf(w / g, L["members"][nm]), g))
     tot = sum(g for _, g in parts)

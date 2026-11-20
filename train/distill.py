@@ -47,6 +47,14 @@ def main():
     ap.add_argument("--xbow-share", type=float, default=0.2)
     ap.add_argument("--weak-share", type=float, default=0.15)
     ap.add_argument("--both", type=int, default=1)
+    ap.add_argument("--az", type=int, default=0, help="AlphaZero loop: network candidates + value inside the teacher")
+    ap.add_argument("--az-vw", type=float, default=0.5)
+    ap.add_argument("--strong", type=int, default=0, help="strong opponents: more league, self-play vs the current net")
+    ap.add_argument("--matchups", default="", help="json: meta deck name -> training weight (gap to the teacher)")
+    ap.add_argument("--meta-share", type=float, default=0.35)
+    ap.add_argument("--xbow-games", type=int, default=1060)
+    ap.add_argument("--ava-games", type=int, default=640)
+    ap.add_argument("--ceilings", default="", help="k/K: only measure the teacher on part k of K of the exams, then exit")
     ap.add_argument("--replay-size", type=int, default=32)
     ap.add_argument("--carry", default="")
     ap.add_argument("--final", type=int, default=1)
@@ -134,8 +142,23 @@ def main():
                         mine = [random.choice(META) for _ in range(N)]
             raise RuntimeError("no valid decks")
 
-        def train_decks():  # opponents: endless generated decks, real meta decks, and extra weak matchups
-            return [grng.choice(WEAK) if grng.random() < a.weak_share else decks_gen.generate(grng, META, p_meta=0.35) for _ in range(N)]
+        MW = None
+        if a.matchups and Path(a.matchups).exists():  # weights from the gap "teacher minus bot" per meta deck
+            mw = json.load(open(a.matchups))
+            MW = np.array([max(1e-3, float(mw.get(d["name"], 1.0))) for d in META]); MW /= MW.sum()
+            print("matchup weights", round(float(MW.max() * len(META)), 2), "max x mean", flush=True)
+
+        def train_decks():  # opponents: endless generated decks, and meta decks where the gap to the teacher is largest
+            out_ = []
+            for _ in range(N):
+                r_ = grng.random()
+                if r_ < a.meta_share:
+                    out_.append(META[int(rng.choice(len(META), p=MW))] if MW is not None else grng.choice(META))
+                elif MW is None and r_ < a.meta_share + a.weak_share:
+                    out_.append(grng.choice(WEAK))
+                else:
+                    out_.append(decks_gen.generate(grng, META, p_meta=0.0))
+            return out_
 
         def train_mine():  # any deck for the agent: a new one every battle, X-Bow now and then
             return [MYD if grng.random() < a.xbow_share else decks_gen.generate(grng, META) for _ in range(N)]
@@ -159,8 +182,14 @@ def main():
         print("league", [nm for nm, _ in league], flush=True)
         opp_kind = np.full(N, -1)
 
+        if a.strong:  # the current network itself joins as an opponent (refreshed at every reset)
+            self_net = Net(enc, NA + 1); self_net.eval(); league.append(("self", self_net)); lstats["self"] = [0, 0]
+            a.league_share = max(a.league_share, 0.7)
+
         def assign_opps():
             opp_kind[:] = -1
+            if a.strong:
+                league[-1][1].load_state_dict(net.state_dict())
             if not league:
                 return
             w_ = np.array([(1 - (lstats[nm][0] + 1) / (lstats[nm][1] + 2)) ** 2 + 0.05 for nm, _ in league]); w_ /= w_.sum()
@@ -201,6 +230,8 @@ def main():
                 return net.v(h).squeeze(-1).numpy()
         if a.vteach > 0 and a.fork == 2:
             teacher.value_fn, teacher.vw = vfn, a.vteach
+        if a.az and not a.fork:
+            teacher.value_fn, teacher.vw = vfn, a.az_vw
 
         def fresh():
             return dict(h=torch.zeros(N, 256), last_play=np.full((N, 8), -1, np.int64), prev_seen=np.full((N, 8), -1, np.int64))
@@ -229,23 +260,31 @@ def main():
             hand[:, 0] = 0
             return hand, Oo[:, enc.h["elixir"][0]].astype(np.float32) / 100000.0
 
-        def run_eval(n_games, seed_base, any_deck=True, opp_any=False):
+        def run_eval(n_games, seed_base, any_deck=True, opp_any=False, player="net", part=None):
+            """player: "net" (the network alone, as on the phone) or "teacher" (scripted + lookahead: the
+            practical ceiling of each matchup). part=(k, K): only every K-th batch, from k (split jobs)."""
             ev = {"wins": 0, "losses": 0, "draws": 0, "faults": 0, "by_deck": {}, "by_group": {}, "by_phase": {}}
             erng = np.random.default_rng(12345)
             net.eval()
             for bi in range(max(1, n_games // N)):
+                if part is not None and bi % part[1] != part[0]:
+                    continue
                 ds = [(ANY_OPP if opp_any else META)[(bi * N + i) % len(ANY_OPP if opp_any else META)] for i in range(N)]
                 mine = [ANY[(bi * N + i) % len(ANY)] for i in range(N)] if any_deck else None
                 seats = reset_all(seed_base + bi * 1009, ds, mine=mine)
                 st = fresh(); done = np.zeros(N, bool); ot = np.zeros(N, bool)
                 for step_ in range(1800):
                     O, M, b = batch_obs(seats, st)
-                    with torch.no_grad():
-                        bt = to_t(b); z, tf, hand = net.encode(bt); st["h"] = net.gru(z, st["h"])
-                        lg, _ = net.heads(st["h"], tf, hand, bt, torch.from_numpy(M))
-                        pr = torch.softmax(lg, 1)
-                        play = pr[:, 1:].clone(); play[:, -1] = 0  # never the delegate
-                        ac = torch.where(play.sum(1) > a.play_thr, play.argmax(1) + 1, torch.zeros_like(pr[:, 0]).long()).numpy()
+                    if player == "teacher":
+                        pr_ = scripted_batch(vec, jpol, seats, seed_base + bi * 37 + step_ + 5)
+                        ac = teacher.refine(pr_, seats, ~done)
+                    else:
+                        with torch.no_grad():
+                            bt = to_t(b); z, tf, hand = net.encode(bt); st["h"] = net.gru(z, st["h"])
+                            lg, _ = net.heads(st["h"], tf, hand, bt, torch.from_numpy(M))
+                            pr = torch.softmax(lg, 1)
+                            play = pr[:, 1:].clone(); play[:, -1] = 0  # never the delegate
+                            ac = torch.where(play.sum(1) > a.play_thr, play.argmax(1) + 1, torch.zeros_like(pr[:, 0]).long()).numpy()
                     acts = np.zeros((N, 2), np.int32)
                     oppa = scripted_batch(vec, jpol, 1 - seats, seed_base + bi * 31 + step_)
                     for i in range(N):
@@ -271,6 +310,16 @@ def main():
             net.train()
             return ev
 
+        if a.ceilings:  # the teacher on the same exam games: the practical ceiling of each matchup
+            k_, K_ = (int(x) for x in a.ceilings.split("/"))
+            t0c = time.time()
+            ca = run_eval(a.eval_games, 10 ** 6, player="teacher", part=(k_, K_))
+            cx = run_eval(a.xbow_games, 10 ** 6, any_deck=False, player="teacher", part=(k_, K_))
+            json.dump({"any": ca["by_deck"], "xbow": cx["by_deck"], "any_wr": ca["winrate"], "xbow_wr": cx["winrate"],
+                       "games": [ca["games"], cx["games"]], "seconds": round(time.time() - t0c)},
+                      open(out / "ceilings.json", "w"), ensure_ascii=False)
+            print("ceilings", k_, K_, ca["winrate"], cx["winrate"], ca["games"], cx["games"], round(time.time() - t0c), flush=True)
+            return
         seats = reset_all(1 + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh(); st_o = fresh(); assign_opps()
         results = []
         best_sd, best_wr, last_mini, it = None, -1.0, time.time(), 0
@@ -341,6 +390,9 @@ def main():
                     extra = [[int(x) for x, ok in zip(gk[i], okp[i]) if ok] for i in range(N)]
                     active = np.array([(0 < prop[i] < 2305) or (0 < own[i] < 2305) for i in range(N)])
                     tact, soft = teacher.refine2(prop, seats, active, extra)
+                elif a.az:
+                    extra = [[int(x) for x, ok in zip(gk[i], okp[i]) if ok] for i in range(N)]
+                    tact = teacher.refine(prop, seats, np.ones(N, bool), extra); soft = teacher.soft
                 else:
                     tact = teacher.refine(prop, seats, np.ones(N, bool)); soft = teacher.soft
                 SK, SP = soft_arrays(soft)
@@ -484,9 +536,9 @@ def main():
         torch.save(net.state_dict(), out / "policy.pt")
         json.dump(metrics, open(out / "metrics.json", "w"))
         ev = run_eval(a.eval_games, 10 ** 6)  # any deck vs meta decks (selection metric)
-        evx = run_eval(a.eval_games // 2, 10 ** 6, any_deck=False)  # X-Bow vs meta, comparable with earlier generations
-        eva = run_eval(a.eval_games // 2, 2 * 10 ** 6, opp_any=True)  # any deck vs any deck: both unseen
-        ev["xbow"] = {k: evx[k] for k in ("games", "winrate", "wins", "losses", "by_group")}
+        evx = run_eval(a.xbow_games, 10 ** 6, any_deck=False)  # X-Bow vs meta
+        eva = run_eval(a.ava_games, 2 * 10 ** 6, opp_any=True)  # any deck vs any deck: both unseen
+        ev["xbow"] = {k: evx[k] for k in ("games", "winrate", "wins", "losses", "by_group", "by_deck")}
         ev["any_vs_any"] = {k: eva[k] for k in ("games", "winrate", "wins", "losses", "by_phase")}
         ev["seed"] = a.seed
         ev["league"] = lstats

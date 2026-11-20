@@ -30,6 +30,11 @@ MY = {"cards": ["x-bow", "tesla", "archers", "knight", "skeletons", "electro-spi
       "evo": ["tesla", "archers"], "hero": ["knight"]}
 DECKS = json.load(open(ROOT / "decks.json", encoding="utf-8"))
 META = [d for d in DECKS if d.get("src") == "meta"]
+_seen = {}
+for _d in META:  # unique names: the matchup table is kept per deck
+    _n = _d["name"]; _seen[_n] = _seen.get(_n, 0) + 1
+    if _seen[_n] > 1:
+        _d["name"] = f"{_n} #{_seen[_n]}"
 OTHER = [d for d in DECKS if d.get("src") != "meta"]
 EM = 48  # entity rows read (towers and characters come first)
 ENT_NUM = ["x", "y", "hp", "max_hp", "shield", "dx", "dy", "target", "target_x", "target_y", "deploy_ms",
