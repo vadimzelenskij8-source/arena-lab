@@ -1,0 +1,6 @@
+resumed <All keys matched successfully>
+league ['gen001', 'gen002']
+/home/runner/work/arena-lab/arena-lab/train/distill.py:508: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  "soft": round(float(lsoft), 4), "value_loss": round(float(lval), 4),
+eval {'games': 640, 'winrate': 0.3953, 'wins': 253, 'losses': 387, 'draws': 0, 'faults': 0} xbow 0.1406 any_vs_any 0.3656
