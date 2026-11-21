@@ -1,0 +1,2425 @@
+{
+ "gen": 1,
+ "any": {
+  "Hyperbait #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    11,
+    20
+   ],
+   "gap": 0.55
+  },
+  "Balloon Cycle #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    20,
+    20
+   ],
+   "gap": 1.0
+  },
+  "Three Musketeers": {
+   "hist": [
+    0.458
+   ],
+   "status": "active",
+   "teacher": [
+    14,
+    20
+   ],
+   "bot": [
+    11,
+    24
+   ],
+   "gap": 0.242
+  },
+  "Ram Rider, Monk, Hero Ice Wizard": {
+   "hist": [
+    0.917
+   ],
+   "status": "solved",
+   "teacher": [
+    20,
+    20
+   ],
+   "bot": [
+    11,
+    12
+   ],
+   "gap": 0.083
+  },
+  "Hog Rider, Giant Skeleton, Cannon Cart": {
+   "hist": [
+    0.333
+   ],
+   "status": "active",
+   "teacher": [
+    12,
+    20
+   ],
+   "bot": [
+    4,
+    12
+   ],
+   "gap": 0.267
+  },
+  "Hero Giant Graveyard": {
+   "hist": [
+    0.333
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    4,
+    12
+   ],
+   "gap": 0.517
+  },
+  "Three Musketeers #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    19,
+    20
+   ],
+   "gap": 0.95
+  },
+  "Golem Cannon Cart": {
+   "hist": [
+    0.5
+   ],
+   "status": "active",
+   "teacher": [
+    14,
+    20
+   ],
+   "bot": [
+    6,
+    12
+   ],
+   "gap": 0.2
+  },
+  "Evo Electro Giant Control": {
+   "hist": [
+    0.625
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    15,
+    24
+   ],
+   "gap": 0.175
+  },
+  "Evo Battle Ram, Cannon Cart, Royal Ghost": {
+   "hist": [
+    0.583
+   ],
+   "status": "active",
+   "teacher": [
+    19,
+    20
+   ],
+   "bot": [
+    7,
+    12
+   ],
+   "gap": 0.367
+  },
+  "Evo Minion Horde Evo Battle Ram Three Mu": {
+   "hist": [
+    0.333
+   ],
+   "status": "active",
+   "teacher": [
+    13,
+    20
+   ],
+   "bot": [
+    4,
+    12
+   ],
+   "gap": 0.317
+  },
+  "SD Splashyard Freeze": {
+   "hist": [
+    0.667
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    8,
+    12
+   ],
+   "gap": 0.133
+  },
+  "LumberLoon Freeze #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "gap": 0.75
+  },
+  "Lava Hound Beatdown": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    10,
+    24
+   ],
+   "gap": 0.383
+  },
+  "Royal Hogs, Evo P.E.K.K.A, Skeleton King": {
+   "hist": [
+    0.538
+   ],
+   "status": "active",
+   "teacher": [
+    14,
+    20
+   ],
+   "bot": [
+    7,
+    13
+   ],
+   "gap": 0.162
+  },
+  "Hero Balloon Freeze #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "gap": 0.85
+  },
+  "Evo Royal Giant #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    18,
+    20
+   ],
+   "gap": 0.9
+  },
+  "Queen Bow": {
+   "hist": [
+    0.708
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    17,
+    24
+   ],
+   "gap": 0.142
+  },
+  "Evo P.E.K.K.A Bridge Spam": {
+   "hist": [
+    0.25
+   ],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "bot": [
+    3,
+    12
+   ],
+   "gap": 0.5
+  },
+  "Evo Royal Giant #3": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    18,
+    20
+   ],
+   "gap": 0.9
+  },
+  "Hero Giant Sparky": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    18,
+    20
+   ],
+   "bot": [
+    5,
+    12
+   ],
+   "gap": 0.483
+  },
+  "Goblin Drill, Hero Dark Prince, Evo Furn": {
+   "hist": [
+    0.667
+   ],
+   "status": "active",
+   "teacher": [
+    19,
+    20
+   ],
+   "bot": [
+    8,
+    12
+   ],
+   "gap": 0.283
+  },
+  "X-Bow, Sparky, Evo Mega Knight": {
+   "hist": [
+    0.167
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    2,
+    12
+   ],
+   "gap": 0.633
+  },
+  "Evo Electro Giant Phoenix Golden Knight ": {
+   "hist": [
+    0.75
+   ],
+   "status": "solved",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    9,
+    12
+   ],
+   "gap": 0.1
+  },
+  "Hero Balloon Freeze": {
+   "hist": [
+    0.68
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    17,
+    25
+   ],
+   "gap": 0.17
+  },
+  "Double Elixir Mega Knight Spawn": {
+   "hist": [
+    0.333
+   ],
+   "status": "active",
+   "teacher": [
+    11,
+    20
+   ],
+   "bot": [
+    4,
+    12
+   ],
+   "gap": 0.217
+  },
+  "Evo Skeleton Barrel, Giant, Evo Elite Ba": {
+   "hist": [
+    0.25
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    3,
+    12
+   ],
+   "gap": 0.55
+  },
+  "Royal Hogs, Cannon Cart, Mother Witch": {
+   "hist": [
+    0.154
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    2,
+    13
+   ],
+   "gap": 0.696
+  },
+  "Royal Recruits Fireball Bait #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    12,
+    20
+   ],
+   "gap": 0.6
+  },
+  "Evo Royal Hogs Earthquake": {
+   "hist": [
+    0.917
+   ],
+   "status": "solved",
+   "teacher": [
+    19,
+    20
+   ],
+   "bot": [
+    11,
+    12
+   ],
+   "gap": 0.033
+  },
+  "Evo Electro Giant, Mini P.E.K.K.A, Hero ": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    5,
+    12
+   ],
+   "gap": 0.433
+  },
+  "Golem Beatdown": {
+   "hist": [
+    0.75
+   ],
+   "status": "solved",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    9,
+    12
+   ],
+   "gap": 0.1
+  },
+  "Giant NW Mirror Heal": {
+   "hist": [
+    0.75
+   ],
+   "status": "solved",
+   "teacher": [
+    16,
+    19
+   ],
+   "bot": [
+    9,
+    12
+   ],
+   "gap": 0.092
+  },
+  "GS 3M Heal control": {
+   "hist": [
+    0.333
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    19
+   ],
+   "bot": [
+    4,
+    12
+   ],
+   "gap": 0.562
+  },
+  "Royal Recruits Fireball Bait": {
+   "hist": [
+    0.4
+   ],
+   "status": "active",
+   "teacher": [
+    13,
+    20
+   ],
+   "bot": [
+    10,
+    25
+   ],
+   "gap": 0.25
+  },
+  "Wall Breakers, Evo Mega Knight, Archer Q": {
+   "hist": [
+    0.25
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    3,
+    12
+   ],
+   "gap": 0.6
+  },
+  "Giant Graveyard #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "gap": 0.85
+  },
+  "Electro Giant Control": {
+   "hist": [
+    0.375
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    9,
+    24
+   ],
+   "gap": 0.425
+  },
+  "Goblin Drill Cycle": {
+   "hist": [
+    0.75
+   ],
+   "status": "active",
+   "teacher": [
+    20,
+    20
+   ],
+   "bot": [
+    9,
+    12
+   ],
+   "gap": 0.25
+  },
+  "Triple Elixir Evo Executioner Bomb Tower": {
+   "hist": [
+    0.583
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    7,
+    12
+   ],
+   "gap": 0.267
+  },
+  "Evo Skeleton Barrel, Evo Wall Breakers, ": {
+   "hist": [
+    0.667
+   ],
+   "status": "active",
+   "teacher": [
+    18,
+    20
+   ],
+   "bot": [
+    8,
+    12
+   ],
+   "gap": 0.233
+  },
+  "Golem, Skeleton King, Fisherman": {
+   "hist": [
+    0.333
+   ],
+   "status": "active",
+   "teacher": [
+    19,
+    20
+   ],
+   "bot": [
+    4,
+    12
+   ],
+   "gap": 0.617
+  },
+  "LavaLoon": {
+   "hist": [
+    0.385
+   ],
+   "status": "active",
+   "teacher": [
+    14,
+    20
+   ],
+   "bot": [
+    5,
+    13
+   ],
+   "gap": 0.315
+  },
+  "Giant Sparky": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    12,
+    20
+   ],
+   "bot": [
+    5,
+    12
+   ],
+   "gap": 0.183
+  },
+  "Evo Battle Ram, Skeleton King, Evo Royal": {
+   "hist": [
+    0.75
+   ],
+   "status": "solved",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    9,
+    12
+   ],
+   "gap": 0.05
+  },
+  "Elixir Golem, Sparky, Evo Elite Barbaria": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    5,
+    12
+   ],
+   "gap": 0.433
+  },
+  "Evo Royal Giant Mother Witch Fisherman": {
+   "hist": [
+    0.583
+   ],
+   "status": "active",
+   "teacher": [
+    19,
+    20
+   ],
+   "bot": [
+    7,
+    12
+   ],
+   "gap": 0.367
+  },
+  "Queen Bow #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    17,
+    19
+   ],
+   "gap": 0.895
+  },
+  "Evo Goblin Drill Cycle": {
+   "hist": [
+    0.917
+   ],
+   "status": "solved",
+   "teacher": [
+    20,
+    20
+   ],
+   "bot": [
+    11,
+    12
+   ],
+   "gap": 0.083
+  },
+  "Royal Giant": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    14,
+    20
+   ],
+   "bot": [
+    5,
+    12
+   ],
+   "gap": 0.283
+  },
+  "Giant Skelly Hog Miner eBarb beatdown": {
+   "hist": [
+    0.75
+   ],
+   "status": "active",
+   "teacher": [
+    19,
+    19
+   ],
+   "bot": [
+    9,
+    12
+   ],
+   "gap": 0.25
+  },
+  "Royal Hogs Earthquake": {
+   "hist": [
+    1.0
+   ],
+   "status": "solved",
+   "teacher": [
+    20,
+    20
+   ],
+   "bot": [
+    12,
+    12
+   ],
+   "gap": 0.0
+  },
+  "Evo Giant Sparky": {
+   "hist": [
+    0.333
+   ],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "bot": [
+    4,
+    12
+   ],
+   "gap": 0.417
+  },
+  "Lava Hound Beatdown #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    15,
+    19
+   ],
+   "gap": 0.789
+  },
+  "Electro Giant Control #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    13,
+    20
+   ],
+   "gap": 0.65
+  },
+  "Evo Royal Recruits Evo Archers Balloon": {
+   "hist": [
+    0.667
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    8,
+    12
+   ],
+   "gap": 0.133
+  },
+  "Goblin Drill, Hero Knight, Evo Furnace": {
+   "hist": [
+    0.833
+   ],
+   "status": "active",
+   "teacher": [
+    20,
+    20
+   ],
+   "bot": [
+    10,
+    12
+   ],
+   "gap": 0.167
+  },
+  "Evo Goblin Giant Sparky": {
+   "hist": [
+    0.083
+   ],
+   "status": "active",
+   "teacher": [
+    14,
+    20
+   ],
+   "bot": [
+    1,
+    12
+   ],
+   "gap": 0.617
+  },
+  "Hyperbait": {
+   "hist": [
+    0.375
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    9,
+    24
+   ],
+   "gap": 0.425
+  },
+  "Triple Elixir Evo Royal Recruits bait": {
+   "hist": [
+    0.25
+   ],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "bot": [
+    3,
+    12
+   ],
+   "gap": 0.5
+  },
+  "P.E.K.K.A Bridge Spam": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    14,
+    20
+   ],
+   "bot": [
+    20,
+    48
+   ],
+   "gap": 0.283
+  },
+  "Hog Rider, Three Musketeers, Evo Barbari": {
+   "hist": [
+    0.583
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    7,
+    12
+   ],
+   "gap": 0.217
+  },
+  "P.E.K.K.A Bridge Spam #3": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "gap": 0.8
+  },
+  "Balloon Cycle": {
+   "hist": [
+    0.96
+   ],
+   "status": "solved",
+   "teacher": [
+    19,
+    20
+   ],
+   "bot": [
+    24,
+    25
+   ],
+   "gap": -0.01
+  },
+  "Evo Skeleton Barrel, Suspicious Bush, Sk #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    13,
+    20
+   ],
+   "gap": 0.65
+  },
+  "Evo Goblin Drill, Golden Knight, Cannon ": {
+   "hist": [
+    1.0
+   ],
+   "status": "solved",
+   "teacher": [
+    20,
+    20
+   ],
+   "bot": [
+    12,
+    12
+   ],
+   "gap": 0.0
+  },
+  "LumberLoon": {
+   "hist": [
+    0.538
+   ],
+   "status": "active",
+   "teacher": [
+    13,
+    20
+   ],
+   "bot": [
+    14,
+    26
+   ],
+   "gap": 0.112
+  },
+  "LumberLoon Freeze": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    10,
+    24
+   ],
+   "gap": 0.433
+  },
+  "Log Bait": {
+   "hist": [
+    0.361
+   ],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "bot": [
+    13,
+    36
+   ],
+   "gap": 0.389
+  },
+  "Retro Royale Giant Sparky Rage": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "bot": [
+    5,
+    12
+   ],
+   "gap": 0.333
+  },
+  "Evo Skeleton Barrel, Wall Breakers, Evo ": {
+   "hist": [
+    0.167
+   ],
+   "status": "active",
+   "teacher": [
+    12,
+    20
+   ],
+   "bot": [
+    2,
+    12
+   ],
+   "gap": 0.433
+  },
+  "Evo Battle Ram Bridge Spam #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    12,
+    19
+   ],
+   "gap": 0.632
+  },
+  "Skeleton Dragons GS Clone": {
+   "hist": [
+    0.667
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    19
+   ],
+   "bot": [
+    8,
+    12
+   ],
+   "gap": 0.175
+  },
+  "Ram Rider, Boss Bandit, Mini P.E.K.K.A": {
+   "hist": [
+    0.5
+   ],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "bot": [
+    6,
+    12
+   ],
+   "gap": 0.25
+  },
+  "CRL Hogs": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    5,
+    12
+   ],
+   "gap": 0.383
+  },
+  "Hog Rider, Evo Mega Knight, Prince": {
+   "hist": [
+    0.25
+   ],
+   "status": "active",
+   "teacher": [
+    12,
+    20
+   ],
+   "bot": [
+    3,
+    12
+   ],
+   "gap": 0.35
+  },
+  "Evo Battle Ram, Giant Skeleton, Evo Lumb #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    20
+   ],
+   "gap": 0.4
+  },
+  "Evo Battle Ram, Golem, Three Musketeers": {
+   "hist": [
+    0.25
+   ],
+   "status": "active",
+   "teacher": [
+    9,
+    20
+   ],
+   "bot": [
+    3,
+    12
+   ],
+   "gap": 0.2
+  },
+  "Evo Mortar, Cannon Cart, Hero Valkyrie": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "bot": [
+    5,
+    12
+   ],
+   "gap": 0.333
+  },
+  "Lava Loon Clone eWiz": {
+   "hist": [
+    0.917
+   ],
+   "status": "solved",
+   "teacher": [
+    19,
+    19
+   ],
+   "bot": [
+    11,
+    12
+   ],
+   "gap": 0.083
+  },
+  "Evo Battle Ram, Evo Royal Recruits, Roya": {
+   "hist": [
+    0.333
+   ],
+   "status": "active",
+   "teacher": [
+    14,
+    20
+   ],
+   "bot": [
+    4,
+    12
+   ],
+   "gap": 0.367
+  },
+  "PEKKA Ghost bridge spam": {
+   "hist": [
+    0.75
+   ],
+   "status": "active",
+   "teacher": [
+    18,
+    20
+   ],
+   "bot": [
+    9,
+    12
+   ],
+   "gap": 0.15
+  },
+  "3.0 X-Bow Cycle": {
+   "hist": [
+    0.667
+   ],
+   "status": "active",
+   "teacher": [
+    19,
+    20
+   ],
+   "bot": [
+    8,
+    12
+   ],
+   "gap": 0.283
+  },
+  "Evo Battle Ram Bridge Spam": {
+   "hist": [
+    0.25
+   ],
+   "status": "active",
+   "teacher": [
+    13,
+    20
+   ],
+   "bot": [
+    6,
+    24
+   ],
+   "gap": 0.4
+  },
+  "Ram Rider, Monk, Bowler": {
+   "hist": [
+    0.75
+   ],
+   "status": "active",
+   "teacher": [
+    18,
+    20
+   ],
+   "bot": [
+    9,
+    12
+   ],
+   "gap": 0.15
+  },
+  "Log Bait #3": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "gap": 0.75
+  },
+  "Giant Graveyard": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    10,
+    24
+   ],
+   "gap": 0.433
+  },
+  "Elixir Golem, Evo Elite Barbarians, Moth": {
+   "hist": [
+    0.167
+   ],
+   "status": "active",
+   "teacher": [
+    11,
+    20
+   ],
+   "bot": [
+    2,
+    12
+   ],
+   "gap": 0.383
+  },
+  "P.E.K.K.A Bridge Spam #4": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    14,
+    20
+   ],
+   "gap": 0.7
+  },
+  "Pump Bow": {
+   "hist": [
+    0.5
+   ],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "bot": [
+    6,
+    12
+   ],
+   "gap": 0.25
+  },
+  "LumberLoon #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "gap": 0.75
+  },
+  "Lava Hound, Spirit Empress, Hero Dark Pr": {
+   "hist": [
+    0.5
+   ],
+   "status": "active",
+   "teacher": [
+    16,
+    20
+   ],
+   "bot": [
+    6,
+    12
+   ],
+   "gap": 0.3
+  },
+  "Ram Rider, Monk, Ice Wizard": {
+   "hist": [
+    1.0
+   ],
+   "status": "solved",
+   "teacher": [
+    20,
+    20
+   ],
+   "bot": [
+    12,
+    12
+   ],
+   "gap": 0.0
+  },
+  "Evo Battle Ram, Giant Skeleton, Evo Lumb": {
+   "hist": [
+    0.208
+   ],
+   "status": "active",
+   "teacher": [
+    9,
+    20
+   ],
+   "bot": [
+    5,
+    24
+   ],
+   "gap": 0.242
+  },
+  "Ice Bow": {
+   "hist": [
+    0.75
+   ],
+   "status": "active",
+   "teacher": [
+    20,
+    20
+   ],
+   "bot": [
+    9,
+    12
+   ],
+   "gap": 0.25
+  },
+  "Evo Royal Giant": {
+   "hist": [
+    0.639
+   ],
+   "status": "active",
+   "teacher": [
+    18,
+    20
+   ],
+   "bot": [
+    23,
+    36
+   ],
+   "gap": 0.261
+  },
+  "GobGiant Sparky EBarbs": {
+   "hist": [
+    0.333
+   ],
+   "status": "active",
+   "teacher": [
+    13,
+    20
+   ],
+   "bot": [
+    4,
+    12
+   ],
+   "gap": 0.317
+  },
+  "2.6 Hog Cycle": {
+   "hist": [
+    0.833
+   ],
+   "status": "active",
+   "teacher": [
+    19,
+    20
+   ],
+   "bot": [
+    10,
+    12
+   ],
+   "gap": 0.117
+  },
+  "P.E.K.K.A Bridge Spam #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    13,
+    20
+   ],
+   "gap": 0.65
+  },
+  "Royal Hogs, Giant Skeleton, Zappies": {
+   "hist": [
+    0.167
+   ],
+   "status": "active",
+   "teacher": [
+    11,
+    20
+   ],
+   "bot": [
+    2,
+    12
+   ],
+   "gap": 0.383
+  },
+  "Evo Skeleton Barrel, Suspicious Bush, Sk": {
+   "hist": [
+    0.417
+   ],
+   "status": "active",
+   "teacher": [
+    18,
+    20
+   ],
+   "bot": [
+    10,
+    24
+   ],
+   "gap": 0.483
+  },
+  "Skeleton Barrel, Wall Breakers, Evo Roya": {
+   "hist": [
+    0.583
+   ],
+   "status": "active",
+   "teacher": [
+    14,
+    20
+   ],
+   "bot": [
+    7,
+    12
+   ],
+   "gap": 0.117
+  },
+  "Evo Electro Giant Control #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "gap": 0.75
+  },
+  "Infinite Elixir Giant Skeleton Graveyard": {
+   "hist": [
+    0.667
+   ],
+   "status": "active",
+   "teacher": [
+    17,
+    20
+   ],
+   "bot": [
+    8,
+    12
+   ],
+   "gap": 0.183
+  },
+  "Hog Rider, Evo Mega Knight, Hero Berserk": {
+   "hist": [
+    0.333
+   ],
+   "status": "active",
+   "teacher": [
+    18,
+    20
+   ],
+   "bot": [
+    4,
+    12
+   ],
+   "gap": 0.567
+  },
+  "Log Bait #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    15,
+    20
+   ],
+   "gap": 0.75
+  }
+ },
+ "xbow": {
+  "Hyperbait #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Balloon Cycle #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Three Musketeers": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Ram Rider, Monk, Hero Ice Wizard": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Hog Rider, Giant Skeleton, Cannon Cart": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    7,
+    10
+   ],
+   "gap": 0.7
+  },
+  "Three Musketeers #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Hero Giant Graveyard": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    7,
+    10
+   ],
+   "gap": 0.7
+  },
+  "Golem Cannon Cart": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Evo Electro Giant Control": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Evo Battle Ram, Cannon Cart, Royal Ghost": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Evo Minion Horde Evo Battle Ram Three Mu": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "SD Splashyard Freeze": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "LumberLoon Freeze #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Lava Hound Beatdown": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Royal Hogs, Evo P.E.K.K.A, Skeleton King": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Hero Balloon Freeze #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Evo P.E.K.K.A Bridge Spam": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Queen Bow": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Evo Royal Giant #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Evo Royal Giant #3": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Hero Giant Sparky": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Goblin Drill, Hero Dark Prince, Evo Furn": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "X-Bow, Sparky, Evo Mega Knight": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    9
+   ],
+   "gap": 0.889
+  },
+  "Evo Electro Giant Phoenix Golden Knight ": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Hero Balloon Freeze": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Log Bait #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Double Elixir Mega Knight Spawn": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Evo Skeleton Barrel, Giant, Evo Elite Ba": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Royal Recruits Fireball Bait #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    5,
+    10
+   ],
+   "gap": 0.5
+  },
+  "Royal Hogs, Cannon Cart, Mother Witch": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Evo Electro Giant, Mini P.E.K.K.A, Hero ": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Evo Royal Hogs Earthquake": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Golem Beatdown": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Giant NW Mirror Heal": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "GS 3M Heal control": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Royal Recruits Fireball Bait": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Wall Breakers, Evo Mega Knight, Archer Q": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Giant Graveyard #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    5,
+    9
+   ],
+   "gap": 0.556
+  },
+  "Electro Giant Control": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Goblin Drill Cycle": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Triple Elixir Evo Executioner Bomb Tower": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Evo Skeleton Barrel, Evo Wall Breakers, ": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Golem, Skeleton King, Fisherman": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "LavaLoon": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    10
+   ],
+   "gap": 0.8
+  },
+  "Giant Sparky": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    10
+   ],
+   "gap": 0.8
+  },
+  "Evo Battle Ram, Skeleton King, Evo Royal": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Elixir Golem, Sparky, Evo Elite Barbaria": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    6,
+    9
+   ],
+   "gap": 0.667
+  },
+  "Evo Royal Giant Mother Witch Fisherman": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Queen Bow #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Evo Goblin Drill Cycle": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Royal Giant": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    5,
+    10
+   ],
+   "gap": 0.5
+  },
+  "Giant Skelly Hog Miner eBarb beatdown": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Royal Hogs Earthquake": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Evo Giant Sparky": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    10
+   ],
+   "gap": 0.8
+  },
+  "Lava Hound Beatdown #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Electro Giant Control #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    7,
+    9
+   ],
+   "gap": 0.778
+  },
+  "Evo Royal Recruits Evo Archers Balloon": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Goblin Drill, Hero Knight, Evo Furnace": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Evo Goblin Giant Sparky": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    6,
+    10
+   ],
+   "gap": 0.6
+  },
+  "Triple Elixir Evo Royal Recruits bait": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    10
+   ],
+   "gap": 0.8
+  },
+  "Hyperbait": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "P.E.K.K.A Bridge Spam": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    7,
+    10
+   ],
+   "gap": 0.7
+  },
+  "Hog Rider, Three Musketeers, Evo Barbari": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    10
+   ],
+   "gap": 0.8
+  },
+  "P.E.K.K.A Bridge Spam #3": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Balloon Cycle": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Evo Skeleton Barrel, Suspicious Bush, Sk #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    9
+   ],
+   "gap": 0.889
+  },
+  "Evo Goblin Drill, Golden Knight, Cannon ": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "LumberLoon": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "LumberLoon Freeze": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Log Bait": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Retro Royale Giant Sparky Rage": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Evo Battle Ram Bridge Spam #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    7,
+    9
+   ],
+   "gap": 0.778
+  },
+  "Evo Skeleton Barrel, Wall Breakers, Evo ": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Skeleton Dragons GS Clone": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Ram Rider, Boss Bandit, Mini P.E.K.K.A": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    10
+   ],
+   "gap": 0.8
+  },
+  "CRL Hogs": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Hog Rider, Evo Mega Knight, Prince": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    9
+   ],
+   "gap": 0.889
+  },
+  "Evo Battle Ram, Golem, Three Musketeers": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Evo Battle Ram, Giant Skeleton, Evo Lumb #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Evo Mortar, Cannon Cart, Hero Valkyrie": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    7,
+    10
+   ],
+   "gap": 0.7
+  },
+  "Lava Loon Clone eWiz": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Evo Battle Ram, Evo Royal Recruits, Roya": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "PEKKA Ghost bridge spam": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "3.0 X-Bow Cycle": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Evo Battle Ram Bridge Spam": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    7,
+    9
+   ],
+   "gap": 0.778
+  },
+  "Log Bait #3": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    10
+   ],
+   "gap": 0.8
+  },
+  "Ram Rider, Monk, Bowler": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Giant Graveyard": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    4,
+    10
+   ],
+   "gap": 0.4
+  },
+  "Elixir Golem, Evo Elite Barbarians, Moth": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "P.E.K.K.A Bridge Spam #4": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    7,
+    9
+   ],
+   "gap": 0.778
+  },
+  "LumberLoon #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Pump Bow": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Lava Hound, Spirit Empress, Hero Dark Pr": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Evo Battle Ram, Giant Skeleton, Evo Lumb": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    10
+   ],
+   "gap": 0.8
+  },
+  "Ice Bow": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "GobGiant Sparky EBarbs": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Evo Royal Giant": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "2.6 Hog Cycle": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "P.E.K.K.A Bridge Spam #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    10
+   ],
+   "gap": 0.9
+  },
+  "Royal Hogs, Giant Skeleton, Zappies": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Evo Electro Giant Control #2": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    8,
+    9
+   ],
+   "gap": 0.889
+  },
+  "Skeleton Barrel, Wall Breakers, Evo Roya": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    7,
+    10
+   ],
+   "gap": 0.7
+  },
+  "Evo Skeleton Barrel, Suspicious Bush, Sk": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    9,
+    9
+   ],
+   "gap": 1.0
+  },
+  "Infinite Elixir Giant Skeleton Graveyard": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  },
+  "Hog Rider, Evo Mega Knight, Hero Berserk": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    7,
+    9
+   ],
+   "gap": 0.778
+  },
+  "Ram Rider, Monk, Ice Wizard": {
+   "hist": [],
+   "status": "active",
+   "teacher": [
+    10,
+    10
+   ],
+   "gap": 1.0
+  }
+ },
+ "solved_any": 12,
+ "paused_any": 0,
+ "decks_any": 106,
+ "solved_xbow": 0,
+ "paused_xbow": 0,
+ "decks_xbow": 106
+}
