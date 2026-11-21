@@ -553,7 +553,7 @@ def main():
                         adv = (adv / (adv[ow > 0].std() + 1e-6)).clamp(-3, 3)
                         xa = torch.from_numpy(pk["X"][:, ix].reshape(-1)).long()
                         lpg = -(adv * logp.gather(1, xa.unsqueeze(1)).squeeze(1) * ow).sum() / ow.sum()
-                        loss = loss + a.pg * lpg; pg_l.append(float(lpg))
+                        loss = loss + a.pg * lpg; pg_l.append(float(lpg.detach()))
                 opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(net.parameters(), 1.0); opt.step()
                 with torch.no_grad():
                     pr = lg.argmax(1); pl = y != 0
