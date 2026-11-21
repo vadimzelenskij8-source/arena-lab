@@ -1,0 +1,30 @@
+matchup weights 2.04 max x mean
+api decks 5089
+resumed <All keys matched successfully>
+league ['champ']
+carried 346 0.5078
+/home/runner/work/arena-lab/arena-lab/train/distill.py:584: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  "soft": round(float(lsoft), 4), "value_loss": round(float(lval), 4),
+{'iter': 350, 't': 1795270753, 'episodes': 0, 'beta': 0.396, 'winrate_last200': None, 'bc_loss': 0.7794, 'acc_play': 0.263, 'acc_wait': 0.988, 'aux_hand': 0.0141, 'teacher_changed': 0.759, 'soft': 2.6498, 'value_loss': 0.0013, 'forks': 0, 'delayed': 0, 'league': {'champ': [0, 0]}, 'pg': -0.0467} {'net': 14.2, 'bots': 9.0, 'teacher': 73.6, 'sim': 3.4, 'learn': 141.3}
+{'iter': 360, 't': 1795271400, 'episodes': 50, 'beta': 0.382, 'winrate_last200': 0.3, 'bc_loss': 0.5271, 'acc_play': 0.214, 'acc_wait': 0.984, 'aux_hand': 0.0138, 'teacher_changed': 0.799, 'soft': 2.3412, 'value_loss': 0.0028, 'forks': 0, 'delayed': 0, 'league': {'champ': [15, 50]}, 'pg': 0.1229} {'net': 46.6, 'bots': 24.7, 'teacher': 298.9, 'sim': 9.8, 'learn': 508.8}
+{'iter': 370, 't': 1795272016, 'episodes': 59, 'beta': 0.368, 'winrate_last200': 0.271, 'bc_loss': 0.9507, 'acc_play': 0.218, 'acc_wait': 0.983, 'aux_hand': 0.0143, 'teacher_changed': 0.795, 'soft': 3.6694, 'value_loss': 0.0048, 'forks': 0, 'delayed': 0, 'league': {'champ': [16, 59]}, 'pg': 0.1118} {'net': 78.9, 'bots': 42.6, 'teacher': 495.0, 'sim': 15.7, 'learn': 871.6}
+mini_eval 370 0.4609
+{'iter': 380, 't': 1795272734, 'episodes': 67, 'beta': 0.352, 'winrate_last200': 0.269, 'bc_loss': 0.5826, 'acc_play': 0.227, 'acc_wait': 0.984, 'aux_hand': 0.0153, 'teacher_changed': 0.801, 'soft': 2.9919, 'value_loss': 0.004, 'forks': 0, 'delayed': 0, 'league': {'champ': [18, 67]}, 'pg': -0.0089} {'net': 111.0, 'bots': 60.0, 'teacher': 698.6, 'sim': 21.9, 'learn': 1240.0}
+{'iter': 390, 't': 1795273391, 'episodes': 131, 'beta': 0.337, 'winrate_last200': 0.252, 'bc_loss': 0.6104, 'acc_play': 0.239, 'acc_wait': 0.98, 'aux_hand': 0.0144, 'teacher_changed': 0.793, 'soft': 3.4558, 'value_loss': 0.0084, 'forks': 0, 'delayed': 0, 'league': {'champ': [33, 131]}, 'pg': 0.0676} {'net': 142.4, 'bots': 75.7, 'teacher': 936.1, 'sim': 27.7, 'learn': 1606.0}
+mini_eval 394 0.4531
+{'iter': 400, 't': 1795274098, 'episodes': 178, 'beta': 0.321, 'winrate_last200': 0.247, 'bc_loss': 0.6374, 'acc_play': 0.224, 'acc_wait': 0.986, 'aux_hand': 0.0142, 'teacher_changed': 0.791, 'soft': 3.1155, 'value_loss': 0.0029, 'forks': 0, 'delayed': 0, 'league': {'champ': [44, 178]}, 'pg': 0.0498} {'net': 174.3, 'bots': 92.5, 'teacher': 1126.9, 'sim': 33.9, 'learn': 1975.7}
+{'iter': 410, 't': 1795274715, 'episodes': 189, 'beta': 0.308, 'winrate_last200': 0.238, 'bc_loss': 0.7346, 'acc_play': 0.227, 'acc_wait': 0.981, 'aux_hand': 0.0139, 'teacher_changed': 0.792, 'soft': 2.9337, 'value_loss': 0.0039, 'forks': 0, 'delayed': 0, 'league': {'champ': [45, 189]}, 'pg': -0.0662} {'net': 206.6, 'bots': 110.3, 'teacher': 1321.2, 'sim': 40.7, 'learn': 2340.7}
+mini_eval 419 0.4688
+{'iter': 420, 't': 1795275414, 'episodes': 249, 'beta': 0.292, 'winrate_last200': 0.241, 'bc_loss': 0.4229, 'acc_play': 0.273, 'acc_wait': 0.987, 'aux_hand': 0.0145, 'teacher_changed': 0.791, 'soft': 3.2761, 'value_loss': 0.0007, 'forks': 0, 'delayed': 0, 'league': {'champ': [60, 249]}, 'pg': 0.0083} {'net': 238.3, 'bots': 126.6, 'teacher': 1508.5, 'sim': 47.1, 'learn': 2711.5}
+{'iter': 430, 't': 1795276040, 'episodes': 267, 'beta': 0.279, 'winrate_last200': 0.225, 'bc_loss': 0.7476, 'acc_play': 0.217, 'acc_wait': 0.986, 'aux_hand': 0.0148, 'teacher_changed': 0.792, 'soft': 3.0519, 'value_loss': 0.005, 'forks': 0, 'delayed': 0, 'league': {'champ': [60, 267]}, 'pg': 0.1369} {'net': 270.3, 'bots': 144.8, 'teacher': 1715.5, 'sim': 52.3, 'learn': 3074.5}
+{'iter': 440, 't': 1795276683, 'episodes': 326, 'beta': 0.264, 'winrate_last200': 0.207, 'bc_loss': 0.9714, 'acc_play': 0.26, 'acc_wait': 0.982, 'aux_hand': 0.014, 'teacher_changed': 0.793, 'soft': 3.2697, 'value_loss': 0.0036, 'forks': 0, 'delayed': 0, 'league': {'champ': [70, 326]}, 'pg': 0.1425} {'net': 302.5, 'bots': 162.3, 'teacher': 1932.0, 'sim': 59.1, 'learn': 3443.8}
+mini_eval 444 0.4922
+{'iter': 450, 't': 1795277352, 'episodes': 329, 'beta': 0.249, 'winrate_last200': 0.207, 'bc_loss': 0.5882, 'acc_play': 0.276, 'acc_wait': 0.982, 'aux_hand': 0.0139, 'teacher_changed': 0.797, 'soft': 2.6397, 'value_loss': 0.0053, 'forks': 0, 'delayed': 0, 'league': {'champ': [71, 329]}, 'pg': -0.1148} {'net': 334.2, 'bots': 181.3, 'teacher': 2087.9, 'sim': 65.7, 'learn': 3813.2}
+{'iter': 460, 't': 1795277991, 'episodes': 390, 'beta': 0.235, 'winrate_last200': 0.203, 'bc_loss': 0.3614, 'acc_play': 0.271, 'acc_wait': 0.985, 'aux_hand': 0.0138, 'teacher_changed': 0.799, 'soft': 3.0824, 'value_loss': 0.019, 'forks': 0, 'delayed': 0, 'league': {'champ': [84, 390]}, 'pg': 0.0492} {'net': 365.9, 'bots': 198.2, 'teacher': 2306.8, 'sim': 72.4, 'learn': 4177.8}
+mini_eval 468 0.5312
+{'iter': 470, 't': 1795278727, 'episodes': 434, 'beta': 0.219, 'winrate_last200': 0.193, 'bc_loss': 0.8716, 'acc_play': 0.221, 'acc_wait': 0.985, 'aux_hand': 0.0135, 'teacher_changed': 0.798, 'soft': 3.4123, 'value_loss': 0.0013, 'forks': 0, 'delayed': 0, 'league': {'champ': [93, 434]}, 'pg': 0.0507} {'net': 397.9, 'bots': 216.0, 'teacher': 2541.5, 'sim': 79.7, 'learn': 4534.9}
+{'iter': 480, 't': 1795279359, 'episodes': 488, 'beta': 0.204, 'winrate_last200': 0.207, 'bc_loss': 0.4538, 'acc_play': 0.27, 'acc_wait': 0.991, 'aux_hand': 0.0154, 'teacher_changed': 0.8, 'soft': 3.2476, 'value_loss': 0.0294, 'forks': 0, 'delayed': 0, 'league': {'champ': [107, 488]}, 'pg': 0.0072} {'net': 430.2, 'bots': 233.5, 'teacher': 2769.4, 'sim': 85.3, 'learn': 4883.2}
+search exam 0.8516 384
+vs champion 0.4102 256
+eval {'games': 2112, 'winrate': 0.4635, 'wins': 979, 'losses': 1128, 'draws': 5, 'faults': 0} xbow 0.3057 any_vs_any 0.5328
