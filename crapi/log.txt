@@ -1,0 +1,7 @@
+cards endpoint: http 200, 123 cards
+api cards 123, in sim pool 123, not in sim: []
+ranking /locations/global/pathoflegend/players: http 200, items 20
+players 0/20, battles 30, unique decks 13
+DONE players 20, 1v1 battles 606, unique supported decks 178
+battle types: {'pathOfLegend': 468, 'unknown': 55, 'friendly': 45, 'trail': 8, 'quickplay': 7, 'boatBattle': 6, 'clanMate': 5, 'tournament': 5}
+unsupported cards (skipped decks): {}
