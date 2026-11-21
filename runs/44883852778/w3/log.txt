@@ -1,0 +1,10 @@
+matchup weights 2.04 max x mean
+api decks 5089
+resumed <All keys matched successfully>
+league ['champ']
+/home/runner/work/arena-lab/arena-lab/train/distill.py:556: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  loss = loss + a.pg * lpg; pg_l.append(float(lpg))
+search exam 0.8359 128
+vs champion 0.4141 128
+eval {'games': 640, 'winrate': 0.5078, 'wins': 325, 'losses': 307, 'draws': 8, 'faults': 0} xbow 0.35 any_vs_any 0.525

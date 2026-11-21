@@ -1,0 +1,10 @@
+matchup weights 2.04 max x mean
+api decks 5089
+resumed <All keys matched successfully>
+league ['gen001', 'gen002']
+/home/runner/work/arena-lab/arena-lab/train/distill.py:584: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  "soft": round(float(lsoft), 4), "value_loss": round(float(lval), 4),
+search exam 0.8359 128
+vs champion 0.3828 128
+eval {'games': 640, 'winrate': 0.4609, 'wins': 295, 'losses': 345, 'draws': 0, 'faults': 0} xbow 0.2969 any_vs_any 0.4719
