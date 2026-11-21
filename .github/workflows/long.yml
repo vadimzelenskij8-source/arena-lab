@@ -64,6 +64,7 @@ jobs:
           git show origin/results:$SRC/matchup_weights.json > mw.json 2>/dev/null || rm -f mw.json
           cp out/policy.pt champ.pt 2>/dev/null || true
           git show origin/results:crapi/decks_api.json > api.json 2>/dev/null || rm -f api.json
+          git show origin/results:$SRC/eval.json 2>/dev/null | python3 -c "import json,sys; json.dump(json.load(sys.stdin).get('by_card',{}),open('cw.json','w'))" 2>/dev/null || rm -f cw.json
           ls -la out
       - name: train2
         run: |
@@ -110,6 +111,7 @@ jobs:
           git show origin/results:$SRC/matchup_weights.json > mw.json 2>/dev/null || rm -f mw.json
           cp out/policy.pt champ.pt 2>/dev/null || true
           git show origin/results:crapi/decks_api.json > api.json 2>/dev/null || rm -f api.json
+          git show origin/results:$SRC/eval.json 2>/dev/null | python3 -c "import json,sys; json.dump(json.load(sys.stdin).get('by_card',{}),open('cw.json','w'))" 2>/dev/null || rm -f cw.json
           ls -la out
       - name: train2
         run: |
@@ -158,6 +160,7 @@ jobs:
           git show origin/results:$SRC/matchup_weights.json > mw.json 2>/dev/null || rm -f mw.json
           cp out/policy.pt champ.pt 2>/dev/null || true
           git show origin/results:crapi/decks_api.json > api.json 2>/dev/null || rm -f api.json
+          git show origin/results:$SRC/eval.json 2>/dev/null | python3 -c "import json,sys; json.dump(json.load(sys.stdin).get('by_card',{}),open('cw.json','w'))" 2>/dev/null || rm -f cw.json
           cp carry/policy.pt out/policy.pt 2>/dev/null || true
           ls -la out carry
       - name: train2
@@ -209,6 +212,7 @@ jobs:
           git show origin/results:$SRC/matchup_weights.json > mw.json 2>/dev/null || rm -f mw.json
           cp out/policy.pt champ.pt 2>/dev/null || true
           git show origin/results:crapi/decks_api.json > api.json 2>/dev/null || rm -f api.json
+          git show origin/results:$SRC/eval.json 2>/dev/null | python3 -c "import json,sys; json.dump(json.load(sys.stdin).get('by_card',{}),open('cw.json','w'))" 2>/dev/null || rm -f cw.json
           cp carry/policy.pt out/policy.pt 2>/dev/null || true
           ls -la out carry
       - name: train2
@@ -220,7 +224,7 @@ jobs:
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/$ALGO.py --install sim/env --tables sim/tables --out out --envs $E --threads 4 \
-            --minutes $(( ${{ github.event.inputs.seg_minutes || '280' }} + 110 )) --eval-minutes 110 --eval-games 2120 --xbow-games 1060 --ava-games 640 --search-games 384 --champ-games 256 --final 1 --p0 0.6667 --p1 1.0000 --carry carry \
+            --minutes $(( ${{ github.event.inputs.seg_minutes || '280' }} + 120 )) --eval-minutes 120 --eval-games 2120 --xbow-games 1060 --ava-games 640 --search-games 192 --noisy-games 192 --champ-games 128 --final 1 --p0 0.6667 --p1 1.0000 --carry carry \
             --seed $(( ${{ github.run_number }} * 100 + W + 3000 )) $HP $R 2>&1 | tee out/full.txt | grep -v "^{'iter'" ; R=$?; tail -c 20000 out/full.txt > out/log.txt; rm out/full.txt; exit $R
           
       - uses: actions/upload-artifact@v4

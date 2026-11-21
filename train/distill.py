@@ -89,6 +89,14 @@ def main():
     ap.add_argument("--search-games", type=int, default=0, help="B: exam of network + search in battle")
     ap.add_argument("--champ-games", type=int, default=0, help="exam vs the frozen champion (exploiters)")
     ap.add_argument("--ceil-seed", type=int, default=10 ** 6)
+    # main loop: the network + search teaches the network (expert iteration)
+    ap.add_argument("--selfsearch", type=int, default=0, help="search refines the network's own move; its choice is the label")
+    ap.add_argument("--p-old0", type=float, default=0.5, help="soft start: share of moves where the search starts from the old scripted proposal")
+    ap.add_argument("--p-old1", type=float, default=0.1)
+    ap.add_argument("--sw", type=float, default=0.0, help="weight of the network's position value inside the search")
+    ap.add_argument("--v0-w", type=float, default=0.5, help="train the value from a fresh memory too: what the search sees")
+    ap.add_argument("--noisy-games", type=int, default=0, help="search exam with phone-like latency and tap error")
+    ap.add_argument("--card-w", default="", help="per-card exam results: decks with weak cards are trained more")
     ap.add_argument("--champ", default="", help="the current champion (frozen): exploiters' opponent and the vs-champion exam")
     a = ap.parse_args()
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
@@ -168,7 +176,13 @@ def main():
         if API:  # card balance: decks of rarely played cards are sampled more often
             from collections import Counter
             cf_ = Counter(c for d in API for c in d["cards"])
-            w_ = np.array([np.mean([cf_[c] ** -0.5 for c in d["cards"]]) for d in API]); API_P = w_ / w_.sum()
+            CW = {}
+            if a.card_w and Path(a.card_w).exists():
+                for c, (wn, gm) in json.load(open(a.card_w)).items():
+                    if gm >= 30:
+                        CW[c] = 1.0 + 3.0 * max(0.0, 0.5 - wn / gm)  # a 30% card: x1.6
+            w_ = np.array([np.mean([cf_[c] ** -0.5 * CW.get(c, 1.0) for c in d["cards"]]) for d in API]); API_P = w_ / w_.sum()
+            print("weak cards boosted", len(CW), flush=True)
         print("api decks", len(API), flush=True)
         card_use = defaultdict(int)
 
@@ -271,12 +285,14 @@ def main():
             b = dict(rid=en["rid"], st=en["st"], kind=en["kind"], side=en["side"], num=en["num"], valid=en["valid"],
                      tile=en["tile"], g=g, hstat=hst, deck=dk, dstat=dst, **ids)
             with torch.no_grad():
-                z, _tf, _hd = net.encode(to_t(b)); h = net.gru(z, torch.zeros(len(O), 256))
+                z, _tf, _hd = net.encode(to_t(b)); h = net.gru(z, torch.zeros(len(O), 256)); h = h + net.wide(h)
                 return net.v(h).squeeze(-1).numpy()
         if a.vteach > 0 and a.fork == 2:
             teacher.value_fn, teacher.vw = vfn, a.vteach
         if a.az and not a.fork:
             teacher.value_fn, teacher.vw = vfn, a.az_vw
+        if a.sw > 0:
+            teacher.value_fn, teacher.vw = vfn, a.sw
 
         def fresh():
             return dict(h=torch.zeros(N, 256), last_play=np.full((N, 8), -1, np.int64), prev_seen=np.full((N, 8), -1, np.int64))
@@ -314,6 +330,14 @@ def main():
                 topk_ = (play_[:, :4 * enc.s.cols * enc.s.rows].topk(a.top, 1).indices + 1).numpy()
             return ac_, hn_, topk_
 
+        def tap_noise(x, mk_, r_):
+            if 0 < x < 2305 and r_.random() < 0.15:
+                sl, tl = divmod(x - 1, 576); rr_, cc_ = divmod(tl, 18)
+                r2, c2 = min(31, max(0, rr_ + int(r_.integers(-1, 2)))), min(17, max(0, cc_ + int(r_.integers(-1, 2))))
+                y_ = 1 + sl * 576 + r2 * 18 + c2
+                return y_ if mk_[y_] else x
+            return x
+
         def run_eval(n_games, seed_base, any_deck=True, opp_any=False, player="net", part=None, opp="scripted"):
             """player: "net" (the network alone, as on the phone) or "teacher" (scripted + lookahead: the
             practical ceiling of each matchup). part=(k, K): only every K-th batch, from k (split jobs)."""
@@ -327,14 +351,21 @@ def main():
                 mine = [ANY[(bi * N + i) % len(ANY)] for i in range(N)] if any_deck else None
                 seats = reset_all(seed_base + bi * 1009, ds, mine=mine)
                 st = fresh(); stc = fresh(); done = np.zeros(N, bool); ot = np.zeros(N, bool)
+                pend = np.zeros(N, np.int64); nrng = np.random.default_rng(seed_base + bi)
                 for step_ in range(1800):
                     O, M, b = batch_obs(seats, st)
                     if player == "teacher":
                         pr_ = scripted_batch(vec, jpol, seats, seed_base + bi * 37 + step_ + 5)
                         ac = teacher.refine(pr_, seats, ~done)
-                    elif player == "search":  # B: the network proposes, a short lookahead picks (as the phone twin will)
+                    elif player in ("search", "noisy"):  # B: the network proposes, a short lookahead picks (as the phone twin will)
                         ac0, st["h"], tk = net_act(net, b, M, st["h"])
                         ac = teacher.refine(ac0, seats, ~done, extra=[list(tk[i]) for i in range(N)])
+                        if player == "noisy":  # the phone: the move lands one decision later, the tap may miss by a tile
+                            ac_now = np.zeros(N, np.int64)
+                            for i in range(N):
+                                mk_ = vec.masks[i, seats[i]]; x_ = int(pend[i])
+                                ac_now[i] = tap_noise(x_, mk_, nrng) if (0 < x_ and mk_[x_]) else 0
+                            pend = np.asarray(ac, np.int64).copy(); ac = ac_now
                     else:
                         with torch.no_grad():
                             bt = to_t(b); z, tf, hand = net.encode(bt); st["h"] = net.gru(z, st["h"])
@@ -453,6 +484,12 @@ def main():
                     extra = [[int(x) for x, ok in zip(gk[i], okp[i]) if ok] for i in range(N)]
                     active = np.array([(0 < prop[i] < 2305) or (0 < own[i] < 2305) for i in range(N)])
                     tact, soft = teacher.refine2(prop, seats, active, extra)
+                elif a.selfsearch:  # expert iteration: search around the network's own move (+ its top plays + the old proposal)
+                    p_old = a.p_old0 + (a.p_old1 - a.p_old0) * min(1.0, (time.time() - t0) / max(1, t_train_end - t0))
+                    nb_ = lg.argmax(1).numpy(); nb_ = np.where(nb_ == lg.shape[1] - 1, prop, nb_)  # delegate -> scripted
+                    base_ = np.where(rng.random(N) < p_old, prop, nb_)
+                    extra = [[int(x) for x, ok in zip(gk[i], okp[i]) if ok] + ([int(prop[i])] if 0 < prop[i] < 2305 else []) for i in range(N)]
+                    tact = teacher.refine(base_, seats, np.ones(N, bool), extra); soft = teacher.soft
                 elif a.az:
                     extra = [[int(x) for x, ok in zip(gk[i], okp[i]) if ok] for i in range(N)]
                     tact = teacher.refine(prop, seats, np.ones(N, bool), extra); soft = teacher.soft
@@ -545,6 +582,9 @@ def main():
                 lsoft = -(sp * logp.gather(1, sk.clamp(min=0)) * (sk >= 0)).sum(1)
                 lsoft = lsoft[has].mean() if has.any() else torch.zeros(())
                 lval = F.mse_loss(vv_, torch.from_numpy(pk["RET"][:, ix].reshape(-1)))
+                if a.v0_w > 0:  # the search asks the value of a position with a fresh memory: train exactly that
+                    h0z = net.gru(z.reshape(T * nb, -1), torch.zeros(T * nb, 256)); h0z = h0z + net.wide(h0z)
+                    lval = lval + a.v0_w * F.mse_loss(net.v(h0z).squeeze(-1), torch.from_numpy(pk["RET"][:, ix].reshape(-1)))
                 loss = lbc + a.soft_w * lsoft + a.val_w * lval + 0.1 * la + 0.1 * le
                 if a.pg > 0 and fresh_ and "OW" in pk:  # D: learn from results on its own moves; BC keeps it near the teacher
                     ow = torch.from_numpy(pk["OW"][:, ix].reshape(-1))
@@ -622,6 +662,10 @@ def main():
             evs = run_eval(a.search_games, 10 ** 6, player="search")
             ev["search"] = {k: evs[k] for k in ("games", "winrate", "wins", "losses")}
             print("search exam", evs["winrate"], evs["games"], flush=True)
+        if a.noisy_games:
+            evn = run_eval(a.noisy_games, 10 ** 6, player="noisy")
+            ev["noisy"] = {k: evn[k] for k in ("games", "winrate", "wins", "losses")}
+            print("noisy search exam", evn["winrate"], evn["games"], flush=True)
         if a.champ_games and champ is not None:  # how well this policy beats the current champion
             evc = run_eval(a.champ_games, 3 * 10 ** 6, opp="champ")
             ev["vs_champ"] = {k: evc[k] for k in ("games", "winrate", "wins", "losses")}

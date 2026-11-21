@@ -222,6 +222,8 @@ class Net(nn.Module):
         self.abil = nn.Linear(256, 2)
         self.dele = nn.Linear(256, 1)
         self.v = nn.Linear(256, 1)
+        self.wide = nn.Sequential(nn.Linear(256, 512), nn.ReLU(), nn.Linear(512, 256))  # more capacity for the heads
+        nn.init.zeros_(self.wide[2].weight); nn.init.zeros_(self.wide[2].bias)
         self.aux_hand = nn.Linear(256, enc.V)
         self.aux_el = nn.Linear(256, 1)
         ys, xs = torch.meshgrid(torch.linspace(0, 1, 32), torch.linspace(0, 1, 18), indexing="ij")
@@ -262,6 +264,7 @@ class Net(nn.Module):
 
     def heads(self, h, tf, hand, b, mask):
         B = h.shape[0]
+        h = h + self.wide(h)
         hs = torch.cat([h.unsqueeze(1).expand(-1, 4, -1), hand, b["hstat"]], -1)
         q = self.slot(hs)  # [B,4,33]
         tiles = torch.einsum("bct,bsc->bst", tf, q[:, :, :32]) + q[:, :, 32:]  # [B,4,576]
