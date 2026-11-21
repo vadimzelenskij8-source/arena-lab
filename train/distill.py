@@ -360,12 +360,18 @@ def main():
                     elif player in ("search", "noisy"):  # B: the network proposes, a short lookahead picks (as the phone twin will)
                         ac0, st["h"], tk = net_act(net, b, M, st["h"])
                         ac = teacher.refine(ac0, seats, ~done, extra=[list(tk[i]) for i in range(N)])
-                        if player == "noisy":  # the phone: the move lands one decision later, the tap may miss by a tile
-                            ac_now = np.zeros(N, np.int64)
+                        if player == "noisy":  # the phone app's latency: ~125 ms on average
+                            # one decision = 5 ticks of 1/30 s = 167 ms; a move lands one decision later with p=0.75
+                            ac = np.asarray(ac, np.int64).copy(); ac_now = np.zeros(N, np.int64)
                             for i in range(N):
-                                mk_ = vec.masks[i, seats[i]]; x_ = int(pend[i])
-                                ac_now[i] = tap_noise(x_, mk_, nrng) if (0 < x_ and mk_[x_]) else 0
-                            pend = np.asarray(ac, np.int64).copy(); ac = ac_now
+                                mk_ = vec.masks[i, seats[i]]; x_ = int(pend[i]); pend[i] = 0
+                                if 0 < x_ and mk_[x_]:
+                                    ac_now[i] = x_  # the delayed move from the previous decision
+                                elif ac[i] > 0 and nrng.random() < 0.75:
+                                    pend[i] = ac[i]
+                                else:
+                                    ac_now[i] = ac[i]
+                            ac = ac_now
                     else:
                         with torch.no_grad():
                             bt = to_t(b); z, tf, hand = net.encode(bt); st["h"] = net.gru(z, st["h"])
