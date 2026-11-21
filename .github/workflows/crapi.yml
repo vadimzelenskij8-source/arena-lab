@@ -18,7 +18,8 @@ jobs:
         env:
           CR_API_KEY: ${{ secrets.CR_API_KEY }}
         run: |
-          python3 train/crapi.py --mode ${{ inputs.mode || 'collect' }} --players ${{ inputs.players || '1000' }} --out /tmp/decks_api.json 2>&1 | tee /tmp/crapi_log.txt
+          git fetch -q origin results && git show origin/results:crapi/decks_api.json > /tmp/prev.json 2>/dev/null || rm -f /tmp/prev.json
+          python3 train/crapi.py --merge /tmp/prev.json --mode ${{ inputs.mode || 'collect' }} --players ${{ inputs.players || '1000' }} --out /tmp/decks_api.json 2>&1 | tee /tmp/crapi_log.txt
       - name: publish
         if: always()
         run: |

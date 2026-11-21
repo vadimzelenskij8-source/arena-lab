@@ -60,6 +60,7 @@ def main():
     ap.add_argument("--mode", default="test")
     ap.add_argument("--players", type=int, default=1000)
     ap.add_argument("--out", default="decks_api.json")
+    ap.add_argument("--merge", default="")
     a = ap.parse_args()
     key = os.environ.get("CR_API_KEY", "").strip()
     if not key:
@@ -73,6 +74,11 @@ def main():
     print(f"api cards {len(api_cards)}, in sim pool {len(set(api_cards) & POOL)}, not in sim: {missing}")
     tags = ranking(key, 20 if a.mode == "test" else a.players)
     decks, unsupported, modes = {}, Counter(), Counter()
+    if a.merge and Path(a.merge).exists():
+        for e in json.load(open(a.merge, encoding="utf-8")):
+            if all(k in POOL for k in e["cards"]):
+                decks[tuple(sorted(e["cards"]))] = {"cards": e["cards"], "evo": e.get("evo", []), "n": e.get("n", 1), "trophies": e.get("trophies", 0)}
+        print(f"merged {len(decks)} decks from previous days")
     battles = 0
     for i, tag in enumerate(tags):
         code, log = get("/players/" + urllib.parse.quote(tag) + "/battlelog", key)
