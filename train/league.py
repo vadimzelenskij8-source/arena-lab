@@ -46,7 +46,20 @@ if hist and not hist[-1].get("kept_previous") and (base / "policy.pt").exists():
     shutil.copy(base / "policy.pt", lg_dir / f"{name}.pt")
     best_wr = hist[-1]["best"]
     L["members"][name] = round(perf(best_wr, L["scripted"]), 1)
-for f in sorted(lg_dir.glob("*.pt"))[:-8]:
-    L["members"].pop(f.stem, None); f.unlink()
+# exploiters that really beat the champion join the league: the main agent then learns to answer them
+for d in sorted(wd.iterdir()):
+    e = d / "eval.json"
+    if not e.exists() or not (d / "policy.pt").exists():
+        continue
+    ev = json.load(open(e))
+    vc = ev.get("vs_champ") or {}
+    if ev.get("exploit") and vc.get("games", 0) >= 64 and vc.get("winrate", 0) > 0.55:
+        name = f"expl{run[-6:]}{d.name.split('-')[0]}"
+        shutil.copy(d / "policy.pt", lg_dir / f"{name}.pt")
+        L["members"][name] = round(perf(ev.get("winrate") or 0.0, L["scripted"]), 1)
+        print("exploiter joins", name, vc, flush=True)
+for pre, keep in (("gen", 8), ("expl", 3), ("v0", 1)):
+    for f in sorted(lg_dir.glob(pre + "*.pt"))[:-keep]:
+        L["members"].pop(f.stem, None); f.unlink()
 json.dump(L, open(lj, "w"), indent=1, ensure_ascii=False)
 print("league", L["members"], "top workers", rows[:3])

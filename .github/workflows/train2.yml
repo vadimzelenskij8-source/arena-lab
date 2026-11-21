@@ -64,22 +64,23 @@ jobs:
           [ -n "$(ls league)" ] || git show origin/results:d3/policy.pt > league/v0-xbow.pt 2>/dev/null || true
           ls league
           git show origin/results:$SRC/matchup_weights.json > mw.json 2>/dev/null || rm -f mw.json
+          cp out/policy.pt champ.pt 2>/dev/null || true
+          git show origin/results:crapi/decks_api.json > api.json 2>/dev/null || rm -f api.json
           ls -la out
       - name: train2
         run: |
           set +e -o pipefail
           W=${{ matrix.w }}
           HP=$(python3 train/hparams.py b2 $W ${{ github.run_number }}); echo "hparams $HP"
-          G=$((W % 4)); GX=""; [ $G = 1 ] && GX="--az 1"; [ $G = 2 ] && GX="--strong 1"; [ $G = 3 ] && GX="--az 1 --strong 1"
-          HP="$HP --fork 0 $GX"; [ -s mw.json ] && HP="$HP --matchups mw.json"
+          HP="$HP $(bash train/groups.sh $W $([ "${{ github.event.inputs.chain }}" = no ] && echo smoke))"; echo "args $HP"
           if [ "${{ github.event.inputs.chain }}" = no ] && [ $W = 0 ]; then  # smoke: a small ceilings measurement first
-            python train/distill.py --install sim/env --tables sim/tables --out ceil --envs 64 --threads 4 --ceilings 0/40 --eval-games 2120 --xbow-games 1060 2>&1 | tail -5
+            python train/distill.py --install sim/env --tables sim/tables --out ceil --envs 64 --threads 4 --ceilings 0/40 --eval-games 2120 --xbow-games 1060 --ceil-seed 5000000 2>&1 | tail -5
             cat ceil/ceilings.json | head -c 400; echo
           fi
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/$ALGO.py --install sim/env --tables sim/tables --out out --envs $E --threads 4 \
-            --minutes ${{ github.event.inputs.minutes || '95' }} --eval-minutes 18 --eval-games 640 --xbow-games 320 --ava-games 320 \
+            --minutes ${{ github.event.inputs.minutes || '95' }} --eval-minutes 18 --eval-games 640 --xbow-games 320 --ava-games 320 --search-games 128 --champ-games 128 \
             --seed $(( ${{ github.run_number }} * 100 + W )) $HP $R 2>&1 | tee out/full.txt | grep -v "^{'iter'" ; R=$?; tail -c 20000 out/full.txt > out/log.txt; rm out/full.txt; exit $R
           
       - uses: actions/upload-artifact@v4
@@ -100,7 +101,7 @@ jobs:
           else git worktree add --detach ../res && cd ../res && git checkout --orphan results && git rm -rqf . ; fi
           python ../${{ github.event.repository.name }}/train/select_best.py ../${{ github.event.repository.name }}/workers $DIR ${{ github.run_id }}
           python ../${{ github.event.repository.name }}/train/league.py ../${{ github.event.repository.name }}/workers $DIR ${{ github.run_id }} || true
-          python ../${{ github.event.repository.name }}/train/report.py $DIR
+          python ../${{ github.event.repository.name }}/train/report.py $DIR ../${{ github.event.repository.name }}/workers
           mkdir -p runs/${{ github.run_id }} && for d in ../${{ github.event.repository.name }}/workers/*; do n=$(basename $d); mkdir -p runs/${{ github.run_id }}/$n; cp $d/eval.json $d/log.txt runs/${{ github.run_id }}/$n/ 2>/dev/null || true; done
           git add -A && git commit -q -m "gen ${{ github.run_id }}" && git push origin results
       - name: next generation

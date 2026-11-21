@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Matchup table after a generation: usage matchups.py <base_dir> <ceilings_dir>
+"""Matchup table after a generation: usage matchups.py <base_dir> <ceilings_dir> [<workers_dir>]
 
 Per meta deck, for "any deck vs meta" and "X-Bow vs meta": the bot's exam result (base/eval.json, the
 current main version), the teacher's result on the same games (the practical ceiling; refreshed when
@@ -14,8 +14,9 @@ import json
 import sys
 from pathlib import Path
 
-TOL = 0.10  # ~20 games per deck: about one standard error
+TOL = 0.10  # bot: top-4 workers (~80 games per deck); teacher: summed over generations (60+ games)
 base, cdir = Path(sys.argv[1]), Path(sys.argv[2]) if len(sys.argv) > 2 else None
+wdir = Path(sys.argv[3]) if len(sys.argv) > 3 else None
 mf = base / "matchups.json"
 M = json.load(open(mf)) if mf.exists() else {"gen": 0, "any": {}, "xbow": {}}
 M["gen"] = M.get("gen", 0) + 1
@@ -30,13 +31,27 @@ if cdir and cdir.exists():
             for d, (w, g) in c.get(mode, {}).items():
                 t = ceil[mode].setdefault(d, [0, 0]); t[0] += w; t[1] += g
 bot = {"any": ev.get("by_deck", {}), "xbow": (ev.get("xbow") or {}).get("by_deck", {})}
+if wdir and wdir.exists():  # this generation's policies: the 4 best workers' exams summed (20 games per deck each)
+    evs = []
+    for f in wdir.rglob("eval.json"):
+        e = json.load(open(f))
+        if e.get("by_deck"):
+            evs.append(e)
+    evs = sorted(evs, key=lambda e: -(e.get("winrate") or 0))[:4]
+    if evs:
+        bot = {"any": {}, "xbow": {}}
+        for e in evs:
+            for mode, src in (("any", e.get("by_deck", {})), ("xbow", (e.get("xbow") or {}).get("by_deck", {}))):
+                for d, (w, g) in src.items():
+                    t = bot[mode].setdefault(d, [0, 0]); t[0] += w; t[1] += g
 
 for mode in ("any", "xbow"):
     tab = M.setdefault(mode, {})
     for d in set(bot[mode]) | set(ceil[mode]) | set(tab):
         r = tab.setdefault(d, {"hist": [], "status": "active"})
-        if d in ceil[mode]:
-            r["teacher"] = ceil[mode][d]
+        if d in ceil[mode]:  # the teacher does not change: new ceiling games add to the old ones
+            old = r.get("teacher") or [0, 0]
+            r["teacher"] = [old[0] + ceil[mode][d][0], old[1] + ceil[mode][d][1]]
         if d in bot[mode]:
             r["bot"] = bot[mode][d]
             w, g = bot[mode][d]

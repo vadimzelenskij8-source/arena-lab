@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 base = Path(sys.argv[1])
+wdir = Path(sys.argv[2]) if len(sys.argv) > 2 else None
 ld = lambda n, d: json.load(open(base / n)) if (base / n).exists() else d
 hist, ev, met = ld("history.json", []), ld("eval.json", {}), ld("metrics.json", {})
 it = [[m["iter"], m.get("winrate_last200"), m.get("delegate")] for m in met.get("iters", []) if m.get("winrate_last200") is not None]
@@ -23,7 +24,25 @@ mtd = {"any": mrows("any"), "xbow": mrows("xbow"), "sa": mt.get("solved_any"), "
 ex = {"ava": (ev.get("any_vs_any") or {}).get("winrate"), "xbow": (ev.get("xbow") or {}).get("winrate")}
 grp = sorted(([k, v[0], v[1]] for k, v in ev.get("by_group", {}).items()), key=lambda r: r[1] / max(1, r[2]))
 ph = [[k, v[0], v[1]] for k, v in ev.get("by_phase", {}).items()]
-data = {"mt": mtd, "ex": ex, "grp": grp, "ph": ph, "tm": met.get("timing", {}), "hist": hist, "it": it, "decks": decks, "ev": {k: ev.get(k) for k in ("games", "winrate", "wins", "losses", "draws")}}
+GN = {0: "База (A+E)", 1: "+D награды", 2: "+имитация", 3: "+D+имитация"}
+groups = {}
+if wdir and wdir.exists():
+    for d in sorted(wdir.iterdir()):
+        f = d / "eval.json"
+        if not f.exists():
+            continue
+        e = json.load(open(f)); w = int(d.name.split("-")[0][1:])
+        g = "Эксплойтеры" if e.get("exploit") else GN.get(w % 4, "?")
+        groups.setdefault(g, []).append([e.get("winrate"), (e.get("xbow") or {}).get("winrate"), (e.get("any_vs_any") or {}).get("winrate"),
+                                         (e.get("search") or {}).get("winrate"), (e.get("vs_champ") or {}).get("winrate")])
+gm = []
+for g, rows in groups.items():
+    col = lambda j: (sum(r[j] for r in rows if r[j] is not None) / max(1, sum(r[j] is not None for r in rows))) if any(r[j] is not None for r in rows) else None
+    gm.append([g, len(rows)] + [col(j) for j in range(5)])
+cards = sorted(([k, v[0], v[1]] for k, v in ev.get("by_card", {}).items() if v[1] >= 10), key=lambda r: r[1] / max(1, r[2]))
+use = ev.get("card_use", {}); tot = sum(use.values()) or 1
+cov = sorted(([k, v / tot * 100] for k, v in use.items()), key=lambda r: r[1])
+data = {"gm": gm, "cards": cards, "cov": cov[:12], "srch": ev.get("search"), "vc": ev.get("vs_champ"), "mt": mtd, "ex": ex, "grp": grp, "ph": ph, "tm": met.get("timing", {}), "hist": hist, "it": it, "decks": decks, "ev": {k: ev.get(k) for k in ("games", "winrate", "wins", "losses", "draws")}}
 HTML = """<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Обучение</title><style>
 body{margin:0;background:#0f1420;color:#e8ecf4;font:14px/1.45 system-ui,sans-serif}main{max-width:760px;margin:0 auto;padding:14px}
@@ -40,6 +59,9 @@ td{padding:5px 4px;border-bottom:1px solid #26304a}td:last-child{text-align:righ
 <h2>Кривая обучения текущей лучшей версии</h2><canvas id="c" width="720" height="260"></canvas>
 <div class="l"><span class="d" style="background:#3ccf8e"></span>винрейт (200 боёв, все колоды)<span class="d" style="background:#ffb648"></span>свои решения нейросети</div>
 <h2>Три экзамена</h2><div class="k" id="k3"></div>
+<h2>Группы воркеров (средние)</h2><div class="m">любая vs мета / X-Bow / любая vs любой / сеть+поиск / против чемпиона</div><table id="gm"></table>
+<h2>Карты: винрейт колод с этой картой (от худших)</h2><table id="cd"></table>
+<h2>Самые редкие карты в обучении</h2><table id="cv"></table>
 <h2>Матчапы: любая колода против меты</h2><div class="m" id="sa"></div><table id="ma"></table>
 <h2>Матчапы: X-Bow против меты</h2><div class="m" id="sx"></div><table id="mx"></table>
 <h2>По архетипам (от худших)</h2><table id="tg"></table>
@@ -55,7 +77,7 @@ for(const [pts,col] of series){g.strokeStyle=col;g.lineWidth=2;g.beginPath();pts
 chart('g',Math.max(1,H.length),[[H.map(h=>[h.gen,h.best]),'#3ccf8e'],[H.map(h=>[h.gen,h.mean]),'#4ea1ff']],.376);
 const I=D.it;chart('c',I.length?I[I.length-1][0]:1,[[I.map(r=>[r[0],r[1]]),'#3ccf8e'],[I.map(r=>[r[0],r[2]==null?0:1-r[2]]),'#ffb648']]);
 const T=D.mt||{},st={solved:'решено',paused:'пауза',active:'учится'};
-document.getElementById('k3').innerHTML=[[pc(E.winrate),'любая против меты'],[pc((D.ex||{}).ava),'любая против любой'],[pc((D.ex||{}).xbow),'X-Bow против меты']].map(([a,b])=>`<div><b>${a}</b><span>${b}</span></div>`).join('');
+document.getElementById('k3').innerHTML=[[pc(E.winrate),'любая против меты'],[pc((D.ex||{}).ava),'любая против любой'],[pc((D.ex||{}).xbow),'X-Bow против меты'],[pc((D.srch||{}).winrate),'сеть + поиск (B)']].map(([a,b])=>`<div><b>${a}</b><span>${b}</span></div>`).join('');
 document.getElementById('sa').textContent=T.na?`Решено ${T.sa} из ${T.na}, на паузе ${T.pa}. Столбцы: бот / учитель (потолок) / разрыв / статус`:'Нет данных';
 document.getElementById('sx').textContent=T.nx?`Решено ${T.sx} из ${T.nx}, на паузе ${T.px}`:'Нет данных';
 const mr=r=>`<tr><td>${r[0]}</td><td>${pc(r[1])}</td><td>${pc(r[2])}</td><td>${r[3]==null?'—':(r[3]>0?'+':'')+Math.round(r[3]*100)}</td><td>${st[r[4]]||r[4]}</td></tr>`;
@@ -65,6 +87,9 @@ const row=([n,w,g])=>`<tr><td>${n==='overtime'?'дошло до овертайм
 document.getElementById('tg').innerHTML=(D.grp||[]).map(row).join('')||'<tr><td>нет данных</td></tr>';
 document.getElementById('tp').innerHTML=(D.ph||[]).map(row).join('')||'<tr><td>нет данных</td></tr>';
 document.getElementById('t').innerHTML=D.decks.map(([n,w,g])=>`<tr><td>${n}</td><td>${w}/${g}</td><td>${pc(w/Math.max(1,g))}</td></tr>`).join('')||'<tr><td>нет данных</td></tr>';
+document.getElementById('gm').innerHTML=(D.gm||[]).map(r=>`<tr><td>${r[0]} (${r[1]})</td><td>${pc(r[2])}</td><td>${pc(r[3])}</td><td>${pc(r[4])}</td><td>${pc(r[5])}</td><td>${pc(r[6])}</td></tr>`).join('')||'<tr><td>нет данных</td></tr>';
+document.getElementById('cd').innerHTML=(D.cards||[]).map(([n,w,g])=>`<tr><td>${n}</td><td>${w}/${g}</td><td>${pc(w/Math.max(1,g))}</td></tr>`).join('')||'<tr><td>нет данных</td></tr>';
+document.getElementById('cv').innerHTML=(D.cov||[]).map(([n,p])=>`<tr><td>${n}</td><td>${p.toFixed(2)}%</td></tr>`).join('')||'<tr><td>нет данных</td></tr>';
 </script></body></html>"""
 open(base / "report.html", "w", encoding="utf-8").write(HTML.replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":"))))
 print("report ok")

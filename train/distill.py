@@ -80,6 +80,16 @@ def main():
     ap.add_argument("--ent", type=float, default=0)
     ap.add_argument("--anchor", type=float, default=0)
     ap.add_argument("--cap", type=float, default=99)
+    # next generation: D (rewards), exploiters, API decks, imitation, search exam (B)
+    ap.add_argument("--pg", type=float, default=0.0, help="D: policy-gradient weight on the network's own moves (BC = anchor)")
+    ap.add_argument("--exploit", type=int, default=0, help="exploiter: trains only against the frozen champion")
+    ap.add_argument("--epochs", type=int, default=2)
+    ap.add_argument("--api-decks", default="", help="real decks from the official API (json list)")
+    ap.add_argument("--api-share", type=float, default=0.35)
+    ap.add_argument("--search-games", type=int, default=0, help="B: exam of network + search in battle")
+    ap.add_argument("--champ-games", type=int, default=0, help="exam vs the frozen champion (exploiters)")
+    ap.add_argument("--ceil-seed", type=int, default=10 ** 6)
+    ap.add_argument("--champ", default="", help="the current champion (frozen): exploiters' opponent and the vs-champion exam")
     a = ap.parse_args()
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     t0 = time.time(); t_end = t0 + a.minutes * 60; t_train_end = t_end - a.eval_minutes * 60
@@ -148,12 +158,31 @@ def main():
             MW = np.array([max(1e-3, float(mw.get(d["name"], 1.0))) for d in META]); MW /= MW.sum()
             print("matchup weights", round(float(MW.max() * len(META)), 2), "max x mean", flush=True)
 
+        API = []
+        if a.api_decks and Path(a.api_decks).exists():
+            for d in json.load(open(a.api_decks, encoding="utf-8")):
+                if len(d.get("cards", [])) == 8 and all(c in ROW for c in d["cards"]):
+                    API.append({"name": d.get("name", "api"), "group": "api", "src": "api", "cards": d["cards"],
+                                "evo": d.get("evo", [])[:2], "hero": []})
+        API_P = None
+        if API:  # card balance: decks of rarely played cards are sampled more often
+            from collections import Counter
+            cf_ = Counter(c for d in API for c in d["cards"])
+            w_ = np.array([np.mean([cf_[c] ** -0.5 for c in d["cards"]]) for d in API]); API_P = w_ / w_.sum()
+        print("api decks", len(API), flush=True)
+        card_use = defaultdict(int)
+
+        def api_deck():
+            return dict(API[int(rng.choice(len(API), p=API_P))])
+
         def train_decks():  # opponents: endless generated decks, and meta decks where the gap to the teacher is largest
             out_ = []
             for _ in range(N):
                 r_ = grng.random()
                 if r_ < a.meta_share:
                     out_.append(META[int(rng.choice(len(META), p=MW))] if MW is not None else grng.choice(META))
+                elif API and r_ < a.meta_share + a.api_share:
+                    out_.append(api_deck())
                 elif MW is None and r_ < a.meta_share + a.weak_share:
                     out_.append(grng.choice(WEAK))
                 else:
@@ -161,7 +190,14 @@ def main():
             return out_
 
         def train_mine():  # any deck for the agent: a new one every battle, X-Bow now and then
-            return [MYD if grng.random() < a.xbow_share else decks_gen.generate(grng, META) for _ in range(N)]
+            out_ = []
+            for _ in range(N):
+                r_ = grng.random()
+                d_ = MYD if r_ < a.xbow_share else (api_deck() if API and r_ < a.xbow_share + 0.4 else decks_gen.generate(grng, META))
+                for c in d_["cards"]:
+                    card_use[c] += 1
+                out_.append(d_)
+            return out_
 
         net = Net(enc, NA + 1)
         if a.resume and Path(a.resume).exists():
@@ -178,6 +214,15 @@ def main():
                 league.append((f_.stem, m_))
             except Exception as e:  # noqa: BLE001
                 print("league skip", f_, e, flush=True)
+        champ = None
+        cpath = a.champ or a.resume
+        if cpath and Path(cpath).exists():
+            try:
+                champ = Net(enc, NA + 1); champ.load_state_dict(torch.load(cpath), strict=False); champ.eval()
+            except Exception as e:  # noqa: BLE001
+                champ = None; print("champ skipped", e, flush=True)
+        if a.exploit and champ is not None:
+            league = [("champ", champ)]; a.league_share = 1.0; a.strong = 0
         lstats = {nm: [0, 0] for nm, _ in league}
         print("league", [nm for nm, _ in league], flush=True)
         opp_kind = np.full(N, -1)
@@ -260,10 +305,19 @@ def main():
             hand[:, 0] = 0
             return hand, Oo[:, enc.h["elixir"][0]].astype(np.float32) / 100000.0
 
-        def run_eval(n_games, seed_base, any_deck=True, opp_any=False, player="net", part=None):
+        def net_act(m_, b_, M_, h_):
+            with torch.no_grad():
+                bt_ = to_t(b_); z_, tf_, hd_ = m_.encode(bt_); hn_ = m_.gru(z_, h_)
+                lg_, _ = m_.heads(hn_, tf_, hd_, bt_, torch.from_numpy(M_))
+                pr_ = torch.softmax(lg_, 1); play_ = pr_[:, 1:].clone(); play_[:, -1] = 0  # never the delegate
+                ac_ = torch.where(play_.sum(1) > a.play_thr, play_.argmax(1) + 1, torch.zeros_like(pr_[:, 0]).long()).numpy()
+                topk_ = (play_[:, :4 * enc.s.cols * enc.s.rows].topk(a.top, 1).indices + 1).numpy()
+            return ac_, hn_, topk_
+
+        def run_eval(n_games, seed_base, any_deck=True, opp_any=False, player="net", part=None, opp="scripted"):
             """player: "net" (the network alone, as on the phone) or "teacher" (scripted + lookahead: the
             practical ceiling of each matchup). part=(k, K): only every K-th batch, from k (split jobs)."""
-            ev = {"wins": 0, "losses": 0, "draws": 0, "faults": 0, "by_deck": {}, "by_group": {}, "by_phase": {}}
+            ev = {"wins": 0, "losses": 0, "draws": 0, "faults": 0, "by_deck": {}, "by_group": {}, "by_phase": {}, "by_card": {}}
             erng = np.random.default_rng(12345)
             net.eval()
             for bi in range(max(1, n_games // N)):
@@ -272,12 +326,15 @@ def main():
                 ds = [(ANY_OPP if opp_any else META)[(bi * N + i) % len(ANY_OPP if opp_any else META)] for i in range(N)]
                 mine = [ANY[(bi * N + i) % len(ANY)] for i in range(N)] if any_deck else None
                 seats = reset_all(seed_base + bi * 1009, ds, mine=mine)
-                st = fresh(); done = np.zeros(N, bool); ot = np.zeros(N, bool)
+                st = fresh(); stc = fresh(); done = np.zeros(N, bool); ot = np.zeros(N, bool)
                 for step_ in range(1800):
                     O, M, b = batch_obs(seats, st)
                     if player == "teacher":
                         pr_ = scripted_batch(vec, jpol, seats, seed_base + bi * 37 + step_ + 5)
                         ac = teacher.refine(pr_, seats, ~done)
+                    elif player == "search":  # B: the network proposes, a short lookahead picks (as the phone twin will)
+                        ac0, st["h"], tk = net_act(net, b, M, st["h"])
+                        ac = teacher.refine(ac0, seats, ~done, extra=[list(tk[i]) for i in range(N)])
                     else:
                         with torch.no_grad():
                             bt = to_t(b); z, tf, hand = net.encode(bt); st["h"] = net.gru(z, st["h"])
@@ -286,7 +343,11 @@ def main():
                             play = pr[:, 1:].clone(); play[:, -1] = 0  # never the delegate
                             ac = torch.where(play.sum(1) > a.play_thr, play.argmax(1) + 1, torch.zeros_like(pr[:, 0]).long()).numpy()
                     acts = np.zeros((N, 2), np.int32)
-                    oppa = scripted_batch(vec, jpol, 1 - seats, seed_base + bi * 31 + step_)
+                    if opp == "champ":
+                        _Oc, Mc, bc = batch_obs(1 - seats, stc)
+                        oppa, stc["h"], _ = net_act(champ, bc, Mc, stc["h"])
+                    else:
+                        oppa = scripted_batch(vec, jpol, 1 - seats, seed_base + bi * 31 + step_)
                     for i in range(N):
                         me = seats[i]
                         acts[i, me] = ac[i]
@@ -303,6 +364,8 @@ def main():
                                 for key, name in (("by_deck", ds[i]["name"]), ("by_group", ds[i].get("group", "?")),
                                                   ("by_phase", "overtime" if ot[i] else "regular")):
                                     bd = ev[key].setdefault(name, [0, 0]); bd[0] += k == "wins"; bd[1] += 1
+                                for c in (mine[i]["cards"] if mine else MYD["cards"]):
+                                    bd = ev["by_card"].setdefault(c, [0, 0]); bd[0] += k == "wins"; bd[1] += 1
                     if done.all():
                         break
             g = ev["wins"] + ev["losses"] + ev["draws"]
@@ -313,8 +376,8 @@ def main():
         if a.ceilings:  # the teacher on the same exam games: the practical ceiling of each matchup
             k_, K_ = (int(x) for x in a.ceilings.split("/"))
             t0c = time.time()
-            ca = run_eval(a.eval_games, 10 ** 6, player="teacher", part=(k_, K_))
-            cx = run_eval(a.xbow_games, 10 ** 6, any_deck=False, player="teacher", part=(k_, K_))
+            ca = run_eval(a.eval_games, a.ceil_seed, player="teacher", part=(k_, K_))
+            cx = run_eval(a.xbow_games, a.ceil_seed, any_deck=False, player="teacher", part=(k_, K_))
             json.dump({"any": ca["by_deck"], "xbow": cx["by_deck"], "any_wr": ca["winrate"], "xbow_wr": cx["winrate"],
                        "games": [ca["games"], cx["games"]], "seconds": round(time.time() - t0c)},
                       open(out / "ceilings.json", "w"), ensure_ascii=False)
@@ -359,7 +422,7 @@ def main():
                 g_ = Rr[t] + 0.997 * (1 - D_[t]) * (0.9 * g_ + 0.1 * Vv[t + 1])
                 RET_[t] = g_
             return dict(B=Bk, Mm=np.stack(bf["m"]), Y=np.stack(bf["y"]), D=D_, AH=np.stack(bf["ah"]), AE=np.stack(bf["ae"]),
-                        SKa=np.stack(bf["sk"]), SPa=np.stack(bf["sp"]), RET=RET_, h0=h0_)
+                        SKa=np.stack(bf["sk"]), SPa=np.stack(bf["sp"]), RET=RET_, h0=h0_, X=np.stack(bf["x"]), OW=np.stack(bf["o"]))
 
         while time.time() < t_train_end:
             frac = a.p0 + (a.p1 - a.p0) * min(1.0, (time.time() - t0) / max(1, t_train_end - t0))
@@ -402,6 +465,7 @@ def main():
                     tactB = propB; SKB, SPB = soft_arrays([None] * N)
                 tm["teacher"] += time.time() - t1; t1 = time.time()
                 use_t = rng.random(N) < beta
+                own_ok = np.zeros(N, np.float32)
                 for i in range(N):
                     acts[i, oseat[i]] = la_[i] if i in la_ else tactB[i]
                     if use_t[i]:
@@ -416,6 +480,7 @@ def main():
                             y = 1 + sl * 576 + r2 * 18 + c2
                             x = y if mk_[y] else x
                         acts[i, seats[i]] = x
+                        own_ok[i] = float(x == int(own[i]))
                 n_own += int((~use_t).sum()); n_t += N
                 ah, ae = opp_targets(seats)
                 ahB, aeB = opp_targets(oseat)
@@ -437,11 +502,12 @@ def main():
                 keep = torch.from_numpy(1 - d).unsqueeze(1)
                 st["h"] = hn * keep; st_b["h"] = hnb * keep
                 for k, val in (("b", b), ("m", M), ("y", tact), ("d", d), ("ah", ah), ("ae", ae), ("sk", SK), ("sp", SP),
-                               ("v", vpred.numpy()), ("r", rr)):
+                               ("v", vpred.numpy()), ("r", rr), ("x", acts[np.arange(N), seats].astype(np.int64)), ("o", own_ok)):
                     buf[k].append(val)
                 MbL = Mb.copy()
                 for k, val in (("b", bb), ("m", MbL), ("y", tactB), ("d", d), ("ah", ahB), ("ae", aeB), ("sk", SKB), ("sp", SPB),
-                               ("v", vpb.numpy()), ("r", -rr)):
+                               ("v", vpb.numpy()), ("r", -rr), ("x", acts[np.arange(N), 1 - seats].astype(np.int64)),
+                               ("o", np.zeros(N, np.float32))):
                     bufB[k].append(val)
             t1 = time.time()
             keys = buf["b"][0].keys()
@@ -451,7 +517,9 @@ def main():
             torch.set_num_threads(4)
             acc_p = []; acc_w = []
 
-            def step_chunk(pk, ix):
+            pg_l = []
+
+            def step_chunk(pk, ix, fresh_=False):
                 nb = len(ix)
                 Bk = pk["B"]
                 flat = {k: torch.from_numpy(np.ascontiguousarray(Bk[k][:, ix].reshape(T * nb, *Bk[k].shape[2:]))) for k in keys}
@@ -478,6 +546,14 @@ def main():
                 lsoft = lsoft[has].mean() if has.any() else torch.zeros(())
                 lval = F.mse_loss(vv_, torch.from_numpy(pk["RET"][:, ix].reshape(-1)))
                 loss = lbc + a.soft_w * lsoft + a.val_w * lval + 0.1 * la + 0.1 * le
+                if a.pg > 0 and fresh_ and "OW" in pk:  # D: learn from results on its own moves; BC keeps it near the teacher
+                    ow = torch.from_numpy(pk["OW"][:, ix].reshape(-1))
+                    if ow.sum() > 8:
+                        adv = torch.from_numpy(pk["RET"][:, ix].reshape(-1)) - vv_.detach()
+                        adv = (adv / (adv[ow > 0].std() + 1e-6)).clamp(-3, 3)
+                        xa = torch.from_numpy(pk["X"][:, ix].reshape(-1)).long()
+                        lpg = -(adv * logp.gather(1, xa.unsqueeze(1)).squeeze(1) * ow).sum() / ow.sum()
+                        loss = loss + a.pg * lpg; pg_l.append(float(lpg))
                 opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(net.parameters(), 1.0); opt.step()
                 with torch.no_grad():
                     pr = lg.argmax(1); pl = y != 0
@@ -487,10 +563,10 @@ def main():
                 return lbc, lsoft, lval, la
 
             for pack in packs:
-                for ep in range(2):
+                for ep in range(a.epochs):
                     perm = np.random.permutation(N)
                     for j in range(0, N, 16):
-                        lbc, lsoft, lval, la = step_chunk(pack, perm[j:j + 16])
+                        lbc, lsoft, lval, la = step_chunk(pack, perm[j:j + 16], fresh_=(ep == 0))
             # replay: the teacher's labels are expensive, so recent batches are trained on again
             for _ in range(a.replay_chunks if replay else 0):
                 old = replay[rng.integers(len(replay))]
@@ -507,7 +583,7 @@ def main():
                  "teacher_changed": round(teacher.stats["changed"] / max(1, teacher.stats["searched"]), 3),
                  "soft": round(float(lsoft), 4), "value_loss": round(float(lval), 4),
                  "forks": teacher.stats.get("forks", 0), "delayed": teacher.stats.get("delayed", 0),
-                 "league": {k: v[:] for k, v in lstats.items()}}
+                 "league": {k: v[:] for k, v in lstats.items()}, "pg": round(float(np.mean(pg_l)), 4) if pg_l else None}
             metrics["iters"].append(m); metrics["timing"] = {k: round(v_, 1) for k, v_ in tm.items()}
             if it % 10 == 0:
                 print(m, metrics["timing"], flush=True)
@@ -540,6 +616,17 @@ def main():
         eva = run_eval(a.ava_games, 2 * 10 ** 6, opp_any=True)  # any deck vs any deck: both unseen
         ev["xbow"] = {k: evx[k] for k in ("games", "winrate", "wins", "losses", "by_group", "by_deck")}
         ev["any_vs_any"] = {k: eva[k] for k in ("games", "winrate", "wins", "losses", "by_phase")}
+        ev["by_card"] = ev.get("by_card", {})
+        ev["card_use"] = dict(card_use)
+        if a.search_games:  # B: the same network with a short lookahead in battle
+            evs = run_eval(a.search_games, 10 ** 6, player="search")
+            ev["search"] = {k: evs[k] for k in ("games", "winrate", "wins", "losses")}
+            print("search exam", evs["winrate"], evs["games"], flush=True)
+        if a.champ_games and champ is not None:  # how well this policy beats the current champion
+            evc = run_eval(a.champ_games, 3 * 10 ** 6, opp="champ")
+            ev["vs_champ"] = {k: evc[k] for k in ("games", "winrate", "wins", "losses")}
+            print("vs champion", evc["winrate"], evc["games"], flush=True)
+        ev["exploit"] = a.exploit
         ev["seed"] = a.seed
         ev["league"] = lstats
         json.dump(ev, open(out / "eval.json", "w"), ensure_ascii=False)

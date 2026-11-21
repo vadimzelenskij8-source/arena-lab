@@ -62,14 +62,15 @@ jobs:
           [ -n "$(ls league)" ] || git show origin/results:d3/policy.pt > league/v0-xbow.pt 2>/dev/null || true
           ls league
           git show origin/results:$SRC/matchup_weights.json > mw.json 2>/dev/null || rm -f mw.json
+          cp out/policy.pt champ.pt 2>/dev/null || true
+          git show origin/results:crapi/decks_api.json > api.json 2>/dev/null || rm -f api.json
           ls -la out
       - name: train2
         run: |
           set +e -o pipefail
           W=${{ matrix.w }}
           HP=$(python3 train/hparams.py b2 $W ${{ github.run_number }}); echo "hparams $HP"
-          G=$((W % 4)); GX=""; [ $G = 1 ] && GX="--az 1"; [ $G = 2 ] && GX="--strong 1"; [ $G = 3 ] && GX="--az 1 --strong 1"
-          HP="$HP --fork 0 $GX"; [ -s mw.json ] && HP="$HP --matchups mw.json"  # groups: A only / +C AlphaZero / +E strong / +C+E
+          HP="$HP $(bash train/groups.sh $W)"; echo "args $HP"
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/$ALGO.py --install sim/env --tables sim/tables --out out --envs $E --threads 4 \
@@ -107,18 +108,19 @@ jobs:
           [ -n "$(ls league)" ] || git show origin/results:d3/policy.pt > league/v0-xbow.pt 2>/dev/null || true
           ls league
           git show origin/results:$SRC/matchup_weights.json > mw.json 2>/dev/null || rm -f mw.json
+          cp out/policy.pt champ.pt 2>/dev/null || true
+          git show origin/results:crapi/decks_api.json > api.json 2>/dev/null || rm -f api.json
           ls -la out
       - name: train2
         run: |
           set +e -o pipefail
           W=${{ matrix.w }}
           HP=$(python3 train/hparams.py b2 $W ${{ github.run_number }}); echo "hparams $HP"
-          G=$((W % 4)); GX=""; [ $G = 1 ] && GX="--az 1"; [ $G = 2 ] && GX="--strong 1"; [ $G = 3 ] && GX="--az 1 --strong 1"
-          HP="$HP --fork 0 $GX"; [ -s mw.json ] && HP="$HP --matchups mw.json"  # groups: A only / +C AlphaZero / +E strong / +C+E
+          HP="$HP $(bash train/groups.sh $W)"; echo "args $HP"
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/distill.py --install sim/env --tables sim/tables --out out --envs 64 --threads 4 --ceilings ${{ matrix.w }}/4 \
-            --eval-games 2120 --xbow-games 1060 $R 2>&1 | tail -40; exit ${PIPESTATUS[0]}
+            --eval-games 4240 --xbow-games 2120 --ceil-seed $(( 5000000 + ${{ github.run_number }} * 50000 )) $R 2>&1 | tail -40; exit ${PIPESTATUS[0]}
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: "ceil-${{ matrix.w }}", path: out/, retention-days: 3 }
@@ -154,6 +156,8 @@ jobs:
           [ -n "$(ls league)" ] || git show origin/results:d3/policy.pt > league/v0-xbow.pt 2>/dev/null || true
           ls league
           git show origin/results:$SRC/matchup_weights.json > mw.json 2>/dev/null || rm -f mw.json
+          cp out/policy.pt champ.pt 2>/dev/null || true
+          git show origin/results:crapi/decks_api.json > api.json 2>/dev/null || rm -f api.json
           cp carry/policy.pt out/policy.pt 2>/dev/null || true
           ls -la out carry
       - name: train2
@@ -161,8 +165,7 @@ jobs:
           set +e -o pipefail
           W=${{ matrix.w }}
           HP=$(python3 train/hparams.py b2 $W ${{ github.run_number }}); echo "hparams $HP"
-          G=$((W % 4)); GX=""; [ $G = 1 ] && GX="--az 1"; [ $G = 2 ] && GX="--strong 1"; [ $G = 3 ] && GX="--az 1 --strong 1"
-          HP="$HP --fork 0 $GX"; [ -s mw.json ] && HP="$HP --matchups mw.json"  # groups: A only / +C AlphaZero / +E strong / +C+E
+          HP="$HP $(bash train/groups.sh $W)"; echo "args $HP"
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/$ALGO.py --install sim/env --tables sim/tables --out out --envs $E --threads 4 \
@@ -204,6 +207,8 @@ jobs:
           [ -n "$(ls league)" ] || git show origin/results:d3/policy.pt > league/v0-xbow.pt 2>/dev/null || true
           ls league
           git show origin/results:$SRC/matchup_weights.json > mw.json 2>/dev/null || rm -f mw.json
+          cp out/policy.pt champ.pt 2>/dev/null || true
+          git show origin/results:crapi/decks_api.json > api.json 2>/dev/null || rm -f api.json
           cp carry/policy.pt out/policy.pt 2>/dev/null || true
           ls -la out carry
       - name: train2
@@ -211,12 +216,11 @@ jobs:
           set +e -o pipefail
           W=${{ matrix.w }}
           HP=$(python3 train/hparams.py b2 $W ${{ github.run_number }}); echo "hparams $HP"
-          G=$((W % 4)); GX=""; [ $G = 1 ] && GX="--az 1"; [ $G = 2 ] && GX="--strong 1"; [ $G = 3 ] && GX="--az 1 --strong 1"
-          HP="$HP --fork 0 $GX"; [ -s mw.json ] && HP="$HP --matchups mw.json"  # groups: A only / +C AlphaZero / +E strong / +C+E
+          HP="$HP $(bash train/groups.sh $W)"; echo "args $HP"
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/$ALGO.py --install sim/env --tables sim/tables --out out --envs $E --threads 4 \
-            --minutes $(( ${{ github.event.inputs.seg_minutes || '280' }} + 75 )) --eval-minutes 75 --eval-games 2120 --xbow-games 1060 --ava-games 640 --final 1 --p0 0.6667 --p1 1.0000 --carry carry \
+            --minutes $(( ${{ github.event.inputs.seg_minutes || '280' }} + 110 )) --eval-minutes 110 --eval-games 2120 --xbow-games 1060 --ava-games 640 --search-games 384 --champ-games 256 --final 1 --p0 0.6667 --p1 1.0000 --carry carry \
             --seed $(( ${{ github.run_number }} * 100 + W + 3000 )) $HP $R 2>&1 | tee out/full.txt | grep -v "^{'iter'" ; R=$?; tail -c 20000 out/full.txt > out/log.txt; rm out/full.txt; exit $R
           
       - uses: actions/upload-artifact@v4
@@ -240,7 +244,7 @@ jobs:
           else git worktree add --detach ../res && cd ../res && git checkout --orphan results && git rm -rqf . ; fi
           python ../${{ github.event.repository.name }}/train/select_best.py ../${{ github.event.repository.name }}/workers $DIR ${{ github.run_id }}
           python ../${{ github.event.repository.name }}/train/league.py ../${{ github.event.repository.name }}/workers $DIR ${{ github.run_id }} || true
-          python ../${{ github.event.repository.name }}/train/matchups.py $DIR ../${{ github.event.repository.name }}/ceil || true
-          python ../${{ github.event.repository.name }}/train/report.py $DIR
+          python ../${{ github.event.repository.name }}/train/matchups.py $DIR ../${{ github.event.repository.name }}/ceil ../${{ github.event.repository.name }}/workers || true
+          python ../${{ github.event.repository.name }}/train/report.py $DIR ../${{ github.event.repository.name }}/workers
           mkdir -p runs/${{ github.run_id }} && for d in ../${{ github.event.repository.name }}/workers/*; do n=$(basename $d); mkdir -p runs/${{ github.run_id }}/$n; cp $d/eval.json $d/log.txt runs/${{ github.run_id }}/$n/ 2>/dev/null || true; done
           git add -A && git commit -q -m "gen ${{ github.run_id }}" && git push origin results
