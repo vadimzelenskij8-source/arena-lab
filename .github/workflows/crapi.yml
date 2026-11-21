@@ -1,0 +1,29 @@
+name: crapi
+on:
+  workflow_dispatch:
+    inputs:
+      mode: { default: "test" }
+      players: { default: "1000" }
+  schedule:
+    - cron: "17 3 * * *"
+permissions: { contents: write }
+concurrency: { group: crapi, cancel-in-progress: false }
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: fetch decks
+        env:
+          CR_API_KEY: ${{ secrets.CR_API_KEY }}
+        run: |
+          python3 train/crapi.py --mode ${{ inputs.mode || 'collect' }} --players ${{ inputs.players || '1000' }} --out /tmp/decks_api.json 2>&1 | tee /tmp/crapi_log.txt
+      - name: publish
+        if: always()
+        run: |
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          git fetch origin results && git worktree add ../res origin/results && cd ../res && git checkout -B results
+          mkdir -p crapi && cp /tmp/crapi_log.txt crapi/log.txt
+          [ -f /tmp/decks_api.json ] && cp /tmp/decks_api.json crapi/decks_api.json || true
+          git add -A && git commit -q -m "crapi ${{ github.run_id }}" && git push origin results || true
