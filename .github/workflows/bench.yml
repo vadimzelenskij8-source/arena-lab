@@ -1,0 +1,70 @@
+name: bench
+on:
+  workflow_dispatch:
+    inputs:
+      minutes: { default: "15" }
+permissions: { contents: read }
+env:
+  CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
+  DATA_VERSION: "16.635.8"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: lab }
+      - run: git clone https://github.com/voonhous/crforge crforge && git -C crforge checkout "$CRFORGE_SHA" && python3 lab/sim_patch/apply.py crforge
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: gradle/actions/setup-gradle@v4
+      - working-directory: crforge
+        run: ./gradlew --no-daemon :env:installDist :tables:dataVersionTables -Pcrforge.assetSource=cdn -Pcrforge.dataVersion=$DATA_VERSION
+      - run: |
+          mkdir -p sim && cp -r crforge/env/build/install/env sim/env && cp -r crforge/python sim/python && cp -r ~/.crforge/tables/$DATA_VERSION sim/tables
+          tar czf sim.tgz sim
+      - uses: actions/upload-artifact@v4
+        with: { name: sim, path: sim.tgz, retention-days: 1 }
+  bench:
+    needs: [build]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: x64, os: ubuntu-latest, jopt: "", prof: "1" }
+          - { name: x64-gc, os: ubuntu-latest, jopt: "-XX:+UseParallelGC -Xms6g -Xmx10g -XX:+AlwaysPreTouch", prof: "" }
+          - { name: arm, os: ubuntu-24.04-arm, jopt: "", prof: "" }
+          - { name: arm-gc, os: ubuntu-24.04-arm, jopt: "-XX:+UseParallelGC -Xms6g -Xmx10g -XX:+AlwaysPreTouch", prof: "" }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install ./sim/python && pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: checkpoint
+        run: |
+          mkdir -p out && git fetch origin results
+          git show origin/results:u1/policy.pt > out/policy.pt
+          git show origin/results:crapi/decks_api.json > api.json || rm -f api.json
+          lscpu | grep -E "Model name|^CPU\(s\)"
+      - name: run
+        run: |
+          set +e
+          J="${{ matrix.jopt }}"
+          [ -n "${{ matrix.prof }}" ] && J="$J -XX:StartFlightRecording=duration=900s,filename=$PWD/rec.jfr,settings=profile"
+          export JAVA_TOOL_OPTIONS="$J"
+          python train/distill.py --install sim/env --tables sim/tables --out out --envs 64 --threads 4 \
+            --minutes $(( ${{ github.event.inputs.minutes }} + 1 )) --eval-minutes 1 --eval-games 64 --final 0 --p0 0 --p1 0.3333 \
+            --seed 4242 --fork 0 --meta-share 0.4 --strong 1 --api-decks api.json --resume out/policy.pt > full.txt 2>&1
+          echo "== ${{ matrix.name }}"
+          grep "'iter'" full.txt | tail -1 | grep -oE "'(iter|episodes)': [0-9]+"
+          python3 -c "import json; m=json.load(open('out/metrics.json')); print('TIMING', m.get('timing'))" || tail -30 full.txt
+          if [ -f rec.jfr ]; then
+            echo "== hottest Java methods (top frame of CPU samples)"
+            jfr print --events jdk.ExecutionSample rec.jfr | grep -A1 "stackTrace = \[" | grep -v "stackTrace\|--" | sed 's/line:.*//' | sort | uniq -c | sort -rn | head -25
+          fi
