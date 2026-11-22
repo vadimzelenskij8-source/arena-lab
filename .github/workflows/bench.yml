@@ -30,10 +30,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { name: x64, os: ubuntu-latest, jopt: "", prof: "1" }
-          - { name: x64-gc, os: ubuntu-latest, jopt: "-XX:+UseParallelGC -Xms6g -Xmx10g -XX:+AlwaysPreTouch", prof: "" }
-          - { name: arm, os: ubuntu-24.04-arm, jopt: "", prof: "" }
-          - { name: arm-gc, os: ubuntu-24.04-arm, jopt: "-XX:+UseParallelGC -Xms6g -Xmx10g -XX:+AlwaysPreTouch", prof: "" }
+          - { name: x64-prof, os: ubuntu-latest, jopt: "", prof: "1" }
+          - { name: x64-pgc, os: ubuntu-latest, jopt: "-XX:+UseParallelGC", prof: "" }
+          - { name: x64-base, os: ubuntu-latest, jopt: "", prof: "" }
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
@@ -56,14 +55,29 @@ jobs:
         run: |
           set +e
           J="${{ matrix.jopt }}"
-          [ -n "${{ matrix.prof }}" ] && J="$J -XX:StartFlightRecording=duration=900s,filename=$PWD/rec.jfr,settings=profile"
+          [ -n "${{ matrix.prof }}" ] && J="$J -XX:StartFlightRecording=duration=900s,filename=$PWD/rec.jfr,settings=profile,dumponexit=true"
           export JAVA_TOOL_OPTIONS="$J"
-          python train/distill.py --install sim/env --tables sim/tables --out out --envs 64 --threads 4 \
+          pip install py-spy >/dev/null 2>&1
+          PS=""; [ -n "${{ matrix.prof }}" ] && PS="py-spy record -o pyspy.txt -f raw -r 20 --nonblocking --"
+          $PS python train/distill.py --install sim/env --tables sim/tables --out out --envs 64 --threads 4 \
             --minutes $(( ${{ github.event.inputs.minutes }} + 1 )) --eval-minutes 1 --eval-games 64 --final 0 --p0 0 --p1 0.3333 \
             --seed 4242 --fork 0 --meta-share 0.4 --strong 1 --api-decks api.json --resume out/policy.pt > full.txt 2>&1
           echo "== ${{ matrix.name }}"
           grep "'iter'" full.txt | tail -1 | grep -oE "'(iter|episodes)': [0-9]+"
           python3 -c "import json; m=json.load(open('out/metrics.json')); print('TIMING', m.get('timing'))" || tail -30 full.txt
+          ls -la rec.jfr pyspy.txt 2>/dev/null
+          if [ -f pyspy.txt ]; then
+            echo "== hottest Python/native functions (self time)"
+            python3 - <<'PY'
+          from collections import Counter
+          c = Counter(); tot = 0
+          for line in open("pyspy.txt"):
+              stack, _, n = line.rstrip().rpartition(" ")
+              n = int(n); tot += n
+              c[stack.split(";")[-1][:110]] += n
+          for k, v in c.most_common(25): print(f"{100*v/tot:5.1f}%  {k}")
+          PY
+          fi
           if [ -f rec.jfr ]; then
             echo "== hottest Java methods (top frame of CPU samples)"
             jfr print --events jdk.ExecutionSample rec.jfr | grep -A1 "stackTrace = \[" | grep -v "stackTrace\|--" | sed 's/line:.*//' | sort | uniq -c | sort -rn | head -25
