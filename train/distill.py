@@ -96,6 +96,9 @@ def main():
     ap.add_argument("--sw", type=float, default=0.0, help="weight of the network's position value inside the search")
     ap.add_argument("--v0-w", type=float, default=0.5, help="train the value from a fresh memory too: what the search sees")
     ap.add_argument("--noisy-games", type=int, default=0, help="search exam with phone-like latency and tap error")
+    ap.add_argument("--mb", type=int, default=16, help="sequences per training step (bigger = faster on CPU)")
+    ap.add_argument("--search-only", type=float, default=0, help="minutes: only measure network+search (normal and phone) on the champion")
+    ap.add_argument("--spread", type=int, default=2)
     ap.add_argument("--card-w", default="", help="per-card exam results: decks with weak cards are trained more")
     ap.add_argument("--champ", default="", help="the current champion (frozen): exploiters' opponent and the vs-champion exam")
     a = ap.parse_args()
@@ -125,7 +128,7 @@ def main():
             teacher = ForkTeacher(vec, scratch, [ScriptedBot().bind(scratch), ScriptedBot().bind(scratch)], horizon=a.horizon,
                                   fork_steps=a.fork_steps, top=a.top, margin=a.margin, rng=np.random.default_rng(a.seed + 99))
         else:
-            teacher = Teacher(vec, horizon=a.horizon, margin=a.margin)
+            teacher = Teacher(vec, horizon=a.horizon, margin=a.margin, spread=a.spread)
         TOWERS = ["King_PrincessTowers", "King_CannonTowers", "King_KnifeTowers", "King_ChefTowers"]
 
         MYD = {"name": "X-Bow 3.0", "group": "X-Bow", "cards": MY["cards"], "evo": MY["evo"], "hero": MY["hero"]}
@@ -420,6 +423,19 @@ def main():
                       open(out / "ceilings.json", "w"), ensure_ascii=False)
             print("ceilings", k_, K_, ca["winrate"], cx["winrate"], ca["games"], cx["games"], round(time.time() - t0c), flush=True)
             return
+        if a.search_only:  # the search settings on the same games (paired), until the time budget runs out
+            t0s = time.time(); res = {"search": [0, 0], "noisy": [0, 0], "chunks": 0}
+            k = 0
+            while time.time() - t0s < a.search_only * 60:
+                for mode in ("search", "noisy"):
+                    e_ = run_eval(N, 10 ** 6 + 7919 * k, player=mode)
+                    res[mode][0] += e_["wins"] + 0.5 * e_["draws"]; res[mode][1] += e_["games"]
+                k += 1; res["chunks"] = k
+                res.update(top=a.top, horizon=a.horizon, spread=a.spread, sw=a.sw, seconds=round(time.time() - t0s),
+                           search_wr=res["search"][0] / max(1, res["search"][1]), noisy_wr=res["noisy"][0] / max(1, res["noisy"][1]))
+                json.dump(res, open(out / "search_variant.json", "w"))
+                print("search variant", res, flush=True)
+            return
         seats = reset_all(1 + a.seed * 7, train_decks(), a.levels, train_mine()); st = fresh(); st_o = fresh(); assign_opps()
         results = []
         best_sd, best_wr, last_mini, it = None, -1.0, time.time(), 0
@@ -611,12 +627,12 @@ def main():
             for pack in packs:
                 for ep in range(a.epochs):
                     perm = np.random.permutation(N)
-                    for j in range(0, N, 16):
-                        lbc, lsoft, lval, la = step_chunk(pack, perm[j:j + 16], fresh_=(ep == 0))
+                    for j in range(0, N, a.mb):
+                        lbc, lsoft, lval, la = step_chunk(pack, perm[j:j + a.mb], fresh_=(ep == 0))
             # replay: the teacher's labels are expensive, so recent batches are trained on again
-            for _ in range(a.replay_chunks if replay else 0):
+            for _ in range(max(1, a.replay_chunks * 16 // a.mb) if replay else 0):  # same number of replayed sequences
                 old = replay[rng.integers(len(replay))]
-                step_chunk(old, rng.permutation(N)[:16])
+                step_chunk(old, rng.permutation(N)[:a.mb])
             replay.extend(packs); del replay[:-a.replay_size]
             torch.set_num_threads(2)
             tm["learn"] += time.time() - t1

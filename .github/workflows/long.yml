@@ -121,8 +121,10 @@ jobs:
           HP="$HP $(bash train/groups.sh $W)"; echo "args $HP"
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
-          python train/distill.py --install sim/env --tables sim/tables --out out --envs 64 --threads 4 --ceilings ${{ matrix.w }}/4 \
-            --eval-games 4240 --xbow-games 2120 --ceil-seed $(( 5000000 + ${{ github.run_number }} * 50000 )) $R 2>&1 | tail -40; exit ${PIPESTATUS[0]}
+          # search settings on the champion, paired games, normal + phone (latency) exam
+          V=""; case ${{ matrix.w }} in 1) V="--top 6";; 2) V="--horizon 240";; 3) V="--top 6 --horizon 240";; esac
+          B=$(( 3 * ${{ github.event.inputs.seg_minutes || '280' }} + 20 )); [ $B -gt 320 ] && B=320
+          python train/distill.py --install sim/env --tables sim/tables --out out --envs 64 --threads 4 --search-only $B $V $R 2>&1 | tail -40; exit ${PIPESTATUS[0]}
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: "ceil-${{ matrix.w }}", path: out/, retention-days: 3 }
@@ -224,7 +226,7 @@ jobs:
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           python train/$ALGO.py --install sim/env --tables sim/tables --out out --envs $E --threads 4 \
-            --minutes $(( ${{ github.event.inputs.seg_minutes || '280' }} + 120 )) --eval-minutes 120 --eval-games 2120 --xbow-games 1060 --ava-games 640 --search-games 192 --noisy-games 192 --champ-games 128 --final 1 --p0 0.6667 --p1 1.0000 --carry carry \
+            --minutes $(( ${{ github.event.inputs.seg_minutes || '280' }} + 60 )) --eval-minutes 60 --eval-games 2120 --xbow-games 1060 --ava-games 640 --champ-games 128 --final 1 --p0 0.6667 --p1 1.0000 --carry carry \
             --seed $(( ${{ github.run_number }} * 100 + W + 3000 )) $HP $R 2>&1 | tee out/full.txt | grep -v "^{'iter'" ; R=$?; tail -c 20000 out/full.txt > out/log.txt; rm out/full.txt; exit $R
           
       - uses: actions/upload-artifact@v4
@@ -249,6 +251,7 @@ jobs:
           python ../${{ github.event.repository.name }}/train/select_best.py ../${{ github.event.repository.name }}/workers $DIR ${{ github.run_id }}
           python ../${{ github.event.repository.name }}/train/league.py ../${{ github.event.repository.name }}/workers $DIR ${{ github.run_id }} || true
           python ../${{ github.event.repository.name }}/train/matchups.py $DIR ../${{ github.event.repository.name }}/ceil ../${{ github.event.repository.name }}/workers || true
+          python3 -c "import json,glob,sys; json.dump([json.load(open(f)) for f in sorted(glob.glob(sys.argv[1]+'/*/search_variant.json'))], open(sys.argv[2]+'/search_variants.json','w'))" ../${{ github.event.repository.name }}/ceil $DIR || true
           python ../${{ github.event.repository.name }}/train/report.py $DIR ../${{ github.event.repository.name }}/workers
           mkdir -p runs/${{ github.run_id }} && for d in ../${{ github.event.repository.name }}/workers/*; do n=$(basename $d); mkdir -p runs/${{ github.run_id }}/$n; cp $d/eval.json $d/log.txt runs/${{ github.run_id }}/$n/ 2>/dev/null || true; done
           git add -A && git commit -q -m "gen ${{ github.run_id }}" && git push origin results

@@ -43,7 +43,11 @@ for g, rows in groups.items():
 cards = sorted(([k, v[0], v[1]] for k, v in ev.get("by_card", {}).items() if v[1] >= 10), key=lambda r: r[1] / max(1, r[2]))
 use = ev.get("card_use", {}); tot = sum(use.values()) or 1
 cov = sorted(([k, v / tot * 100] for k, v in use.items()), key=lambda r: r[1])
-data = {"gm": gm, "cards": cards, "cov": cov[:12], "srch": ev.get("search"), "nz": ev.get("noisy"), "vc": ev.get("vs_champ"), "mt": mtd, "ex": ex, "grp": grp, "ph": ph, "tm": met.get("timing", {}), "hist": hist, "it": it, "decks": decks, "ev": {k: ev.get(k) for k in ("games", "winrate", "wins", "losses", "draws")}}
+sv = []
+if (base / "search_variants.json").exists():
+    for v in json.load(open(base / "search_variants.json")):
+        sv.append([f"top {v.get('top')}, просчёт {v.get('horizon')}", v.get("search_wr"), v.get("noisy_wr"), (v.get("search") or [0, 0])[1]])
+data = {"sv": sv, "gm": gm, "cards": cards, "cov": cov[:12], "srch": ev.get("search"), "nz": ev.get("noisy"), "vc": ev.get("vs_champ"), "mt": mtd, "ex": ex, "grp": grp, "ph": ph, "tm": met.get("timing", {}), "hist": hist, "it": it, "decks": decks, "ev": {k: ev.get(k) for k in ("games", "winrate", "wins", "losses", "draws")}}
 HTML = """<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Обучение</title><style>
 body{margin:0;background:#0f1420;color:#e8ecf4;font:14px/1.45 system-ui,sans-serif}main{max-width:760px;margin:0 auto;padding:14px}
@@ -60,6 +64,7 @@ td{padding:5px 4px;border-bottom:1px solid #26304a}td:last-child{text-align:righ
 <h2>Кривая обучения текущей лучшей версии</h2><canvas id="c" width="720" height="260"></canvas>
 <div class="l"><span class="d" style="background:#3ccf8e"></span>винрейт (200 боёв, все колоды)<span class="d" style="background:#ffb648"></span>свои решения нейросети</div>
 <h2>Три экзамена</h2><div class="k" id="k3"></div>
+<h2>Настройки поиска (чемпион, одни и те же бои)</h2><div class="m">обычный экзамен / как на телефоне / боёв</div><table id="sv"></table>
 <h2>Группы воркеров (средние)</h2><div class="m">любая vs мета / X-Bow / любая vs любой / сеть+поиск / против чемпиона / поиск как на телефоне</div><table id="gm"></table>
 <h2>Карты: винрейт колод с этой картой (от худших)</h2><table id="cd"></table>
 <h2>Самые редкие карты в обучении</h2><table id="cv"></table>
@@ -88,6 +93,7 @@ const row=([n,w,g])=>`<tr><td>${n==='overtime'?'дошло до овертайм
 document.getElementById('tg').innerHTML=(D.grp||[]).map(row).join('')||'<tr><td>нет данных</td></tr>';
 document.getElementById('tp').innerHTML=(D.ph||[]).map(row).join('')||'<tr><td>нет данных</td></tr>';
 document.getElementById('t').innerHTML=D.decks.map(([n,w,g])=>`<tr><td>${n}</td><td>${w}/${g}</td><td>${pc(w/Math.max(1,g))}</td></tr>`).join('')||'<tr><td>нет данных</td></tr>';
+document.getElementById('sv').innerHTML=(D.sv||[]).map(r=>`<tr><td>${r[0]}</td><td>${pc(r[1])}</td><td>${pc(r[2])}</td><td>${r[3]}</td></tr>`).join('')||'<tr><td>нет данных</td></tr>';
 document.getElementById('gm').innerHTML=(D.gm||[]).map(r=>`<tr><td>${r[0]} (${r[1]})</td><td>${pc(r[2])}</td><td>${pc(r[3])}</td><td>${pc(r[4])}</td><td>${pc(r[5])}</td><td>${pc(r[6])}</td><td>${pc(r[7])}</td></tr>`).join('')||'<tr><td>нет данных</td></tr>';
 document.getElementById('cd').innerHTML=(D.cards||[]).map(([n,w,g])=>`<tr><td>${n}</td><td>${w}/${g}</td><td>${pc(w/Math.max(1,g))}</td></tr>`).join('')||'<tr><td>нет данных</td></tr>';
 document.getElementById('cv').innerHTML=(D.cov||[]).map(([n,p])=>`<tr><td>${n}</td><td>${p.toFixed(2)}%</td></tr>`).join('')||'<tr><td>нет данных</td></tr>';
