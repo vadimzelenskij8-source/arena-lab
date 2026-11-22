@@ -21,7 +21,7 @@ from crforge_env import LadderConfig, ScriptedBot, SideSetup, VectorBattle
 
 from ppo2 import META, MY, OTHER, ROW, Enc, Net, to_t
 from teacher import ForkTeacher, Teacher
-from jbot import PlayoutTeacher, make_policy, scripted_batch
+from jbot import PlayoutTeacher, ReplyTeacher, make_policy, scripted_batch
 import decks_gen
 
 
@@ -99,6 +99,9 @@ def main():
     ap.add_argument("--mb", type=int, default=16, help="sequences per training step (bigger = faster on CPU)")
     ap.add_argument("--search-only", type=float, default=0, help="minutes: only measure network+search (normal and phone) on the champion")
     ap.add_argument("--spread", type=int, default=2)
+    ap.add_argument("--reply", type=int, default=0, help="search with the enemy's answer (our network from its side)")
+    ap.add_argument("--reply-ticks", type=int, default=10, help="the enemy answers this many ticks after our move")
+    ap.add_argument("--search-seed", type=int, default=0, help="offset of the search-exam games (parallel jobs of one setting)")
     ap.add_argument("--card-w", default="", help="per-card exam results: decks with weak cards are trained more")
     ap.add_argument("--champ", default="", help="the current champion (frozen): exploiters' opponent and the vs-champion exam")
     a = ap.parse_args()
@@ -127,6 +130,9 @@ def main():
             scratch.reset(list(range(a.fork_envs)), my_rows, my_rows, slots0=my_slots, slots1=my_slots)
             teacher = ForkTeacher(vec, scratch, [ScriptedBot().bind(scratch), ScriptedBot().bind(scratch)], horizon=a.horizon,
                                   fork_steps=a.fork_steps, top=a.top, margin=a.margin, rng=np.random.default_rng(a.seed + 99))
+        elif a.reply:
+            teacher = ReplyTeacher(vec, reply_ticks=a.reply_ticks, horizon=a.horizon, margin=a.margin, spread=a.spread,
+                                   rng=np.random.default_rng(a.seed + 77))
         else:
             teacher = Teacher(vec, horizon=a.horizon, margin=a.margin, spread=a.spread)
         TOWERS = ["King_PrincessTowers", "King_CannonTowers", "King_KnifeTowers", "King_ChefTowers"]
@@ -333,6 +339,18 @@ def main():
                 topk_ = (play_[:, :4 * enc.s.cols * enc.s.rows].topk(a.top, 1).indices + 1).numpy()
             return ac_, hn_, topk_
 
+        if a.reply:  # the enemy's answer inside the search: our network from its side, fresh memory
+            def reply_fn(Oe, Me):
+                en = enc.entities(Oe); g, ids = enc.header(Oe, np.full((len(Oe), 8), -1, np.int64))
+                hst = np.stack([Oe[:, enc.hcost] / 10.0, Oe[:, enc.hform] / 2.0, Oe[:, enc.hpend]], -1).astype(np.float32)
+                dk, dst = enc.deck_feats(Oe)
+                b_ = dict(rid=en["rid"], st=en["st"], kind=en["kind"], side=en["side"], num=en["num"], valid=en["valid"],
+                          tile=en["tile"], g=g, hstat=hst, deck=dk, dstat=dst, **ids)
+                M_ = np.concatenate([Me.astype(bool), np.zeros((len(Oe), 1), bool)], 1)
+                ac_, _h, _t = net_act(net, b_, M_, torch.zeros(len(Oe), 256))
+                return ac_
+            teacher.reply_fn = reply_fn
+
         def tap_noise(x, mk_, r_):
             if 0 < x < 2305 and r_.random() < 0.15:
                 sl, tl = divmod(x - 1, 576); rr_, cc_ = divmod(tl, 18)
@@ -428,10 +446,12 @@ def main():
             k = 0
             while time.time() - t0s < a.search_only * 60:
                 for mode in ("search", "noisy"):
-                    e_ = run_eval(N, 10 ** 6 + 7919 * k, player=mode)
+                    e_ = run_eval(N, 10 ** 6 + 7919 * k + a.search_seed, player=mode)
                     res[mode][0] += e_["wins"] + 0.5 * e_["draws"]; res[mode][1] += e_["games"]
                 k += 1; res["chunks"] = k
-                res.update(top=a.top, horizon=a.horizon, spread=a.spread, sw=a.sw, seconds=round(time.time() - t0s),
+                res.update(top=a.top, horizon=a.horizon, spread=a.spread, sw=a.sw, reply=a.reply, seconds=round(time.time() - t0s),
+                           ms_per_search=round(1000 * teacher.stats.get("t_reply", 0.0) / max(1, teacher.stats["searched"]), 2),
+                           enemy_played=round(teacher.stats.get("reply_plays", 0) / max(1, teacher.stats.get("replies", 0)), 3),
                            search_wr=res["search"][0] / max(1, res["search"][1]), noisy_wr=res["noisy"][0] / max(1, res["noisy"][1]))
                 json.dump(res, open(out / "search_variant.json", "w"))
                 print("search variant", res, flush=True)

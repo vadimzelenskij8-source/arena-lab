@@ -75,7 +75,7 @@ jobs:
           HP=$(python3 train/hparams.py b2 $W ${{ github.run_number }}); echo "hparams $HP"
           HP="$HP $(bash train/groups.sh $W $([ "${{ github.event.inputs.chain }}" = no ] && echo smoke))"; echo "args $HP"
           if [ "${{ github.event.inputs.chain }}" = no ] && [ $W = 0 ]; then  # smoke: a small ceilings measurement first
-            python train/distill.py --install sim/env --tables sim/tables --out ceil --envs 64 --threads 4 --search-only 2 --top 6 --resume out/policy.pt 2>&1 | tail -5
+            python train/distill.py --install sim/env --tables sim/tables --out ceil --envs 64 --threads 4 --search-only 3 --reply 1 --resume out/policy.pt 2>&1 | tail -5
             cat ceil/search_variant.json | head -c 400; echo
           fi
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"

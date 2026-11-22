@@ -46,7 +46,8 @@ cov = sorted(([k, v / tot * 100] for k, v in use.items()), key=lambda r: r[1])
 sv = []
 if (base / "search_variants.json").exists():
     for v in json.load(open(base / "search_variants.json")):
-        sv.append([f"top {v.get('top')}, просчёт {v.get('horizon')}", v.get("search_wr"), v.get("noisy_wr"), (v.get("search") or [0, 0])[1]])
+        sv.append([("с ответом соперника, " if v.get("reply") else "") + f"top {v.get('top')}, просчёт {v.get('horizon')}",
+                   v.get("search_wr"), v.get("noisy_wr"), (v.get("search") or [0, 0])[1]])
 data = {"sv": sv, "gm": gm, "cards": cards, "cov": cov[:12], "srch": ev.get("search"), "nz": ev.get("noisy"), "vc": ev.get("vs_champ"), "mt": mtd, "ex": ex, "grp": grp, "ph": ph, "tm": met.get("timing", {}), "hist": hist, "it": it, "decks": decks, "ev": {k: ev.get(k) for k in ("games", "winrate", "wins", "losses", "draws")}}
 HTML = """<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Обучение</title><style>

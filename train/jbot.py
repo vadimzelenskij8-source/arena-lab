@@ -165,3 +165,81 @@ class PlayoutTeacher(Teacher):
             p = np.exp((vs - vs.max()) / self.temp); p /= p.sum()
             soft[i] = (ks, p)
         return out, soft
+
+
+class ReplyTeacher(Teacher):
+    """Search with the enemy's answer: every candidate move is played in a fork of the battle as the
+    seat knows it (the enemy's unseen hand re-dealt), the enemy answers ~reply_ticks later with
+    `reply_fn` (our network from the enemy's side), then both wait until the horizon. The same
+    candidates and choice rule as Teacher.refine, so it is a drop-in for the search exams."""
+
+    def __init__(self, vec, reply_ticks=10, rng=None, **kw):
+        super().__init__(vec, **kw)
+        self.reply_ticks = reply_ticks
+        self.rng = rng or np.random.default_rng(0)
+        self.win_i = vec.schema.info["winner"]
+        self.reply_fn = None  # (enemy obs [n, seat_ints], enemy mask [n, actions] bool) -> actions [n]
+        self.stats.update({"replies": 0, "reply_plays": 0, "t_reply": 0.0})
+
+    def refine(self, proposals, seats, active, extra=None):
+        import time
+        vec, s = self.vec, self.s
+        out = np.array(proposals, dtype=np.int64)
+        self.soft = [None] * len(out)
+        req_i, req_a, owner = [], [], []
+        for i in range(len(out)):
+            a = int(out[i]); mask = vec.masks[i, seats[i]]
+            cs = set()
+            if active[i] and 0 < a < 1 + 4 * self.per:
+                cs.update(self.candidates(a, mask))
+            if active[i] and extra is not None:
+                for x in extra[i]:
+                    x = int(x)
+                    if 0 < x < 1 + 4 * self.per and mask[x]:
+                        cs.update(self.candidates(x, mask))
+            if len(cs) > 1:
+                cs.add(0); cs.add(a)
+                cs = sorted(c for c in cs if mask[c])
+                owner.append((i, len(req_a), cs)); req_i += [i] * len(cs); req_a += cs
+        if not req_i:
+            return out
+        t0 = time.time()
+        n = len(req_i); A = vec.masks.shape[-1]
+        rs = np.asarray(seats)[np.array(req_i)].astype(np.int32)
+        JI, JL = jpype.JArray(jpype.JInt), jpype.JArray(jpype.JLong)
+        sh = self.rng.integers(1, 1 << 40, n); sd = self.rng.integers(1, 1 << 40, n)
+        raw = self.vec._env.replyStart(JI(np.asarray(req_i, np.int32)), JI(rs), JI(np.asarray(req_a, np.int32)),
+                                       int(self.reply_ticks), int(self.horizon), JL([int(x) for x in sh]), JL([int(x) for x in sd]))
+        flat = np.asarray(raw, dtype=np.int32).reshape(n, s.seat_ints + A + 1)
+        Oe, Me, status = flat[:, :s.seat_ints], flat[:, s.seat_ints:s.seat_ints + A] != 0, flat[:, -1]
+        reply = np.zeros(n, np.int32)
+        run = np.where(status == 0)[0]
+        if len(run) and self.reply_fn is not None:
+            for j in range(0, len(run), 512):
+                ix = run[j:j + 512]
+                reply[ix] = np.asarray(self.reply_fn(Oe[ix], Me[ix]), np.int32)
+        self.stats["replies"] += len(run); self.stats["reply_plays"] += int((reply > 0).sum())
+        res = self.vec._env.replyFinish(JI(rs), JI(reply))
+        flat = np.asarray(res, dtype=np.int32).reshape(n, s.seat_ints + s.info_ints)
+        obs, info = flat[:, :s.seat_ints], flat[:, s.seat_ints:]
+        v = self.value(obs)
+        if self.value_fn is not None and self.vw > 0:
+            v = v + self.vw * 20.0 * self.value_fn(obs)
+        w = info[:, self.win_i]
+        ended = (w == 0) | (w == 1)
+        v = np.where(ended, np.where(w == rs, 50.0, -50.0), v)
+        v[(info[:, self.fault] != 0) | (status == 2)] = -1e9
+        self.stats["t_reply"] += time.time() - t0
+        for i, st, cs in owner:
+            vv = v[st:st + len(cs)]
+            base = vv[cs.index(int(out[i]))]
+            j = int(np.argmax(vv))
+            self.stats["searched"] += 1
+            if vv[j] > base + self.margin:
+                out[i] = cs[j]; self.stats["changed"] += 1
+            ok = vv > -1e8
+            if ok.sum() > 1:
+                ks = [c for c, o in zip(cs, ok) if o]; vs = vv[ok]
+                p = np.exp((vs - vs.max()) / 1.0); p /= p.sum()
+                self.soft[i] = (ks, p)
+        return out

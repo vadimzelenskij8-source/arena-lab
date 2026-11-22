@@ -88,7 +88,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        w: [0, 1, 2, 3]
+        w: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -122,7 +122,9 @@ jobs:
           R=""; [ -s out/policy.pt ] && R="--resume out/policy.pt"
           E=128; [ "$ALGO" = distill ] && E=64
           # search settings on the champion, paired games, normal + phone (latency) exam
-          V=""; case ${{ matrix.w }} in 1) V="--top 6";; 2) V="--horizon 240";; 3) V="--top 6 --horizon 240";; esac
+          # 2 jobs per setting (different games); settings paired on the same games
+          V=""; case $(( ${{ matrix.w }} / 2 )) in 1) V="--reply 1";; 2) V="--reply 1 --horizon 240";; 3) V="--reply 1 --top 6";; esac
+          V="$V --search-seed $(( ${{ matrix.w }} % 2 * 500000 ))"
           B=$(( 3 * ${{ github.event.inputs.seg_minutes || '280' }} + 20 )); [ $B -gt 320 ] && B=320
           python train/distill.py --install sim/env --tables sim/tables --out out --envs 64 --threads 4 --search-only $B $V $R 2>&1 | tail -40; exit ${PIPESTATUS[0]}
       - uses: actions/upload-artifact@v4
