@@ -1,20 +1,21 @@
 {
- "gen": 3,
+ "gen": 4,
  "any": {
   "Hyperbait #2": {
    "hist": [
     0.362,
     0.35,
-    0.375
+    0.375,
+    0.362
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     60,
     100
    ],
-   "gap": 0.225,
+   "gap": 0.238,
    "bot": [
-    30,
+    29,
     80
    ]
   },
@@ -22,16 +23,17 @@
    "hist": [
     0.812,
     0.787,
-    0.812
+    0.812,
+    0.85
    ],
-   "status": "active",
+   "status": "solved",
    "teacher": [
     95,
     100
    ],
-   "gap": 0.138,
+   "gap": 0.1,
    "bot": [
-    65,
+    68,
     80
    ]
   },
@@ -39,16 +41,17 @@
    "hist": [
     0.338,
     0.312,
-    0.225
+    0.225,
+    0.388
    ],
    "status": "active",
    "teacher": [
     63,
     100
    ],
-   "gap": 0.405,
+   "gap": 0.242,
    "bot": [
-    18,
+    31,
     80
    ]
   },
@@ -56,16 +59,17 @@
    "hist": [
     0.925,
     0.875,
-    0.75
+    0.75,
+    0.825
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     98,
     100
    ],
-   "gap": 0.23,
+   "gap": 0.155,
    "bot": [
-    60,
+    66,
     80
    ]
   },
@@ -73,16 +77,17 @@
    "hist": [
     0.263,
     0.287,
-    0.237
+    0.237,
+    0.25
    ],
    "status": "active",
    "teacher": [
     48,
     100
    ],
-   "gap": 0.243,
+   "gap": 0.23,
    "bot": [
-    19,
+    20,
     80
    ]
   },
@@ -90,16 +95,17 @@
    "hist": [
     0.338,
     0.425,
-    0.4
+    0.4,
+    0.388
    ],
    "status": "active",
    "teacher": [
     77,
     100
    ],
-   "gap": 0.37,
+   "gap": 0.382,
    "bot": [
-    32,
+    31,
     80
    ]
   },
@@ -107,6 +113,619 @@
    "hist": [
     0.725,
     0.625,
+    0.6,
+    0.762
+   ],
+   "status": "solved",
+   "teacher": [
+    86,
+    100
+   ],
+   "gap": 0.098,
+   "bot": [
+    61,
+    80
+   ]
+  },
+  "Golem Cannon Cart": {
+   "hist": [
+    0.412,
+    0.537,
+    0.45,
+    0.55
+   ],
+   "status": "active",
+   "teacher": [
+    77,
+    100
+   ],
+   "gap": 0.22,
+   "bot": [
+    44,
+    80
+   ]
+  },
+  "Evo Electro Giant Control": {
+   "hist": [
+    0.575,
+    0.575,
+    0.5,
+    0.487
+   ],
+   "status": "paused",
+   "teacher": [
+    82,
+    100
+   ],
+   "gap": 0.333,
+   "bot": [
+    39,
+    80
+   ]
+  },
+  "Evo Battle Ram, Cannon Cart, Royal Ghost": {
+   "hist": [
+    0.463,
+    0.425,
+    0.375,
+    0.5
+   ],
+   "status": "active",
+   "teacher": [
+    78,
+    100
+   ],
+   "gap": 0.28,
+   "bot": [
+    40,
+    80
+   ]
+  },
+  "Evo Minion Horde Evo Battle Ram Three Mu": {
+   "hist": [
+    0.325,
+    0.412,
+    0.287,
+    0.35
+   ],
+   "status": "active",
+   "teacher": [
+    70,
+    100
+   ],
+   "gap": 0.35,
+   "bot": [
+    28,
+    80
+   ]
+  },
+  "SD Splashyard Freeze": {
+   "hist": [
+    0.65,
+    0.625,
+    0.625,
+    0.675
+   ],
+   "status": "active",
+   "teacher": [
+    88,
+    100
+   ],
+   "gap": 0.205,
+   "bot": [
+    54,
+    80
+   ]
+  },
+  "LumberLoon Freeze #2": {
+   "hist": [
+    0.525,
+    0.537,
+    0.438,
+    0.475
+   ],
+   "status": "paused",
+   "teacher": [
+    82,
+    100
+   ],
+   "gap": 0.345,
+   "bot": [
+    38,
+    80
+   ]
+  },
+  "Lava Hound Beatdown": {
+   "hist": [
+    0.512,
+    0.438,
+    0.425,
+    0.45
+   ],
+   "status": "paused",
+   "teacher": [
+    83,
+    100
+   ],
+   "gap": 0.38,
+   "bot": [
+    36,
+    80
+   ]
+  },
+  "Royal Hogs, Evo P.E.K.K.A, Skeleton King": {
+   "hist": [
+    0.575,
+    0.5,
+    0.45,
+    0.6
+   ],
+   "status": "active",
+   "teacher": [
+    83,
+    100
+   ],
+   "gap": 0.23,
+   "bot": [
+    48,
+    80
+   ]
+  },
+  "Hero Balloon Freeze #2": {
+   "hist": [
+    0.537,
+    0.588,
+    0.525,
+    0.55
+   ],
+   "status": "active",
+   "teacher": [
+    79,
+    98
+   ],
+   "gap": 0.256,
+   "bot": [
+    44,
+    80
+   ]
+  },
+  "Evo Royal Giant #2": {
+   "hist": [
+    0.412,
+    0.5,
+    0.375,
+    0.487
+   ],
+   "status": "active",
+   "teacher": [
+    88,
+    100
+   ],
+   "gap": 0.393,
+   "bot": [
+    39,
+    80
+   ]
+  },
+  "Queen Bow": {
+   "hist": [
+    0.713,
+    0.775,
+    0.825,
+    0.713
+   ],
+   "status": "active",
+   "teacher": [
+    89,
+    100
+   ],
+   "gap": 0.177,
+   "bot": [
+    57,
+    80
+   ]
+  },
+  "Evo P.E.K.K.A Bridge Spam": {
+   "hist": [
+    0.287,
+    0.362,
+    0.237,
+    0.425
+   ],
+   "status": "active",
+   "teacher": [
+    69,
+    100
+   ],
+   "gap": 0.265,
+   "bot": [
+    34,
+    80
+   ]
+  },
+  "Evo Royal Giant #3": {
+   "hist": [
+    0.775,
+    0.75,
+    0.688,
+    0.713
+   ],
+   "status": "paused",
+   "teacher": [
+    93,
+    100
+   ],
+   "gap": 0.217,
+   "bot": [
+    57,
+    80
+   ]
+  },
+  "Hero Giant Sparky": {
+   "hist": [
+    0.388,
+    0.438,
+    0.3,
+    0.412
+   ],
+   "status": "active",
+   "teacher": [
+    82,
+    100
+   ],
+   "gap": 0.408,
+   "bot": [
+    33,
+    80
+   ]
+  },
+  "Goblin Drill, Hero Dark Prince, Evo Furn": {
+   "hist": [
+    0.512,
+    0.575,
+    0.512,
+    0.525
+   ],
+   "status": "active",
+   "teacher": [
+    93,
+    100
+   ],
+   "gap": 0.405,
+   "bot": [
+    42,
+    80
+   ]
+  },
+  "X-Bow, Sparky, Evo Mega Knight": {
+   "hist": [
+    0.325,
+    0.35,
+    0.263,
+    0.375
+   ],
+   "status": "active",
+   "teacher": [
+    81,
+    100
+   ],
+   "gap": 0.435,
+   "bot": [
+    30,
+    80
+   ]
+  },
+  "Evo Electro Giant Phoenix Golden Knight ": {
+   "hist": [
+    0.812,
+    0.738,
+    0.725,
+    0.8
+   ],
+   "status": "solved",
+   "teacher": [
+    86,
+    100
+   ],
+   "gap": 0.06,
+   "bot": [
+    64,
+    80
+   ]
+  },
+  "Hero Balloon Freeze": {
+   "hist": [
+    0.6,
+    0.7,
+    0.613,
+    0.713
+   ],
+   "status": "active",
+   "teacher": [
+    86,
+    100
+   ],
+   "gap": 0.147,
+   "bot": [
+    57,
+    80
+   ]
+  },
+  "Double Elixir Mega Knight Spawn": {
+   "hist": [
+    0.362,
+    0.312,
+    0.188,
+    0.263
+   ],
+   "status": "paused",
+   "teacher": [
+    61,
+    100
+   ],
+   "gap": 0.347,
+   "bot": [
+    21,
+    80
+   ]
+  },
+  "Evo Skeleton Barrel, Giant, Evo Elite Ba": {
+   "hist": [
+    0.275,
+    0.3,
+    0.263,
+    0.35
+   ],
+   "status": "active",
+   "teacher": [
+    69,
+    100
+   ],
+   "gap": 0.34,
+   "bot": [
+    28,
+    80
+   ]
+  },
+  "Royal Hogs, Cannon Cart, Mother Witch": {
+   "hist": [
+    0.388,
+    0.375,
+    0.138,
+    0.263
+   ],
+   "status": "paused",
+   "teacher": [
+    76,
+    100
+   ],
+   "gap": 0.497,
+   "bot": [
+    21,
+    80
+   ]
+  },
+  "Royal Recruits Fireball Bait #2": {
+   "hist": [
+    0.35,
+    0.237,
+    0.275,
+    0.3
+   ],
+   "status": "paused",
+   "teacher": [
+    57,
+    100
+   ],
+   "gap": 0.27,
+   "bot": [
+    24,
+    80
+   ]
+  },
+  "Evo Royal Hogs Earthquake": {
+   "hist": [
+    0.812,
+    0.787,
+    0.812,
+    0.825
+   ],
+   "status": "paused",
+   "teacher": [
+    95,
+    100
+   ],
+   "gap": 0.125,
+   "bot": [
+    66,
+    80
+   ]
+  },
+  "Evo Electro Giant, Mini P.E.K.K.A, Hero ": {
+   "hist": [
+    0.487,
+    0.412,
+    0.425,
+    0.525
+   ],
+   "status": "active",
+   "teacher": [
+    87,
+    100
+   ],
+   "gap": 0.345,
+   "bot": [
+    42,
+    80
+   ]
+  },
+  "Golem Beatdown": {
+   "hist": [
+    0.463,
+    0.487,
+    0.35,
+    0.512
+   ],
+   "status": "active",
+   "teacher": [
+    79,
+    98
+   ],
+   "gap": 0.294,
+   "bot": [
+    41,
+    80
+   ]
+  },
+  "Giant NW Mirror Heal": {
+   "hist": [
+    0.75,
+    0.724,
+    0.684,
+    0.737
+   ],
+   "status": "paused",
+   "teacher": [
+    87,
+    97
+   ],
+   "gap": 0.16,
+   "bot": [
+    56,
+    76
+   ]
+  },
+  "GS 3M Heal control": {
+   "hist": [
+    0.368,
+    0.461,
+    0.329,
+    0.342
+   ],
+   "status": "active",
+   "teacher": [
+    75,
+    97
+   ],
+   "gap": 0.431,
+   "bot": [
+    26,
+    76
+   ]
+  },
+  "Royal Recruits Fireball Bait": {
+   "hist": [
+    0.425,
+    0.375,
+    0.325,
+    0.425
+   ],
+   "status": "paused",
+   "teacher": [
+    74,
+    100
+   ],
+   "gap": 0.315,
+   "bot": [
+    34,
+    80
+   ]
+  },
+  "Wall Breakers, Evo Mega Knight, Archer Q": {
+   "hist": [
+    0.362,
+    0.375,
+    0.287,
+    0.325
+   ],
+   "status": "paused",
+   "teacher": [
+    80,
+    100
+   ],
+   "gap": 0.475,
+   "bot": [
+    26,
+    80
+   ]
+  },
+  "Giant Graveyard #2": {
+   "hist": [
+    0.463,
+    0.588,
+    0.487,
+    0.525
+   ],
+   "status": "active",
+   "teacher": [
+    82,
+    100
+   ],
+   "gap": 0.295,
+   "bot": [
+    42,
+    80
+   ]
+  },
+  "Electro Giant Control": {
+   "hist": [
+    0.537,
+    0.425,
+    0.438,
+    0.475
+   ],
+   "status": "paused",
+   "teacher": [
+    86,
+    100
+   ],
+   "gap": 0.385,
+   "bot": [
+    38,
+    80
+   ]
+  },
+  "Goblin Drill Cycle": {
+   "hist": [
+    0.775,
+    0.762,
+    0.85,
+    0.787
+   ],
+   "status": "active",
+   "teacher": [
+    96,
+    100
+   ],
+   "gap": 0.173,
+   "bot": [
+    63,
+    80
+   ]
+  },
+  "Triple Elixir Evo Executioner Bomb Tower": {
+   "hist": [
+    0.787,
+    0.688,
+    0.738,
+    0.75
+   ],
+   "status": "paused",
+   "teacher": [
+    91,
+    100
+   ],
+   "gap": 0.16,
+   "bot": [
+    60,
+    80
+   ]
+  },
+  "Evo Skeleton Barrel, Evo Wall Breakers, ": {
+   "hist": [
+    0.562,
+    0.7,
+    0.55,
     0.6
    ],
    "status": "active",
@@ -120,537 +739,407 @@
     80
    ]
   },
-  "Golem Cannon Cart": {
+  "Golem, Skeleton King, Fisherman": {
    "hist": [
+    0.375,
     0.412,
+    0.35,
+    0.362
+   ],
+   "status": "active",
+   "teacher": [
+    84,
+    98
+   ],
+   "gap": 0.495,
+   "bot": [
+    29,
+    80
+   ]
+  },
+  "LavaLoon": {
+   "hist": [
+    0.375,
+    0.35,
+    0.338,
+    0.412
+   ],
+   "status": "active",
+   "teacher": [
+    82,
+    100
+   ],
+   "gap": 0.408,
+   "bot": [
+    33,
+    80
+   ]
+  },
+  "Giant Sparky": {
+   "hist": [
+    0.388,
+    0.362,
+    0.3,
+    0.325
+   ],
+   "status": "paused",
+   "teacher": [
+    69,
+    100
+   ],
+   "gap": 0.365,
+   "bot": [
+    26,
+    80
+   ]
+  },
+  "Evo Battle Ram, Skeleton King, Evo Royal": {
+   "hist": [
     0.537,
-    0.45
+    0.575,
+    0.487,
+    0.625
    ],
    "status": "active",
    "teacher": [
     77,
     100
    ],
-   "gap": 0.32,
-   "bot": [
-    36,
-    80
-   ]
-  },
-  "Evo Electro Giant Control": {
-   "hist": [
-    0.575,
-    0.575,
-    0.5
-   ],
-   "status": "active",
-   "teacher": [
-    82,
-    100
-   ],
-   "gap": 0.32,
-   "bot": [
-    40,
-    80
-   ]
-  },
-  "Evo Battle Ram, Cannon Cart, Royal Ghost": {
-   "hist": [
-    0.463,
-    0.425,
-    0.375
-   ],
-   "status": "active",
-   "teacher": [
-    78,
-    100
-   ],
-   "gap": 0.405,
-   "bot": [
-    30,
-    80
-   ]
-  },
-  "Evo Minion Horde Evo Battle Ram Three Mu": {
-   "hist": [
-    0.325,
-    0.412,
-    0.287
-   ],
-   "status": "active",
-   "teacher": [
-    70,
-    100
-   ],
-   "gap": 0.413,
-   "bot": [
-    23,
-    80
-   ]
-  },
-  "SD Splashyard Freeze": {
-   "hist": [
-    0.65,
-    0.625,
-    0.625
-   ],
-   "status": "active",
-   "teacher": [
-    88,
-    100
-   ],
-   "gap": 0.255,
+   "gap": 0.145,
    "bot": [
     50,
     80
    ]
   },
-  "LumberLoon Freeze #2": {
+  "Elixir Golem, Sparky, Evo Elite Barbaria": {
    "hist": [
-    0.525,
-    0.537,
-    0.438
-   ],
-   "status": "active",
-   "teacher": [
-    82,
-    100
-   ],
-   "gap": 0.382,
-   "bot": [
-    35,
-    80
-   ]
-  },
-  "Lava Hound Beatdown": {
-   "hist": [
-    0.512,
-    0.438,
-    0.425
-   ],
-   "status": "active",
-   "teacher": [
-    83,
-    100
-   ],
-   "gap": 0.405,
-   "bot": [
-    34,
-    80
-   ]
-  },
-  "Royal Hogs, Evo P.E.K.K.A, Skeleton King": {
-   "hist": [
-    0.575,
     0.5,
-    0.45
+    0.5,
+    0.338,
+    0.55
    ],
    "status": "active",
    "teacher": [
-    83,
-    100
-   ],
-   "gap": 0.38,
-   "bot": [
-    36,
-    80
-   ]
-  },
-  "Hero Balloon Freeze #2": {
-   "hist": [
-    0.537,
-    0.588,
-    0.525
-   ],
-   "status": "active",
-   "teacher": [
-    79,
+    85,
     98
    ],
-   "gap": 0.281,
+   "gap": 0.317,
    "bot": [
-    42,
+    44,
     80
    ]
   },
-  "Evo Royal Giant #2": {
+  "Evo Royal Giant Mother Witch Fisherman": {
    "hist": [
-    0.412,
-    0.5,
-    0.375
-   ],
-   "status": "active",
-   "teacher": [
-    88,
-    100
-   ],
-   "gap": 0.505,
-   "bot": [
-    30,
-    80
-   ]
-  },
-  "Queen Bow": {
-   "hist": [
-    0.713,
-    0.775,
-    0.825
-   ],
-   "status": "solved",
-   "teacher": [
-    89,
-    100
-   ],
-   "gap": 0.065,
-   "bot": [
-    66,
-    80
-   ]
-  },
-  "Evo P.E.K.K.A Bridge Spam": {
-   "hist": [
-    0.287,
-    0.362,
-    0.237
-   ],
-   "status": "active",
-   "teacher": [
-    69,
-    100
-   ],
-   "gap": 0.453,
-   "bot": [
-    19,
-    80
-   ]
-  },
-  "Evo Royal Giant #3": {
-   "hist": [
-    0.775,
-    0.75,
+    0.688,
+    0.65,
+    0.637,
     0.688
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
-    93,
+    85,
     100
    ],
-   "gap": 0.242,
+   "gap": 0.162,
    "bot": [
     55,
     80
    ]
   },
-  "Hero Giant Sparky": {
+  "Queen Bow #2": {
    "hist": [
-    0.388,
-    0.438,
-    0.3
+    0.671,
+    0.671,
+    0.658,
+    0.553
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     82,
+    97
+   ],
+   "gap": 0.292,
+   "bot": [
+    42,
+    76
+   ]
+  },
+  "Evo Goblin Drill Cycle": {
+   "hist": [
+    0.912,
+    0.887,
+    0.875,
+    0.863
+   ],
+   "status": "paused",
+   "teacher": [
+    99,
     100
    ],
-   "gap": 0.52,
+   "gap": 0.127,
    "bot": [
-    24,
+    69,
     80
    ]
   },
-  "Goblin Drill, Hero Dark Prince, Evo Furn": {
+  "Royal Giant": {
    "hist": [
-    0.512,
     0.575,
-    0.512
+    0.5,
+    0.438,
+    0.537
    ],
-   "status": "active",
-   "teacher": [
-    93,
-    100
-   ],
-   "gap": 0.418,
-   "bot": [
-    41,
-    80
-   ]
-  },
-  "X-Bow, Sparky, Evo Mega Knight": {
-   "hist": [
-    0.325,
-    0.35,
-    0.263
-   ],
-   "status": "active",
-   "teacher": [
-    81,
-    100
-   ],
-   "gap": 0.547,
-   "bot": [
-    21,
-    80
-   ]
-  },
-  "Evo Electro Giant Phoenix Golden Knight ": {
-   "hist": [
-    0.812,
-    0.738,
-    0.725
-   ],
-   "status": "active",
-   "teacher": [
-    86,
-    100
-   ],
-   "gap": 0.135,
-   "bot": [
-    58,
-    80
-   ]
-  },
-  "Hero Balloon Freeze": {
-   "hist": [
-    0.6,
-    0.7,
-    0.613
-   ],
-   "status": "active",
-   "teacher": [
-    86,
-    100
-   ],
-   "gap": 0.247,
-   "bot": [
-    49,
-    80
-   ]
-  },
-  "Double Elixir Mega Knight Spawn": {
-   "hist": [
-    0.362,
-    0.312,
-    0.188
-   ],
-   "status": "active",
-   "teacher": [
-    61,
-    100
-   ],
-   "gap": 0.422,
-   "bot": [
-    15,
-    80
-   ]
-  },
-  "Evo Skeleton Barrel, Giant, Evo Elite Ba": {
-   "hist": [
-    0.275,
-    0.3,
-    0.263
-   ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     69,
     100
    ],
-   "gap": 0.427,
+   "gap": 0.153,
    "bot": [
-    21,
+    43,
     80
    ]
   },
-  "Royal Hogs, Cannon Cart, Mother Witch": {
+  "Giant Skelly Hog Miner eBarb beatdown": {
    "hist": [
-    0.388,
-    0.375,
-    0.138
-   ],
-   "status": "active",
-   "teacher": [
-    76,
-    100
-   ],
-   "gap": 0.622,
-   "bot": [
-    11,
-    80
-   ]
-  },
-  "Royal Recruits Fireball Bait #2": {
-   "hist": [
-    0.35,
-    0.237,
-    0.275
-   ],
-   "status": "active",
-   "teacher": [
-    57,
-    100
-   ],
-   "gap": 0.295,
-   "bot": [
-    22,
-    80
-   ]
-  },
-  "Evo Royal Hogs Earthquake": {
-   "hist": [
-    0.812,
-    0.787,
-    0.812
+    0.711,
+    0.776,
+    0.671,
+    0.789
    ],
    "status": "active",
    "teacher": [
     95,
-    100
-   ],
-   "gap": 0.138,
-   "bot": [
-    65,
-    80
-   ]
-  },
-  "Evo Electro Giant, Mini P.E.K.K.A, Hero ": {
-   "hist": [
-    0.487,
-    0.412,
-    0.425
-   ],
-   "status": "active",
-   "teacher": [
-    87,
-    100
-   ],
-   "gap": 0.445,
-   "bot": [
-    34,
-    80
-   ]
-  },
-  "Golem Beatdown": {
-   "hist": [
-    0.463,
-    0.487,
-    0.35
-   ],
-   "status": "active",
-   "teacher": [
-    79,
-    98
-   ],
-   "gap": 0.456,
-   "bot": [
-    28,
-    80
-   ]
-  },
-  "Giant NW Mirror Heal": {
-   "hist": [
-    0.75,
-    0.724,
-    0.684
-   ],
-   "status": "active",
-   "teacher": [
-    87,
     97
    ],
-   "gap": 0.213,
+   "gap": 0.19,
    "bot": [
-    52,
+    60,
     76
    ]
   },
-  "GS 3M Heal control": {
+  "Royal Hogs Earthquake": {
    "hist": [
-    0.368,
-    0.461,
-    0.329
+    0.963,
+    0.887,
+    0.963,
+    0.975
    ],
-   "status": "active",
+   "status": "solved",
    "teacher": [
-    75,
-    97
-   ],
-   "gap": 0.444,
-   "bot": [
-    25,
-    76
-   ]
-  },
-  "Royal Recruits Fireball Bait": {
-   "hist": [
-    0.425,
-    0.375,
-    0.325
-   ],
-   "status": "active",
-   "teacher": [
-    74,
+    97,
     100
    ],
-   "gap": 0.415,
+   "gap": -0.005,
    "bot": [
-    26,
+    78,
     80
    ]
   },
-  "Wall Breakers, Evo Mega Knight, Archer Q": {
+  "Evo Giant Sparky": {
    "hist": [
-    0.362,
-    0.375,
+    0.35,
+    0.4,
+    0.35,
     0.287
    ],
    "status": "active",
    "teacher": [
-    80,
+    75,
     100
    ],
-   "gap": 0.513,
+   "gap": 0.463,
    "bot": [
     23,
     80
    ]
   },
-  "Giant Graveyard #2": {
+  "Lava Hound Beatdown #2": {
    "hist": [
-    0.463,
-    0.588,
+    0.368,
+    0.355,
+    0.395,
+    0.342
+   ],
+   "status": "active",
+   "teacher": [
+    71,
+    97
+   ],
+   "gap": 0.39,
+   "bot": [
+    26,
+    76
+   ]
+  },
+  "Electro Giant Control #2": {
+   "hist": [
+    0.312,
+    0.375,
+    0.263,
+    0.266
+   ],
+   "status": "active",
+   "teacher": [
+    64,
+    98
+   ],
+   "gap": 0.387,
+   "bot": [
+    21,
+    79
+   ]
+  },
+  "Evo Royal Recruits Evo Archers Balloon": {
+   "hist": [
+    0.6,
+    0.475,
+    0.45,
+    0.537
+   ],
+   "status": "paused",
+   "teacher": [
+    81,
+    100
+   ],
+   "gap": 0.273,
+   "bot": [
+    43,
+    80
+   ]
+  },
+  "Goblin Drill, Hero Knight, Evo Furnace": {
+   "hist": [
+    0.8,
+    0.762,
+    0.762,
+    0.775
+   ],
+   "status": "paused",
+   "teacher": [
+    98,
+    100
+   ],
+   "gap": 0.205,
+   "bot": [
+    62,
+    80
+   ]
+  },
+  "Evo Goblin Giant Sparky": {
+   "hist": [
+    0.125,
+    0.225,
+    0.175,
+    0.188
+   ],
+   "status": "active",
+   "teacher": [
+    63,
+    100
+   ],
+   "gap": 0.442,
+   "bot": [
+    15,
+    80
+   ]
+  },
+  "Hyperbait": {
+   "hist": [
+    0.338,
+    0.225,
+    0.263,
+    0.312
+   ],
+   "status": "paused",
+   "teacher": [
+    80,
+    100
+   ],
+   "gap": 0.488,
+   "bot": [
+    25,
+    80
+   ]
+  },
+  "Triple Elixir Evo Royal Recruits bait": {
+   "hist": [
+    0.312,
+    0.338,
+    0.15,
+    0.338
+   ],
+   "status": "active",
+   "teacher": [
+    77,
+    100
+   ],
+   "gap": 0.432,
+   "bot": [
+    27,
+    80
+   ]
+  },
+  "P.E.K.K.A Bridge Spam": {
+   "hist": [
+    0.375,
+    0.388,
+    0.325,
+    0.35
+   ],
+   "status": "paused",
+   "teacher": [
+    64,
+    100
+   ],
+   "gap": 0.29,
+   "bot": [
+    28,
+    80
+   ]
+  },
+  "Hog Rider, Three Musketeers, Evo Barbari": {
+   "hist": [
+    0.425,
+    0.438,
+    0.4,
+    0.325
+   ],
+   "status": "paused",
+   "teacher": [
+    73,
+    100
+   ],
+   "gap": 0.405,
+   "bot": [
+    26,
+    80
+   ]
+  },
+  "P.E.K.K.A Bridge Spam #3": {
+   "hist": [
+    0.412,
+    0.425,
+    0.35,
     0.487
    ],
    "status": "active",
    "teacher": [
-    82,
+    73,
     100
    ],
-   "gap": 0.333,
+   "gap": 0.243,
    "bot": [
     39,
     80
    ]
   },
-  "Electro Giant Control": {
+  "Balloon Cycle": {
    "hist": [
-    0.537,
-    0.425,
-    0.438
-   ],
-   "status": "active",
-   "teacher": [
-    86,
-    100
-   ],
-   "gap": 0.422,
-   "bot": [
-    35,
-    80
-   ]
-  },
-  "Goblin Drill Cycle": {
-   "hist": [
-    0.775,
-    0.762,
+    0.875,
+    0.875,
+    0.9,
     0.85
    ],
    "status": "active",
@@ -664,445 +1153,21 @@
     80
    ]
   },
-  "Triple Elixir Evo Executioner Bomb Tower": {
-   "hist": [
-    0.787,
-    0.688,
-    0.738
-   ],
-   "status": "active",
-   "teacher": [
-    91,
-    100
-   ],
-   "gap": 0.172,
-   "bot": [
-    59,
-    80
-   ]
-  },
-  "Evo Skeleton Barrel, Evo Wall Breakers, ": {
-   "hist": [
-    0.562,
-    0.7,
-    0.55
-   ],
-   "status": "active",
-   "teacher": [
-    86,
-    100
-   ],
-   "gap": 0.31,
-   "bot": [
-    44,
-    80
-   ]
-  },
-  "Golem, Skeleton King, Fisherman": {
-   "hist": [
-    0.375,
-    0.412,
-    0.35
-   ],
-   "status": "active",
-   "teacher": [
-    84,
-    98
-   ],
-   "gap": 0.507,
-   "bot": [
-    28,
-    80
-   ]
-  },
-  "LavaLoon": {
-   "hist": [
-    0.375,
-    0.35,
-    0.338
-   ],
-   "status": "active",
-   "teacher": [
-    82,
-    100
-   ],
-   "gap": 0.482,
-   "bot": [
-    27,
-    80
-   ]
-  },
-  "Giant Sparky": {
-   "hist": [
-    0.388,
-    0.362,
-    0.3
-   ],
-   "status": "active",
-   "teacher": [
-    69,
-    100
-   ],
-   "gap": 0.39,
-   "bot": [
-    24,
-    80
-   ]
-  },
-  "Evo Battle Ram, Skeleton King, Evo Royal": {
-   "hist": [
-    0.537,
-    0.575,
-    0.487
-   ],
-   "status": "active",
-   "teacher": [
-    77,
-    100
-   ],
-   "gap": 0.283,
-   "bot": [
-    39,
-    80
-   ]
-  },
-  "Elixir Golem, Sparky, Evo Elite Barbaria": {
-   "hist": [
-    0.5,
-    0.5,
-    0.338
-   ],
-   "status": "active",
-   "teacher": [
-    85,
-    98
-   ],
-   "gap": 0.529,
-   "bot": [
-    27,
-    80
-   ]
-  },
-  "Evo Royal Giant Mother Witch Fisherman": {
-   "hist": [
-    0.688,
-    0.65,
-    0.637
-   ],
-   "status": "active",
-   "teacher": [
-    85,
-    100
-   ],
-   "gap": 0.213,
-   "bot": [
-    51,
-    80
-   ]
-  },
-  "Queen Bow #2": {
-   "hist": [
-    0.671,
-    0.671,
-    0.658
-   ],
-   "status": "active",
-   "teacher": [
-    82,
-    97
-   ],
-   "gap": 0.187,
-   "bot": [
-    50,
-    76
-   ]
-  },
-  "Evo Goblin Drill Cycle": {
-   "hist": [
-    0.912,
-    0.887,
-    0.875
-   ],
-   "status": "active",
-   "teacher": [
-    99,
-    100
-   ],
-   "gap": 0.115,
-   "bot": [
-    70,
-    80
-   ]
-  },
-  "Royal Giant": {
-   "hist": [
-    0.575,
-    0.5,
-    0.438
-   ],
-   "status": "active",
-   "teacher": [
-    69,
-    100
-   ],
-   "gap": 0.252,
-   "bot": [
-    35,
-    80
-   ]
-  },
-  "Giant Skelly Hog Miner eBarb beatdown": {
-   "hist": [
-    0.711,
-    0.776,
-    0.671
-   ],
-   "status": "active",
-   "teacher": [
-    95,
-    97
-   ],
-   "gap": 0.308,
-   "bot": [
-    51,
-    76
-   ]
-  },
-  "Royal Hogs Earthquake": {
-   "hist": [
-    0.963,
-    0.887,
-    0.963
-   ],
-   "status": "solved",
-   "teacher": [
-    97,
-    100
-   ],
-   "gap": 0.007,
-   "bot": [
-    77,
-    80
-   ]
-  },
-  "Evo Giant Sparky": {
-   "hist": [
-    0.35,
-    0.4,
-    0.35
-   ],
-   "status": "active",
-   "teacher": [
-    75,
-    100
-   ],
-   "gap": 0.4,
-   "bot": [
-    28,
-    80
-   ]
-  },
-  "Lava Hound Beatdown #2": {
-   "hist": [
-    0.368,
-    0.355,
-    0.395
-   ],
-   "status": "active",
-   "teacher": [
-    71,
-    97
-   ],
-   "gap": 0.337,
-   "bot": [
-    30,
-    76
-   ]
-  },
-  "Electro Giant Control #2": {
-   "hist": [
-    0.312,
-    0.375,
-    0.263
-   ],
-   "status": "active",
-   "teacher": [
-    64,
-    98
-   ],
-   "gap": 0.39,
-   "bot": [
-    21,
-    80
-   ]
-  },
-  "Evo Royal Recruits Evo Archers Balloon": {
-   "hist": [
-    0.6,
-    0.475,
-    0.45
-   ],
-   "status": "active",
-   "teacher": [
-    81,
-    100
-   ],
-   "gap": 0.36,
-   "bot": [
-    36,
-    80
-   ]
-  },
-  "Goblin Drill, Hero Knight, Evo Furnace": {
-   "hist": [
-    0.8,
-    0.762,
-    0.762
-   ],
-   "status": "active",
-   "teacher": [
-    98,
-    100
-   ],
-   "gap": 0.218,
-   "bot": [
-    61,
-    80
-   ]
-  },
-  "Evo Goblin Giant Sparky": {
-   "hist": [
-    0.125,
-    0.225,
-    0.175
-   ],
-   "status": "active",
-   "teacher": [
-    63,
-    100
-   ],
-   "gap": 0.455,
-   "bot": [
-    14,
-    80
-   ]
-  },
-  "Hyperbait": {
-   "hist": [
-    0.338,
-    0.225,
-    0.263
-   ],
-   "status": "active",
-   "teacher": [
-    80,
-    100
-   ],
-   "gap": 0.537,
-   "bot": [
-    21,
-    80
-   ]
-  },
-  "Triple Elixir Evo Royal Recruits bait": {
-   "hist": [
-    0.312,
-    0.338,
-    0.15
-   ],
-   "status": "active",
-   "teacher": [
-    77,
-    100
-   ],
-   "gap": 0.62,
-   "bot": [
-    12,
-    80
-   ]
-  },
-  "P.E.K.K.A Bridge Spam": {
-   "hist": [
-    0.375,
-    0.388,
-    0.325
-   ],
-   "status": "active",
-   "teacher": [
-    64,
-    100
-   ],
-   "gap": 0.315,
-   "bot": [
-    26,
-    80
-   ]
-  },
-  "Hog Rider, Three Musketeers, Evo Barbari": {
-   "hist": [
-    0.425,
-    0.438,
-    0.4
-   ],
-   "status": "active",
-   "teacher": [
-    73,
-    100
-   ],
-   "gap": 0.33,
-   "bot": [
-    32,
-    80
-   ]
-  },
-  "P.E.K.K.A Bridge Spam #3": {
-   "hist": [
-    0.412,
-    0.425,
-    0.35
-   ],
-   "status": "active",
-   "teacher": [
-    73,
-    100
-   ],
-   "gap": 0.38,
-   "bot": [
-    28,
-    80
-   ]
-  },
-  "Balloon Cycle": {
-   "hist": [
-    0.875,
-    0.875,
-    0.9
-   ],
-   "status": "solved",
-   "teacher": [
-    96,
-    100
-   ],
-   "gap": 0.06,
-   "bot": [
-    72,
-    80
-   ]
-  },
   "Evo Skeleton Barrel, Suspicious Bush, Sk #2": {
    "hist": [
     0.2,
     0.25,
-    0.25
+    0.25,
+    0.3
    ],
    "status": "active",
    "teacher": [
     71,
     98
    ],
-   "gap": 0.474,
+   "gap": 0.424,
    "bot": [
-    20,
+    24,
     80
    ]
   },
@@ -1110,6 +1175,7 @@
    "hist": [
     0.95,
     0.912,
+    0.9,
     0.9
    ],
    "status": "solved",
@@ -1127,16 +1193,17 @@
    "hist": [
     0.45,
     0.438,
-    0.362
+    0.362,
+    0.45
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     68,
     100
    ],
-   "gap": 0.318,
+   "gap": 0.23,
    "bot": [
-    29,
+    36,
     80
    ]
   },
@@ -1144,16 +1211,17 @@
    "hist": [
     0.512,
     0.575,
-    0.5
+    0.5,
+    0.625
    ],
    "status": "active",
    "teacher": [
     84,
     100
    ],
-   "gap": 0.34,
+   "gap": 0.215,
    "bot": [
-    40,
+    50,
     80
    ]
   },
@@ -1161,16 +1229,17 @@
    "hist": [
     0.2,
     0.225,
-    0.175
+    0.175,
+    0.138
    ],
    "status": "active",
    "teacher": [
     63,
     100
    ],
-   "gap": 0.455,
+   "gap": 0.492,
    "bot": [
-    14,
+    11,
     80
    ]
   },
@@ -1178,16 +1247,17 @@
    "hist": [
     0.35,
     0.375,
-    0.237
+    0.237,
+    0.312
    ],
    "status": "active",
    "teacher": [
     75,
     100
    ],
-   "gap": 0.513,
+   "gap": 0.438,
    "bot": [
-    19,
+    25,
     80
    ]
   },
@@ -1195,16 +1265,17 @@
    "hist": [
     0.175,
     0.25,
-    0.25
+    0.25,
+    0.237
    ],
    "status": "active",
    "teacher": [
     58,
     100
    ],
-   "gap": 0.33,
+   "gap": 0.343,
    "bot": [
-    20,
+    19,
     80
    ]
   },
@@ -1212,16 +1283,17 @@
    "hist": [
     0.395,
     0.553,
-    0.368
+    0.368,
+    0.447
    ],
    "status": "active",
    "teacher": [
     72,
     97
    ],
-   "gap": 0.374,
+   "gap": 0.295,
    "bot": [
-    28,
+    34,
     76
    ]
   },
@@ -1229,16 +1301,17 @@
    "hist": [
     0.461,
     0.474,
-    0.382
+    0.382,
+    0.487
    ],
    "status": "active",
    "teacher": [
     78,
     97
    ],
-   "gap": 0.422,
+   "gap": 0.317,
    "bot": [
-    29,
+    37,
     76
    ]
   },
@@ -1246,16 +1319,17 @@
    "hist": [
     0.4,
     0.35,
-    0.412
+    0.412,
+    0.35
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     78,
     100
    ],
-   "gap": 0.368,
+   "gap": 0.43,
    "bot": [
-    33,
+    28,
     80
    ]
   },
@@ -1263,16 +1337,17 @@
    "hist": [
     0.562,
     0.475,
-    0.425
+    0.425,
+    0.588
    ],
    "status": "active",
    "teacher": [
     82,
     100
    ],
-   "gap": 0.395,
+   "gap": 0.232,
    "bot": [
-    34,
+    47,
     80
    ]
   },
@@ -1280,16 +1355,17 @@
    "hist": [
     0.312,
     0.3,
-    0.312
+    0.312,
+    0.388
    ],
    "status": "active",
    "teacher": [
     67,
     100
    ],
-   "gap": 0.358,
+   "gap": 0.282,
    "bot": [
-    25,
+    31,
     80
    ]
   },
@@ -1297,16 +1373,17 @@
    "hist": [
     0.113,
     0.138,
-    0.113
+    0.113,
+    0.163
    ],
    "status": "active",
    "teacher": [
     46,
     100
    ],
-   "gap": 0.347,
+   "gap": 0.297,
    "bot": [
-    9,
+    13,
     80
    ]
   },
@@ -1314,9 +1391,10 @@
    "hist": [
     0.237,
     0.188,
+    0.225,
     0.225
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     62,
     100
@@ -1331,16 +1409,17 @@
    "hist": [
     0.45,
     0.4,
-    0.438
+    0.438,
+    0.537
    ],
    "status": "active",
    "teacher": [
     79,
     100
    ],
-   "gap": 0.352,
+   "gap": 0.253,
    "bot": [
-    35,
+    43,
     80
    ]
   },
@@ -1348,16 +1427,17 @@
    "hist": [
     0.855,
     0.895,
-    0.895
+    0.895,
+    0.921
    ],
    "status": "solved",
    "teacher": [
     92,
     97
    ],
-   "gap": 0.053,
+   "gap": 0.027,
    "bot": [
-    68,
+    70,
     76
    ]
   },
@@ -1365,16 +1445,17 @@
    "hist": [
     0.325,
     0.362,
-    0.138
+    0.138,
+    0.225
    ],
    "status": "active",
    "teacher": [
     73,
     100
    ],
-   "gap": 0.592,
+   "gap": 0.505,
    "bot": [
-    11,
+    18,
     80
    ]
   },
@@ -1382,16 +1463,17 @@
    "hist": [
     0.588,
     0.588,
-    0.588
+    0.588,
+    0.6
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     79,
     100
    ],
-   "gap": 0.202,
+   "gap": 0.19,
    "bot": [
-    47,
+    48,
     80
    ]
   },
@@ -1399,16 +1481,17 @@
    "hist": [
     0.65,
     0.713,
-    0.575
+    0.575,
+    0.675
    ],
    "status": "active",
    "teacher": [
     83,
     100
    ],
-   "gap": 0.255,
+   "gap": 0.155,
    "bot": [
-    46,
+    54,
     80
    ]
   },
@@ -1416,16 +1499,17 @@
    "hist": [
     0.2,
     0.225,
-    0.113
+    0.113,
+    0.212
    ],
    "status": "active",
    "teacher": [
     60,
     100
    ],
-   "gap": 0.487,
+   "gap": 0.388,
    "bot": [
-    9,
+    17,
     80
    ]
   },
@@ -1433,16 +1517,17 @@
    "hist": [
     0.6,
     0.588,
-    0.35
+    0.35,
+    0.588
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     91,
     100
    ],
-   "gap": 0.56,
+   "gap": 0.322,
    "bot": [
-    28,
+    47,
     80
    ]
   },
@@ -1450,16 +1535,17 @@
    "hist": [
     0.237,
     0.312,
-    0.338
+    0.338,
+    0.312
    ],
    "status": "active",
    "teacher": [
     69,
     100
    ],
-   "gap": 0.352,
+   "gap": 0.378,
    "bot": [
-    27,
+    25,
     80
    ]
   },
@@ -1467,16 +1553,17 @@
    "hist": [
     0.237,
     0.25,
-    0.2
+    0.2,
+    0.287
    ],
    "status": "active",
    "teacher": [
     84,
     100
    ],
-   "gap": 0.64,
+   "gap": 0.553,
    "bot": [
-    16,
+    23,
     80
    ]
   },
@@ -1484,16 +1571,17 @@
    "hist": [
     0.275,
     0.3,
-    0.212
+    0.212,
+    0.338
    ],
    "status": "active",
    "teacher": [
     59,
     100
    ],
-   "gap": 0.378,
+   "gap": 0.252,
    "bot": [
-    17,
+    27,
     80
    ]
   },
@@ -1501,16 +1589,17 @@
    "hist": [
     0.375,
     0.425,
-    0.388
+    0.388,
+    0.4
    ],
    "status": "active",
    "teacher": [
     75,
     100
    ],
-   "gap": 0.362,
+   "gap": 0.35,
    "bot": [
-    31,
+    32,
     80
    ]
   },
@@ -1518,16 +1607,17 @@
    "hist": [
     0.688,
     0.7,
-    0.6
+    0.6,
+    0.688
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     88,
     100
    ],
-   "gap": 0.28,
+   "gap": 0.192,
    "bot": [
-    48,
+    55,
     80
    ]
   },
@@ -1535,16 +1625,17 @@
    "hist": [
     0.65,
     0.738,
-    0.7
+    0.7,
+    0.725
    ],
-   "status": "active",
+   "status": "solved",
    "teacher": [
     82,
     100
    ],
-   "gap": 0.12,
+   "gap": 0.095,
    "bot": [
-    56,
+    58,
     80
    ]
   },
@@ -1552,16 +1643,17 @@
    "hist": [
     0.4,
     0.388,
-    0.338
+    0.338,
+    0.438
    ],
    "status": "active",
    "teacher": [
     72,
     98
    ],
-   "gap": 0.397,
+   "gap": 0.297,
    "bot": [
-    27,
+    35,
     80
    ]
   },
@@ -1569,16 +1661,17 @@
    "hist": [
     0.875,
     0.9,
-    0.887
+    0.887,
+    0.912
    ],
-   "status": "active",
+   "status": "solved",
    "teacher": [
     100,
     100
    ],
-   "gap": 0.113,
+   "gap": 0.088,
    "bot": [
-    71,
+    73,
     80
    ]
   },
@@ -1586,16 +1679,17 @@
    "hist": [
     0.075,
     0.163,
-    0.138
+    0.138,
+    0.125
    ],
    "status": "active",
    "teacher": [
     53,
     100
    ],
-   "gap": 0.392,
+   "gap": 0.405,
    "bot": [
-    11,
+    10,
     80
    ]
   },
@@ -1603,16 +1697,17 @@
    "hist": [
     0.875,
     0.887,
-    0.825
+    0.825,
+    0.938
    ],
    "status": "solved",
    "teacher": [
     89,
     100
    ],
-   "gap": 0.065,
+   "gap": -0.048,
    "bot": [
-    66,
+    75,
     80
    ]
   },
@@ -1620,16 +1715,17 @@
    "hist": [
     0.487,
     0.475,
-    0.3
+    0.3,
+    0.412
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     86,
     100
    ],
-   "gap": 0.56,
+   "gap": 0.448,
    "bot": [
-    24,
+    33,
     80
    ]
   },
@@ -1637,16 +1733,17 @@
    "hist": [
     0.375,
     0.3,
-    0.212
+    0.212,
+    0.35
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     59,
     100
    ],
-   "gap": 0.378,
+   "gap": 0.24,
    "bot": [
-    17,
+    28,
     80
    ]
   },
@@ -1654,16 +1751,17 @@
    "hist": [
     0.738,
     0.775,
-    0.775
+    0.775,
+    0.738
    ],
    "status": "active",
    "teacher": [
     93,
     100
    ],
-   "gap": 0.155,
+   "gap": 0.192,
    "bot": [
-    62,
+    59,
     80
    ]
   },
@@ -1671,16 +1769,17 @@
    "hist": [
     0.4,
     0.35,
-    0.3
+    0.3,
+    0.388
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     69,
     100
    ],
-   "gap": 0.39,
+   "gap": 0.302,
    "bot": [
-    24,
+    31,
     80
    ]
   },
@@ -1688,6 +1787,7 @@
    "hist": [
     0.225,
     0.3,
+    0.188,
     0.188
    ],
    "status": "active",
@@ -1705,16 +1805,17 @@
    "hist": [
     0.525,
     0.475,
-    0.438
+    0.438,
+    0.55
    ],
    "status": "active",
    "teacher": [
     82,
     98
    ],
-   "gap": 0.399,
+   "gap": 0.287,
    "bot": [
-    35,
+    44,
     80
    ]
   },
@@ -1722,16 +1823,17 @@
    "hist": [
     0.25,
     0.388,
-    0.237
+    0.237,
+    0.287
    ],
    "status": "active",
    "teacher": [
     68,
     100
    ],
-   "gap": 0.443,
+   "gap": 0.393,
    "bot": [
-    19,
+    23,
     80
    ]
   },
@@ -1739,6 +1841,7 @@
    "hist": [
     0.45,
     0.388,
+    0.525,
     0.525
    ],
    "status": "active",
@@ -1756,16 +1859,17 @@
    "hist": [
     0.625,
     0.6,
-    0.45
+    0.45,
+    0.675
    ],
    "status": "active",
    "teacher": [
     86,
     100
    ],
-   "gap": 0.41,
+   "gap": 0.185,
    "bot": [
-    36,
+    54,
     80
    ]
   },
@@ -1773,16 +1877,17 @@
    "hist": [
     0.338,
     0.212,
-    0.275
+    0.275,
+    0.375
    ],
    "status": "active",
    "teacher": [
     73,
     100
    ],
-   "gap": 0.455,
+   "gap": 0.355,
    "bot": [
-    22,
+    30,
     80
    ]
   },
@@ -1790,16 +1895,17 @@
    "hist": [
     0.512,
     0.55,
-    0.55
+    0.55,
+    0.525
    ],
    "status": "active",
    "teacher": [
     82,
     100
    ],
-   "gap": 0.27,
+   "gap": 0.295,
    "bot": [
-    44,
+    42,
     80
    ]
   }
@@ -1809,16 +1915,17 @@
    "hist": [
     0.35,
     0.425,
-    0.275
+    0.275,
+    0.425
    ],
    "status": "active",
    "teacher": [
     47,
     50
    ],
-   "gap": 0.665,
+   "gap": 0.515,
    "bot": [
-    11,
+    17,
     40
    ]
   },
@@ -1826,16 +1933,17 @@
    "hist": [
     0.389,
     0.528,
-    0.389
+    0.389,
+    0.5
    ],
    "status": "active",
    "teacher": [
     48,
     49
    ],
-   "gap": 0.591,
+   "gap": 0.48,
    "bot": [
-    14,
+    18,
     36
    ]
   },
@@ -1843,16 +1951,17 @@
    "hist": [
     0.2,
     0.075,
-    0.025
+    0.025,
+    0.175
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     46,
     50
    ],
-   "gap": 0.895,
+   "gap": 0.745,
    "bot": [
-    1,
+    7,
     40
    ]
   },
@@ -1860,16 +1969,17 @@
    "hist": [
     0.775,
     0.775,
-    0.575
+    0.575,
+    0.825
    ],
    "status": "active",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.425,
+   "gap": 0.175,
    "bot": [
-    23,
+    33,
     40
    ]
   },
@@ -1877,16 +1987,17 @@
    "hist": [
     0.225,
     0.15,
-    0.075
+    0.075,
+    0.35
    ],
    "status": "active",
    "teacher": [
     39,
     50
    ],
-   "gap": 0.705,
+   "gap": 0.43,
    "bot": [
-    3,
+    14,
     40
    ]
   },
@@ -1894,6 +2005,151 @@
    "hist": [
     0.475,
     0.55,
+    0.35,
+    0.45
+   ],
+   "status": "active",
+   "teacher": [
+    48,
+    50
+   ],
+   "gap": 0.51,
+   "bot": [
+    18,
+    40
+   ]
+  },
+  "Hero Giant Graveyard": {
+   "hist": [
+    0.05,
+    0.025,
+    0.025,
+    0.075
+   ],
+   "status": "active",
+   "teacher": [
+    38,
+    50
+   ],
+   "gap": 0.685,
+   "bot": [
+    3,
+    40
+   ]
+  },
+  "Golem Cannon Cart": {
+   "hist": [
+    0.325,
+    0.175,
+    0.15,
+    0.4
+   ],
+   "status": "active",
+   "teacher": [
+    50,
+    50
+   ],
+   "gap": 0.6,
+   "bot": [
+    16,
+    40
+   ]
+  },
+  "Evo Electro Giant Control": {
+   "hist": [
+    0.111,
+    0.25,
+    0.083,
+    0.306
+   ],
+   "status": "active",
+   "teacher": [
+    48,
+    49
+   ],
+   "gap": 0.674,
+   "bot": [
+    11,
+    36
+   ]
+  },
+  "Evo Battle Ram, Cannon Cart, Royal Ghost": {
+   "hist": [
+    0.25,
+    0.111,
+    0.111,
+    0.25
+   ],
+   "status": "paused",
+   "teacher": [
+    46,
+    49
+   ],
+   "gap": 0.689,
+   "bot": [
+    9,
+    36
+   ]
+  },
+  "Evo Minion Horde Evo Battle Ram Three Mu": {
+   "hist": [
+    0.15,
+    0.25,
+    0.125,
+    0.3
+   ],
+   "status": "active",
+   "teacher": [
+    48,
+    50
+   ],
+   "gap": 0.66,
+   "bot": [
+    12,
+    40
+   ]
+  },
+  "SD Splashyard Freeze": {
+   "hist": [
+    0.725,
+    0.725,
+    0.75,
+    0.725
+   ],
+   "status": "active",
+   "teacher": [
+    50,
+    50
+   ],
+   "gap": 0.275,
+   "bot": [
+    29,
+    40
+   ]
+  },
+  "LumberLoon Freeze #2": {
+   "hist": [
+    0.425,
+    0.4,
+    0.3,
+    0.525
+   ],
+   "status": "active",
+   "teacher": [
+    49,
+    50
+   ],
+   "gap": 0.455,
+   "bot": [
+    21,
+    40
+   ]
+  },
+  "Lava Hound Beatdown": {
+   "hist": [
+    0.35,
+    0.375,
+    0.175,
     0.35
    ],
    "status": "active",
@@ -1907,156 +2163,21 @@
     40
    ]
   },
-  "Hero Giant Graveyard": {
-   "hist": [
-    0.05,
-    0.025,
-    0.025
-   ],
-   "status": "active",
-   "teacher": [
-    38,
-    50
-   ],
-   "gap": 0.735,
-   "bot": [
-    1,
-    40
-   ]
-  },
-  "Golem Cannon Cart": {
-   "hist": [
-    0.325,
-    0.175,
-    0.15
-   ],
-   "status": "active",
-   "teacher": [
-    50,
-    50
-   ],
-   "gap": 0.85,
-   "bot": [
-    6,
-    40
-   ]
-  },
-  "Evo Electro Giant Control": {
-   "hist": [
-    0.111,
-    0.25,
-    0.083
-   ],
-   "status": "active",
-   "teacher": [
-    48,
-    49
-   ],
-   "gap": 0.897,
-   "bot": [
-    3,
-    36
-   ]
-  },
-  "Evo Battle Ram, Cannon Cart, Royal Ghost": {
-   "hist": [
-    0.25,
-    0.111,
-    0.111
-   ],
-   "status": "active",
-   "teacher": [
-    46,
-    49
-   ],
-   "gap": 0.828,
-   "bot": [
-    4,
-    36
-   ]
-  },
-  "Evo Minion Horde Evo Battle Ram Three Mu": {
-   "hist": [
-    0.15,
-    0.25,
-    0.125
-   ],
-   "status": "active",
-   "teacher": [
-    48,
-    50
-   ],
-   "gap": 0.835,
-   "bot": [
-    5,
-    40
-   ]
-  },
-  "SD Splashyard Freeze": {
-   "hist": [
-    0.725,
-    0.725,
-    0.75
-   ],
-   "status": "active",
-   "teacher": [
-    50,
-    50
-   ],
-   "gap": 0.25,
-   "bot": [
-    30,
-    40
-   ]
-  },
-  "LumberLoon Freeze #2": {
-   "hist": [
-    0.425,
-    0.4,
-    0.3
-   ],
-   "status": "active",
-   "teacher": [
-    49,
-    50
-   ],
-   "gap": 0.68,
-   "bot": [
-    12,
-    40
-   ]
-  },
-  "Lava Hound Beatdown": {
-   "hist": [
-    0.35,
-    0.375,
-    0.175
-   ],
-   "status": "active",
-   "teacher": [
-    48,
-    50
-   ],
-   "gap": 0.785,
-   "bot": [
-    7,
-    40
-   ]
-  },
   "Royal Hogs, Evo P.E.K.K.A, Skeleton King": {
    "hist": [
     0.55,
     0.625,
-    0.45
+    0.45,
+    0.6
    ],
    "status": "active",
    "teacher": [
     49,
     50
    ],
-   "gap": 0.53,
+   "gap": 0.38,
    "bot": [
-    18,
+    24,
     40
    ]
   },
@@ -2064,16 +2185,17 @@
    "hist": [
     0.778,
     0.722,
-    0.333
+    0.333,
+    0.75
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     48,
     49
    ],
-   "gap": 0.647,
+   "gap": 0.23,
    "bot": [
-    12,
+    27,
     36
    ]
   },
@@ -2081,16 +2203,17 @@
    "hist": [
     0.2,
     0.2,
-    0.1
+    0.1,
+    0.275
    ],
    "status": "active",
    "teacher": [
     46,
     50
    ],
-   "gap": 0.82,
+   "gap": 0.645,
    "bot": [
-    4,
+    11,
     40
    ]
   },
@@ -2098,16 +2221,17 @@
    "hist": [
     0.861,
     0.639,
-    0.5
+    0.5,
+    0.75
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     49,
     49
    ],
-   "gap": 0.5,
+   "gap": 0.25,
    "bot": [
-    18,
+    27,
     36
    ]
   },
@@ -2115,16 +2239,17 @@
    "hist": [
     0.2,
     0.225,
-    0.1
+    0.1,
+    0.225
    ],
    "status": "active",
    "teacher": [
     49,
     50
    ],
-   "gap": 0.88,
+   "gap": 0.755,
    "bot": [
-    4,
+    9,
     40
    ]
   },
@@ -2132,16 +2257,17 @@
    "hist": [
     0.375,
     0.375,
-    0.375
+    0.375,
+    0.525
    ],
    "status": "active",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.625,
+   "gap": 0.475,
    "bot": [
-    15,
+    21,
     40
    ]
   },
@@ -2149,16 +2275,17 @@
    "hist": [
     0.2,
     0.15,
-    0.125
+    0.125,
+    0.25
    ],
    "status": "active",
    "teacher": [
     48,
     50
    ],
-   "gap": 0.835,
+   "gap": 0.71,
    "bot": [
-    5,
+    10,
     40
    ]
   },
@@ -2166,16 +2293,17 @@
    "hist": [
     0.778,
     0.444,
-    0.472
+    0.472,
+    0.694
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     49,
     49
    ],
-   "gap": 0.528,
+   "gap": 0.306,
    "bot": [
-    17,
+    25,
     36
    ]
   },
@@ -2183,6 +2311,7 @@
    "hist": [
     0.028,
     0.139,
+    0.056,
     0.056
    ],
    "status": "active",
@@ -2200,16 +2329,17 @@
    "hist": [
     0.611,
     0.806,
-    0.5
+    0.5,
+    0.611
    ],
    "status": "active",
    "teacher": [
     49,
     49
    ],
-   "gap": 0.5,
+   "gap": 0.389,
    "bot": [
-    18,
+    22,
     36
    ]
   },
@@ -2217,16 +2347,17 @@
    "hist": [
     0.7,
     0.625,
-    0.5
+    0.5,
+    0.7
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.5,
+   "gap": 0.3,
    "bot": [
-    20,
+    28,
     40
    ]
   },
@@ -2234,16 +2365,17 @@
    "hist": [
     0.35,
     0.475,
-    0.4
+    0.4,
+    0.475
    ],
    "status": "active",
    "teacher": [
     49,
     50
    ],
-   "gap": 0.58,
+   "gap": 0.505,
    "bot": [
-    16,
+    19,
     40
    ]
   },
@@ -2251,16 +2383,17 @@
    "hist": [
     0.35,
     0.25,
-    0.025
+    0.025,
+    0.35
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.975,
+   "gap": 0.65,
    "bot": [
-    1,
+    14,
     40
    ]
   },
@@ -2268,6 +2401,7 @@
    "hist": [
     0.125,
     0.175,
+    0.05,
     0.05
    ],
    "status": "active",
@@ -2285,9 +2419,10 @@
    "hist": [
     0.075,
     0.0,
+    0.025,
     0.025
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     20,
     50
@@ -2302,16 +2437,17 @@
    "hist": [
     0.2,
     0.1,
-    0.025
+    0.025,
+    0.275
    ],
    "status": "active",
    "teacher": [
     45,
     50
    ],
-   "gap": 0.875,
+   "gap": 0.625,
    "bot": [
-    1,
+    11,
     40
    ]
   },
@@ -2319,16 +2455,17 @@
    "hist": [
     0.361,
     0.472,
-    0.306
+    0.306,
+    0.444
    ],
    "status": "active",
    "teacher": [
     48,
     49
    ],
-   "gap": 0.674,
+   "gap": 0.536,
    "bot": [
-    11,
+    16,
     36
    ]
   },
@@ -2336,16 +2473,17 @@
    "hist": [
     0.6,
     0.625,
-    0.35
+    0.35,
+    0.6
    ],
    "status": "active",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.65,
+   "gap": 0.4,
    "bot": [
-    14,
+    24,
     40
    ]
   },
@@ -2353,16 +2491,17 @@
    "hist": [
     0.278,
     0.25,
-    0.194
+    0.194,
+    0.361
    ],
    "status": "active",
    "teacher": [
     44,
     49
    ],
-   "gap": 0.704,
+   "gap": 0.537,
    "bot": [
-    7,
+    13,
     36
    ]
   },
@@ -2370,16 +2509,17 @@
    "hist": [
     0.417,
     0.194,
-    0.222
+    0.222,
+    0.333
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     44,
     47
    ],
-   "gap": 0.714,
+   "gap": 0.603,
    "bot": [
-    8,
+    12,
     36
    ]
   },
@@ -2387,16 +2527,17 @@
    "hist": [
     0.083,
     0.194,
-    0.111
+    0.111,
+    0.25
    ],
    "status": "active",
    "teacher": [
     46,
     47
    ],
-   "gap": 0.868,
+   "gap": 0.729,
    "bot": [
-    4,
+    9,
     36
    ]
   },
@@ -2404,16 +2545,17 @@
    "hist": [
     0.125,
     0.1,
-    0.1
+    0.1,
+    0.25
    ],
    "status": "active",
    "teacher": [
     41,
     50
    ],
-   "gap": 0.72,
+   "gap": 0.57,
    "bot": [
-    4,
+    10,
     40
    ]
   },
@@ -2421,16 +2563,17 @@
    "hist": [
     0.075,
     0.1,
-    0.0
+    0.0,
+    0.05
    ],
    "status": "active",
    "teacher": [
     40,
     50
    ],
-   "gap": 0.8,
+   "gap": 0.75,
    "bot": [
-    0,
+    2,
     40
    ]
   },
@@ -2438,16 +2581,17 @@
    "hist": [
     0.056,
     0.028,
-    0.0
+    0.0,
+    0.056
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     34,
     49
    ],
-   "gap": 0.694,
+   "gap": 0.638,
    "bot": [
-    0,
+    2,
     36
    ]
   },
@@ -2455,16 +2599,17 @@
    "hist": [
     0.35,
     0.4,
-    0.475
+    0.475,
+    0.45
    ],
    "status": "active",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.525,
+   "gap": 0.55,
    "bot": [
-    19,
+    18,
     40
    ]
   },
@@ -2472,16 +2617,17 @@
    "hist": [
     0.556,
     0.694,
-    0.611
+    0.611,
+    0.528
    ],
    "status": "active",
    "teacher": [
     49,
     49
    ],
-   "gap": 0.389,
+   "gap": 0.472,
    "bot": [
-    22,
+    19,
     36
    ]
   },
@@ -2489,16 +2635,17 @@
    "hist": [
     0.6,
     0.45,
-    0.225
+    0.225,
+    0.575
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.775,
+   "gap": 0.425,
    "bot": [
-    9,
+    23,
     40
    ]
   },
@@ -2506,16 +2653,17 @@
    "hist": [
     0.575,
     0.45,
-    0.375
+    0.375,
+    0.525
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.625,
+   "gap": 0.475,
    "bot": [
-    15,
+    21,
     40
    ]
   },
@@ -2523,16 +2671,17 @@
    "hist": [
     0.056,
     0.083,
-    0.028
+    0.028,
+    0.056
    ],
    "status": "active",
    "teacher": [
     49,
     49
    ],
-   "gap": 0.972,
+   "gap": 0.944,
    "bot": [
-    1,
+    2,
     36
    ]
   },
@@ -2540,16 +2689,17 @@
    "hist": [
     0.05,
     0.075,
-    0.1
+    0.1,
+    0.15
    ],
    "status": "active",
    "teacher": [
     43,
     50
    ],
-   "gap": 0.76,
+   "gap": 0.71,
    "bot": [
-    4,
+    6,
     40
    ]
   },
@@ -2557,9 +2707,10 @@
    "hist": [
     0.275,
     0.15,
+    0.125,
     0.125
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     42,
     50
@@ -2574,16 +2725,17 @@
    "hist": [
     0.325,
     0.35,
-    0.075
+    0.075,
+    0.475
    ],
    "status": "active",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.925,
+   "gap": 0.525,
    "bot": [
-    3,
+    19,
     40
    ]
   },
@@ -2591,16 +2743,17 @@
    "hist": [
     0.083,
     0.083,
-    0.083
+    0.083,
+    0.111
    ],
    "status": "active",
    "teacher": [
     43,
     49
    ],
-   "gap": 0.795,
+   "gap": 0.767,
    "bot": [
-    3,
+    4,
     36
    ]
   },
@@ -2608,16 +2761,17 @@
    "hist": [
     0.3,
     0.4,
-    0.1
+    0.1,
+    0.375
    ],
    "status": "active",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.9,
+   "gap": 0.625,
    "bot": [
-    4,
+    15,
     40
    ]
   },
@@ -2625,16 +2779,17 @@
    "hist": [
     0.472,
     0.472,
-    0.278
+    0.278,
+    0.528
    ],
    "status": "active",
    "teacher": [
     47,
     47
    ],
-   "gap": 0.722,
+   "gap": 0.472,
    "bot": [
-    10,
+    19,
     36
    ]
   },
@@ -2642,16 +2797,17 @@
    "hist": [
     0.889,
     0.861,
-    0.722
+    0.722,
+    0.806
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     49,
     49
    ],
-   "gap": 0.278,
+   "gap": 0.194,
    "bot": [
-    26,
+    29,
     36
    ]
   },
@@ -2659,16 +2815,17 @@
    "hist": [
     0.1,
     0.15,
-    0.1
+    0.1,
+    0.15
    ],
    "status": "active",
    "teacher": [
     39,
     50
    ],
-   "gap": 0.68,
+   "gap": 0.63,
    "bot": [
-    4,
+    6,
     40
    ]
   },
@@ -2676,16 +2833,17 @@
    "hist": [
     0.694,
     0.694,
-    0.639
+    0.639,
+    0.722
    ],
    "status": "active",
    "teacher": [
     47,
     47
    ],
-   "gap": 0.361,
+   "gap": 0.278,
    "bot": [
-    23,
+    26,
     36
    ]
   },
@@ -2693,16 +2851,17 @@
    "hist": [
     0.8,
     0.9,
-    0.6
+    0.6,
+    0.925
    ],
-   "status": "active",
+   "status": "solved",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.4,
+   "gap": 0.075,
    "bot": [
-    24,
+    37,
     40
    ]
   },
@@ -2710,16 +2869,17 @@
    "hist": [
     0.125,
     0.225,
-    0.075
+    0.075,
+    0.2
    ],
    "status": "active",
    "teacher": [
     46,
     50
    ],
-   "gap": 0.845,
+   "gap": 0.72,
    "bot": [
-    3,
+    8,
     40
    ]
   },
@@ -2727,16 +2887,17 @@
    "hist": [
     0.139,
     0.056,
-    0.0
+    0.0,
+    0.111
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     40,
     47
    ],
-   "gap": 0.851,
+   "gap": 0.74,
    "bot": [
-    0,
+    4,
     36
    ]
   },
@@ -2744,16 +2905,17 @@
    "hist": [
     0.222,
     0.194,
-    0.0
+    0.0,
+    0.25
    ],
    "status": "active",
    "teacher": [
     42,
     49
    ],
-   "gap": 0.857,
+   "gap": 0.607,
    "bot": [
-    0,
+    9,
     36
    ]
   },
@@ -2761,16 +2923,17 @@
    "hist": [
     0.4,
     0.45,
-    0.175
+    0.175,
+    0.3
    ],
    "status": "active",
    "teacher": [
     48,
     50
    ],
-   "gap": 0.785,
+   "gap": 0.66,
    "bot": [
-    7,
+    12,
     40
    ]
   },
@@ -2778,16 +2941,17 @@
    "hist": [
     0.917,
     0.833,
-    0.75
+    0.75,
+    0.861
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     49,
     49
    ],
-   "gap": 0.25,
+   "gap": 0.139,
    "bot": [
-    27,
+    31,
     36
    ]
   },
@@ -2795,16 +2959,17 @@
    "hist": [
     0.05,
     0.025,
-    0.0
+    0.0,
+    0.025
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     36,
     50
    ],
-   "gap": 0.72,
+   "gap": 0.695,
    "bot": [
-    0,
+    1,
     40
    ]
   },
@@ -2812,16 +2977,17 @@
    "hist": [
     0.05,
     0.05,
-    0.025
+    0.025,
+    0.1
    ],
    "status": "active",
    "teacher": [
     42,
     50
    ],
-   "gap": 0.815,
+   "gap": 0.74,
    "bot": [
-    1,
+    4,
     40
    ]
   },
@@ -2829,16 +2995,17 @@
    "hist": [
     0.225,
     0.25,
-    0.325
+    0.325,
+    0.5
    ],
    "status": "active",
    "teacher": [
     49,
     50
    ],
-   "gap": 0.655,
+   "gap": 0.48,
    "bot": [
-    13,
+    20,
     40
    ]
   },
@@ -2846,16 +3013,17 @@
    "hist": [
     0.15,
     0.075,
-    0.0
+    0.0,
+    0.15
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     37,
     50
    ],
-   "gap": 0.74,
+   "gap": 0.59,
    "bot": [
-    0,
+    6,
     40
    ]
   },
@@ -2863,16 +3031,17 @@
    "hist": [
     0.2,
     0.2,
-    0.175
+    0.175,
+    0.3
    ],
    "status": "active",
    "teacher": [
     47,
     50
    ],
-   "gap": 0.765,
+   "gap": 0.64,
    "bot": [
-    7,
+    12,
     40
    ]
   },
@@ -2880,6 +3049,7 @@
    "hist": [
     0.0,
     0.1,
+    0.05,
     0.05
    ],
    "status": "active",
@@ -2897,16 +3067,17 @@
    "hist": [
     0.475,
     0.45,
-    0.225
+    0.225,
+    0.475
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.775,
+   "gap": 0.525,
    "bot": [
-    9,
+    19,
     40
    ]
   },
@@ -2914,16 +3085,17 @@
    "hist": [
     0.111,
     0.278,
-    0.278
+    0.278,
+    0.25
    ],
    "status": "active",
    "teacher": [
     44,
     49
    ],
-   "gap": 0.62,
+   "gap": 0.648,
    "bot": [
-    10,
+    9,
     36
    ]
   },
@@ -2931,16 +3103,17 @@
    "hist": [
     0.917,
     0.917,
-    0.972
+    0.972,
+    0.917
    ],
    "status": "solved",
    "teacher": [
     49,
     49
    ],
-   "gap": 0.028,
+   "gap": 0.083,
    "bot": [
-    35,
+    33,
     36
    ]
   },
@@ -2948,16 +3121,17 @@
    "hist": [
     0.1,
     0.125,
-    0.075
+    0.075,
+    0.125
    ],
    "status": "active",
    "teacher": [
     45,
     50
    ],
-   "gap": 0.825,
+   "gap": 0.775,
    "bot": [
-    3,
+    5,
     40
    ]
   },
@@ -2965,16 +3139,17 @@
    "hist": [
     0.7,
     0.4,
-    0.15
+    0.15,
+    0.525
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     49,
     50
    ],
-   "gap": 0.83,
+   "gap": 0.455,
    "bot": [
-    6,
+    21,
     40
    ]
   },
@@ -2982,16 +3157,17 @@
    "hist": [
     0.1,
     0.15,
-    0.05
+    0.05,
+    0.1
    ],
    "status": "active",
    "teacher": [
     37,
     50
    ],
-   "gap": 0.69,
+   "gap": 0.64,
    "bot": [
-    2,
+    4,
     40
    ]
   },
@@ -2999,9 +3175,10 @@
    "hist": [
     0.025,
     0.025,
+    0.0,
     0.0
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     43,
     50
@@ -3016,16 +3193,17 @@
    "hist": [
     0.111,
     0.028,
-    0.0
+    0.0,
+    0.111
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     37,
     47
    ],
-   "gap": 0.787,
+   "gap": 0.676,
    "bot": [
-    0,
+    4,
     36
    ]
   },
@@ -3033,6 +3211,7 @@
    "hist": [
     0.0,
     0.05,
+    0.025,
     0.025
    ],
    "status": "active",
@@ -3050,16 +3229,17 @@
    "hist": [
     0.361,
     0.583,
-    0.167
+    0.167,
+    0.472
    ],
    "status": "active",
    "teacher": [
     47,
     47
    ],
-   "gap": 0.833,
+   "gap": 0.528,
    "bot": [
-    6,
+    17,
     36
    ]
   },
@@ -3067,16 +3247,17 @@
    "hist": [
     0.2,
     0.175,
-    0.025
+    0.025,
+    0.175
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     36,
     50
    ],
-   "gap": 0.695,
+   "gap": 0.545,
    "bot": [
-    1,
+    7,
     40
    ]
   },
@@ -3084,16 +3265,17 @@
    "hist": [
     0.275,
     0.3,
-    0.05
+    0.05,
+    0.25
    ],
    "status": "active",
    "teacher": [
     43,
     50
    ],
-   "gap": 0.81,
+   "gap": 0.61,
    "bot": [
-    2,
+    10,
     40
    ]
   },
@@ -3101,16 +3283,17 @@
    "hist": [
     0.139,
     0.222,
-    0.139
+    0.139,
+    0.194
    ],
    "status": "active",
    "teacher": [
     43,
     49
    ],
-   "gap": 0.739,
+   "gap": 0.684,
    "bot": [
-    5,
+    7,
     36
    ]
   },
@@ -3118,16 +3301,17 @@
    "hist": [
     0.075,
     0.075,
-    0.0
+    0.0,
+    0.025
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     43,
     50
    ],
-   "gap": 0.86,
+   "gap": 0.835,
    "bot": [
-    0,
+    1,
     40
    ]
   },
@@ -3135,16 +3319,17 @@
    "hist": [
     0.1,
     0.05,
-    0.0
+    0.0,
+    0.125
    ],
    "status": "active",
    "teacher": [
     36,
     50
    ],
-   "gap": 0.72,
+   "gap": 0.595,
    "bot": [
-    0,
+    5,
     40
    ]
   },
@@ -3152,16 +3337,17 @@
    "hist": [
     0.1,
     0.1,
-    0.05
+    0.05,
+    0.0
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     42,
     50
    ],
-   "gap": 0.79,
+   "gap": 0.84,
    "bot": [
-    2,
+    0,
     40
    ]
   },
@@ -3169,16 +3355,17 @@
    "hist": [
     0.944,
     0.917,
-    0.889
+    0.889,
+    0.972
    ],
-   "status": "active",
+   "status": "solved",
    "teacher": [
     47,
     47
    ],
-   "gap": 0.111,
+   "gap": 0.028,
    "bot": [
-    32,
+    35,
     36
    ]
   },
@@ -3186,16 +3373,17 @@
    "hist": [
     0.225,
     0.3,
-    0.175
+    0.175,
+    0.5
    ],
    "status": "active",
    "teacher": [
     47,
     50
    ],
-   "gap": 0.765,
+   "gap": 0.44,
    "bot": [
-    7,
+    20,
     40
    ]
   },
@@ -3203,16 +3391,17 @@
    "hist": [
     0.2,
     0.3,
-    0.15
+    0.15,
+    0.175
    ],
    "status": "active",
    "teacher": [
     49,
     50
    ],
-   "gap": 0.83,
+   "gap": 0.805,
    "bot": [
-    6,
+    7,
     40
    ]
   },
@@ -3220,16 +3409,17 @@
    "hist": [
     0.475,
     0.525,
-    0.525
+    0.525,
+    0.475
    ],
    "status": "active",
    "teacher": [
     46,
     50
    ],
-   "gap": 0.395,
+   "gap": 0.445,
    "bot": [
-    21,
+    19,
     40
    ]
   },
@@ -3237,16 +3427,17 @@
    "hist": [
     0.028,
     0.056,
-    0.0
+    0.0,
+    0.139
    ],
    "status": "active",
    "teacher": [
     38,
     49
    ],
-   "gap": 0.776,
+   "gap": 0.637,
    "bot": [
-    0,
+    5,
     36
    ]
   },
@@ -3254,16 +3445,17 @@
    "hist": [
     0.175,
     0.15,
-    0.0
+    0.0,
+    0.125
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     39,
     50
    ],
-   "gap": 0.78,
+   "gap": 0.655,
    "bot": [
-    0,
+    5,
     40
    ]
   },
@@ -3271,16 +3463,17 @@
    "hist": [
     0.7,
     0.6,
-    0.45
+    0.45,
+    0.775
    ],
    "status": "active",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.55,
+   "gap": 0.225,
    "bot": [
-    18,
+    31,
     40
    ]
   },
@@ -3288,9 +3481,10 @@
    "hist": [
     0.0,
     0.0,
+    0.0,
     0.0
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     30,
     50
@@ -3305,16 +3499,17 @@
    "hist": [
     0.05,
     0.025,
-    0.05
+    0.05,
+    0.0
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     40,
     50
    ],
-   "gap": 0.75,
+   "gap": 0.8,
    "bot": [
-    2,
+    0,
     40
    ]
   },
@@ -3322,9 +3517,10 @@
    "hist": [
     0.333,
     0.194,
+    0.083,
     0.083
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     42,
     49
@@ -3339,16 +3535,17 @@
    "hist": [
     0.775,
     0.675,
-    0.575
+    0.575,
+    0.8
    ],
    "status": "active",
    "teacher": [
     48,
     50
    ],
-   "gap": 0.385,
+   "gap": 0.16,
    "bot": [
-    23,
+    32,
     40
    ]
   },
@@ -3356,16 +3553,17 @@
    "hist": [
     0.5,
     0.333,
-    0.333
+    0.333,
+    0.361
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     49,
     49
    ],
-   "gap": 0.667,
+   "gap": 0.639,
    "bot": [
-    12,
+    13,
     36
    ]
   },
@@ -3373,16 +3571,17 @@
    "hist": [
     0.194,
     0.278,
-    0.194
+    0.194,
+    0.306
    ],
    "status": "active",
    "teacher": [
     48,
     49
    ],
-   "gap": 0.786,
+   "gap": 0.674,
    "bot": [
-    7,
+    11,
     36
    ]
   },
@@ -3390,16 +3589,17 @@
    "hist": [
     0.075,
     0.075,
-    0.0
+    0.0,
+    0.15
    ],
    "status": "active",
    "teacher": [
     37,
     50
    ],
-   "gap": 0.74,
+   "gap": 0.59,
    "bot": [
-    0,
+    6,
     40
    ]
   },
@@ -3407,16 +3607,17 @@
    "hist": [
     0.861,
     0.722,
-    0.667
+    0.667,
+    0.944
    ],
-   "status": "active",
+   "status": "solved",
    "teacher": [
     49,
     49
    ],
-   "gap": 0.333,
+   "gap": 0.056,
    "bot": [
-    24,
+    34,
     36
    ]
   },
@@ -3424,16 +3625,17 @@
    "hist": [
     0.025,
     0.0,
-    0.0
+    0.0,
+    0.075
    ],
    "status": "active",
    "teacher": [
     38,
     50
    ],
-   "gap": 0.76,
+   "gap": 0.685,
    "bot": [
-    0,
+    3,
     40
    ]
   },
@@ -3441,16 +3643,17 @@
    "hist": [
     0.575,
     0.475,
-    0.25
+    0.25,
+    0.375
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.75,
+   "gap": 0.625,
    "bot": [
-    10,
+    15,
     40
    ]
   },
@@ -3458,16 +3661,17 @@
    "hist": [
     0.65,
     0.725,
-    0.35
+    0.35,
+    0.625
    ],
    "status": "active",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.65,
+   "gap": 0.375,
    "bot": [
-    14,
+    25,
     40
    ]
   },
@@ -3475,16 +3679,17 @@
    "hist": [
     0.2,
     0.15,
-    0.025
+    0.025,
+    0.1
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     47,
     50
    ],
-   "gap": 0.915,
+   "gap": 0.84,
    "bot": [
-    1,
+    4,
     40
    ]
   },
@@ -3492,16 +3697,17 @@
    "hist": [
     0.2,
     0.15,
-    0.025
+    0.025,
+    0.15
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     41,
     50
    ],
-   "gap": 0.795,
+   "gap": 0.67,
    "bot": [
-    1,
+    6,
     40
    ]
   },
@@ -3509,16 +3715,17 @@
    "hist": [
     0.556,
     0.5,
-    0.278
+    0.278,
+    0.5
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     48,
     49
    ],
-   "gap": 0.702,
+   "gap": 0.48,
    "bot": [
-    10,
+    18,
     36
    ]
   },
@@ -3526,16 +3733,17 @@
    "hist": [
     0.125,
     0.075,
-    0.05
+    0.05,
+    0.0
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     41,
     50
    ],
-   "gap": 0.77,
+   "gap": 0.82,
    "bot": [
-    2,
+    0,
     40
    ]
   },
@@ -3543,16 +3751,17 @@
    "hist": [
     0.444,
     0.306,
-    0.222
+    0.222,
+    0.5
    ],
    "status": "active",
    "teacher": [
     48,
     49
    ],
-   "gap": 0.758,
+   "gap": 0.48,
    "bot": [
-    8,
+    18,
     36
    ]
   },
@@ -3560,6 +3769,7 @@
    "hist": [
     0.275,
     0.375,
+    0.275,
     0.275
    ],
    "status": "active",
@@ -3577,16 +3787,17 @@
    "hist": [
     0.167,
     0.056,
-    0.028
+    0.028,
+    0.111
    ],
-   "status": "active",
+   "status": "paused",
    "teacher": [
     42,
     49
    ],
-   "gap": 0.829,
+   "gap": 0.746,
    "bot": [
-    1,
+    4,
     36
    ]
   },
@@ -3594,24 +3805,25 @@
    "hist": [
     0.95,
     0.925,
-    0.725
+    0.725,
+    0.95
    ],
-   "status": "active",
+   "status": "solved",
    "teacher": [
     50,
     50
    ],
-   "gap": 0.275,
+   "gap": 0.05,
    "bot": [
-    29,
+    38,
     40
    ]
   }
  },
- "solved_any": 6,
- "paused_any": 0,
+ "solved_any": 9,
+ "paused_any": 34,
  "decks_any": 106,
- "solved_xbow": 1,
- "paused_xbow": 0,
+ "solved_xbow": 5,
+ "paused_xbow": 36,
  "decks_xbow": 106
 }
