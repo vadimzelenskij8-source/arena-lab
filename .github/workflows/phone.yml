@@ -1,0 +1,54 @@
+name: phone
+on:
+  workflow_dispatch:
+    inputs:
+      src: { default: "u1" }
+permissions: { contents: write }
+env:
+  CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
+  DATA_VERSION: "16.635.8"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: lab }
+      - run: git clone https://github.com/voonhous/crforge crforge && git -C crforge checkout "$CRFORGE_SHA" && python3 lab/sim_patch/apply.py crforge
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: gradle/actions/setup-gradle@v4
+      - working-directory: crforge
+        run: ./gradlew --no-daemon :env:installDist :tables:dataVersionTables -Pcrforge.assetSource=cdn -Pcrforge.dataVersion=$DATA_VERSION
+      - run: |
+          mkdir -p sim && cp -r crforge/env/build/install/env sim/env && cp -r crforge/python sim/python && cp -r ~/.crforge/tables/$DATA_VERSION sim/tables
+          tar czf sim.tgz sim
+      - uses: actions/upload-artifact@v4
+        with: { name: sim, path: sim.tgz, retention-days: 1 }
+  export:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install ./sim/python && pip install torch --index-url https://download.pytorch.org/whl/cpu && pip install onnx onnxruntime
+      - name: export
+        run: |
+          mkdir -p out && git fetch origin results
+          git show origin/results:${{ github.event.inputs.src || 'u1' }}/policy.pt > out/policy.pt
+          python train/distill.py --install sim/env --tables sim/tables --out out --envs 16 --threads 4 --fork 0 \
+            --resume out/policy.pt --export-phone out/phone 2>&1 | tail -30
+          ls -la out/phone && cat out/phone/check.json
+      - name: publish
+        run: |
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          git worktree add ../res origin/results && cd ../res && git checkout -B results
+          mkdir -p phone && cp ../${{ github.event.repository.name }}/out/phone/* phone/
+          cp ../${{ github.event.repository.name }}/out/policy.pt phone/policy.pt
+          git add -A && git commit -q -m "phone export ${{ github.run_id }}" && git push origin results

@@ -99,6 +99,7 @@ def main():
     ap.add_argument("--mb", type=int, default=16, help="sequences per training step (bigger = faster on CPU)")
     ap.add_argument("--search-only", type=float, default=0, help="minutes: only measure network+search (normal and phone) on the champion")
     ap.add_argument("--spread", type=int, default=2)
+    ap.add_argument("--export-phone", default="", help="folder: check the torch encoder against numpy, export policy.onnx")
     ap.add_argument("--reply", type=int, default=0, help="search with the enemy's answer (our network from its side)")
     ap.add_argument("--reply-ticks", type=int, default=10, help="the enemy answers this many ticks after our move")
     ap.add_argument("--search-seed", type=int, default=0, help="offset of the search-exam games (parallel jobs of one setting)")
@@ -440,6 +441,31 @@ def main():
                        "games": [ca["games"], cx["games"]], "seconds": round(time.time() - t0c)},
                       open(out / "ceilings.json", "w"), ensure_ascii=False)
             print("ceilings", k_, K_, ca["winrate"], cx["winrate"], ca["games"], cx["games"], round(time.time() - t0c), flush=True)
+            return
+        if a.export_phone:  # the phone's policy: one ONNX graph from the raw observation, checked step by step
+            from phone import check_and_export
+            Path(a.export_phone).mkdir(parents=True, exist_ok=True)
+            seats = reset_all(4242, [random.choice(META) for _ in range(N)], False, [decks_gen.generate(grng, META) for _ in range(N)])
+            st = fresh(); batches = []
+            for k in range(300):
+                O, M, b = batch_obs(seats, st)
+                with torch.no_grad():
+                    bt = to_t(b); z, tf, hd = net.encode(bt); hn = net.gru(z, st["h"])
+                    lg, vv = net.heads(hn, tf, hd, bt, torch.from_numpy(M))
+                st["h"] = hn
+                batches.append((O.astype(np.int32), M[:, :-1].copy(), lg.numpy(), vv.numpy()))
+                acts = np.zeros((N, 2), np.int32)
+                acts[np.arange(N), seats] = scripted_batch(vec, jpol, seats, 9000 + k)
+                acts[np.arange(N), 1 - seats] = scripted_batch(vec, jpol, 1 - seats, 19000 + k)
+                vec.step(acts)
+                if vec.dones.any():
+                    print("an episode ended at step", k, "- the check stops here", flush=True)
+                    break
+            res = check_and_export(net, enc, batches, a.export_phone)
+            meta = {"seat_ints": int(enc.s.seat_ints), "actions": int(vec.masks.shape[-1]), "play_thr": a.play_thr,
+                    "vocabulary": [str(x) for x in vec.vocabulary], "cols": int(enc.s.cols), "rows": int(enc.s.rows),
+                    "check": res}
+            json.dump(meta, open(Path(a.export_phone) / "meta.json", "w"))
             return
         if a.search_only:  # the search settings on the same games (paired), until the time budget runs out
             t0s = time.time(); res = {"search": [0, 0], "noisy": [0, 0], "chunks": 0}
