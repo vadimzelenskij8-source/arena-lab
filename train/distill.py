@@ -489,6 +489,9 @@ def main():
             print("search check", res, flush=True)
             meta = {"seat_ints": int(enc.s.seat_ints), "actions": int(vec.masks.shape[-1]), "play_thr": a.play_thr,
                     "vocabulary": [str(x) for x in vec.vocabulary], "cols": int(enc.s.cols), "rows": int(enc.s.rows),
+                    "decks": {nm: {"name": d["name"], "rows": [ROW[c] for c in d["cards"]], "slots": [int(x) for x in slots_of(d)]}
+                              for nm, d in (("xbow", MYD), ("opp", META[0]), ("opp2", META[len(META) // 2]))},
+                    "horizon": a.horizon, "spread": a.spread, "margin": a.margin, "top": a.top,
                     "check": res}
             json.dump(meta, open(Path(a.export_phone) / "meta.json", "w"))
             return
