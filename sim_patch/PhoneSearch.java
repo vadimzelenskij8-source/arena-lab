@@ -221,7 +221,7 @@ public final class PhoneSearch {
    */
   private int twoStage(LadderEnv source, int seat, int proposal, int[] cand) {
     int n = cand.length;
-    LadderEnv[] forks = new LadderEnv[n];
+    LadderEnv[] fk = new LadderEnv[n];
     int[] t0 = new int[n];
     double[] v1 = new double[n];
     IntStream.range(0, n)
@@ -231,11 +231,11 @@ public final class PhoneSearch {
               try {
                 int start = source.tick();
                 t0[j] = start;
-                forks[j] = start(source, seat, cand[j]);
-                v1[j] = runTo(forks[j], seat, start + h1);
+                fk[j] = start(source, seat, cand[j]);
+                v1[j] = runTo(fk[j], seat, start + h1);
               } catch (RuntimeException | AssertionError | StackOverflowError e) {
                 v1[j] = -1e9;
-                forks[j] = null;
+                fk[j] = null;
                 failures++;
                 if (firstError == null) {
                   firstError = e.toString();
@@ -266,7 +266,7 @@ public final class PhoneSearch {
                 return;
               }
               try {
-                v[j] = forks[j] == null ? -1e9 : runTo(forks[j], seat, t0[j] + horizon);
+                v[j] = fk[j] == null ? -1e9 : runTo(fk[j], seat, t0[j] + horizon);
               } catch (RuntimeException | AssertionError | StackOverflowError e) {
                 v[j] = -1e9;
               }
