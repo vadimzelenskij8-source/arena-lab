@@ -1,17 +1,17 @@
 cards endpoint: http 200, 123 cards
 api cards 123, in sim pool 123, not in sim: []
 ranking /locations/global/pathoflegend/players: http 200, items 1000
-merged 5089 decks from previous days
-players 0/1000, battles 30, unique decks 5090
-players 100/1000, battles 3102, unique decks 5255
-players 200/1000, battles 6139, unique decks 5429
-players 300/1000, battles 9139, unique decks 5642
-players 400/1000, battles 12092, unique decks 5787
-players 500/1000, battles 15105, unique decks 6025
-players 600/1000, battles 18133, unique decks 6253
-players 700/1000, battles 21221, unique decks 6544
-players 800/1000, battles 24246, unique decks 6883
-players 900/1000, battles 27354, unique decks 7291
-DONE players 1000, 1v1 battles 30321, unique supported decks 7509
-battle types: {'pathOfLegend': 24514, 'trail': 2064, 'unknown': 1422, 'friendly': 820, 'clanMate': 506, 'tournament': 389, 'boatBattle': 303, 'riverRacePvP': 270}
+merged 7509 decks from previous days
+players 0/1000, battles 32, unique decks 7509
+players 100/1000, battles 3128, unique decks 7679
+players 200/1000, battles 6166, unique decks 7844
+players 300/1000, battles 9158, unique decks 7990
+players 400/1000, battles 12163, unique decks 8222
+players 500/1000, battles 15139, unique decks 8386
+players 600/1000, battles 18155, unique decks 8597
+players 700/1000, battles 21168, unique decks 8799
+players 800/1000, battles 24242, unique decks 8948
+players 900/1000, battles 27266, unique decks 9255
+DONE players 1000, 1v1 battles 30274, unique supported decks 9539
+battle types: {'pathOfLegend': 24383, 'trail': 2551, 'unknown': 1301, 'friendly': 747, 'tournament': 408, 'clanMate': 343, 'boatBattle': 291, 'riverRacePvP': 237}
 unsupported cards (skipped decks): {}
