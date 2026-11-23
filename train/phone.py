@@ -137,17 +137,49 @@ class PhoneStep(nn.Module):
         self.net = net
         self.enc = TorchEnc(enc)
 
+    def encode(self, b):
+        """Net.encode, with the all-padding fix written without a boolean index_put (ONNX friendly)."""
+        n_ = self.net
+        rid, valid = b["rid"], b["valid"]
+        B = rid.shape[0]
+        x = torch.cat([n_.cv(rid), n_.state(b["st"]), n_.kind(b["kind"]), n_.side(b["side"]), b["num"]], -1)
+        x = n_.ent(x)
+        pad = ~valid
+        allpad = pad.all(1)
+        first = torch.arange(pad.shape[1]).unsqueeze(0) == 0
+        pad2 = pad & ~(allpad.unsqueeze(1) & first)
+        a, _ = n_.att(x, x, x, key_padding_mask=pad2, need_weights=False)
+        x = n_.ln(x + a)
+        m = valid.unsqueeze(-1).float()
+        mean = (x * m).sum(1) / m.sum(1).clamp(min=1)
+        mx = x.masked_fill(~valid.unsqueeze(-1), -1e4).max(1).values.clamp(min=-10)
+        gv = n_.to_grid(x) * m
+        grid = torch.zeros(B, 16, 576)
+        grid = grid.scatter_add(2, b["tile"].unsqueeze(1).expand(-1, 16, -1), gv.transpose(1, 2))
+        grid = torch.cat([grid.view(B, 16, 32, 18), n_.coords.expand(B, -1, -1, -1)], 1)
+        tf = n_.cnn(grid)
+        hand = n_.cv(b["hand"])
+        g = torch.cat([b["g"], hand.flatten(1), n_.cv(b["nxt"]).mean(1), n_.cv(b["seen"]).mean(1), n_.cv(b["play"]).mean(1)], -1)
+        g = n_.glob(g)
+        if "deck" in b:
+            dv = n_.cv(b["deck"])
+            g = g + n_.deck_l(torch.cat([dv.mean(1), dv.max(1).values, b["dstat"]], -1))
+        sp = tf.mean((2, 3))
+        z = n_.trunk(torch.cat([mean, mx, g, sp], -1))
+        return z, tf.flatten(2), hand
+
     def forward(self, O, mask, h, last_play, prev_seen):
         O = O.long()
         seen = O[:, self.enc.seen]
-        last_play = torch.where(seen != prev_seen, torch.full_like(last_play, -1), last_play)
+        diff = (seen != prev_seen).long()  # integer arithmetic: ONNX Runtime has no integer Where on every build
+        last_play = last_play * (1 - diff) - diff
         tick = O[:, self.enc.tick].unsqueeze(1)
         pc, pt = O[:, self.enc.pc], O[:, self.enc.pt]
         match = (seen.unsqueeze(2) == pc.unsqueeze(1)) & (pc.unsqueeze(1) >= 0)
-        cand = torch.where(match, (tick - pt).unsqueeze(1).expand_as(match), torch.full_like(match, -1, dtype=torch.long))
+        cand = match.long() * ((tick - pt).unsqueeze(1) + 1) - 1
         last_play = torch.maximum(last_play, cand.max(-1).values)
         b = self.enc(O, last_play)
-        z, tf, hand = self.net.encode(b)
+        z, tf, hand = self.encode(b)
         hn = self.net.gru(z, h)
         M = torch.cat([mask.bool(), torch.zeros(mask.shape[0], 1, dtype=torch.bool)], 1)
         lg, v = self.net.heads(hn, tf, hand, b, M)

@@ -462,6 +462,31 @@ def main():
                     print("an episode ended at step", k, "- the check stops here", flush=True)
                     break
             res = check_and_export(net, enc, batches, a.export_phone)
+            # the phone's search (Java PhoneSearch) against train/teacher.py on the same battles and moves
+            import jpype
+            JPS = jpype.JClass("org.crforge.env.PhoneSearch")(int(a.horizon), int(a.spread), float(a.margin), 1.0)
+            JI = jpype.JArray(jpype.JInt)
+            seats = reset_all(777, [random.choice(META) for _ in range(N)], False, [decks_gen.generate(grng, META) for _ in range(N)])
+            st = fresh(); same = tot = changed = 0; t_py = t_j = 0.0
+            for k in range(80):
+                O, M, b = batch_obs(seats, st)
+                ac0, st["h"], tk = net_act(net, b, M, st["h"])
+                if k % 4 == 0:
+                    t1 = time.time(); py = teacher.refine(ac0, seats, np.ones(N, bool), extra=[list(tk[i]) for i in range(N)]); t_py += time.time() - t1
+                    t1 = time.time()
+                    jv = np.asarray(JPS.refineVector(vec._env, JI(np.arange(N, dtype=np.int32)), JI(seats.astype(np.int32)),
+                                                     JI(np.asarray(ac0, np.int32)), JI(np.asarray(tk, np.int32).reshape(-1)), int(tk.shape[1])))
+                    t_j += time.time() - t1
+                    same += int((py == jv).sum()); tot += N; changed += int((py != ac0).sum())
+                acts = np.zeros((N, 2), np.int32)
+                acts[np.arange(N), seats] = scripted_batch(vec, jpol, seats, 5000 + k)
+                acts[np.arange(N), 1 - seats] = scripted_batch(vec, jpol, 1 - seats, 15000 + k)
+                vec.step(acts)
+                if vec.dones.any():
+                    break
+            res["search_java_vs_python"] = same / max(1, tot); res["search_changed"] = changed / max(1, tot)
+            res["search_ms_python"] = round(1000 * t_py / max(1, tot), 2); res["search_ms_java_serial"] = round(1000 * t_j / max(1, tot), 2)
+            print("search check", res, flush=True)
             meta = {"seat_ints": int(enc.s.seat_ints), "actions": int(vec.masks.shape[-1]), "play_thr": a.play_thr,
                     "vocabulary": [str(x) for x in vec.vocabulary], "cols": int(enc.s.cols), "rows": int(enc.s.rows),
                     "check": res}

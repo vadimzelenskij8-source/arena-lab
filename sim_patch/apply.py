@@ -7,6 +7,20 @@ from pathlib import Path
 root = Path(sys.argv[1]) / "env/src/main/java/org/crforge/env"
 here = Path(__file__).resolve().parent
 shutil.copy(here / "ScriptedPolicy.java", root / "ScriptedPolicy.java")
+shutil.copy(here / "PhoneSearch.java", root / "PhoneSearch.java")
+
+live = root / "LiveBattle.java"
+s = live.read_text()
+if "LadderEnv ladder()" not in s:
+    anchor = "  private void openDecision() {"
+    assert anchor in s
+    s = s.replace(anchor, """  /** The battle's environment, for the phone's search (arena-lab). */
+  LadderEnv ladder() {
+    return env;
+  }
+
+""" + anchor, 1)
+    live.write_text(s)
 
 lad = root / "LadderEnv.java"
 s = lad.read_text()
@@ -234,6 +248,16 @@ if "public int[] replyStart(" not in s:
     replyForks = null;
     replyUntil = null;
     return out;
+  }
+
+""" + anchor, 1)
+    vec.write_text(s)
+s = vec.read_text()
+if "LadderEnv ladderFor(" not in s:
+    anchor = "  private void stepEnv(int index) {"
+    s = s.replace(anchor, """  /** Battle {@code index}'s Ladder environment, for the phone search's cross-check (arena-lab). */
+  LadderEnv ladderFor(int index) {
+    return (LadderEnv) envs[index];
   }
 
 """ + anchor, 1)
