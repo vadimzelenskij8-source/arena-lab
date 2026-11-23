@@ -1,0 +1,106 @@
+[
+ {
+  "h1": 0,
+  "k2": 3,
+  "skip_conf": 0.0,
+  "search_wr": 0.8515625,
+  "noisy_wr": 0.796875,
+  "games": 832,
+  "ticks_per_decision": 1647.9,
+  "skipped": [
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "h1": 0,
+  "k2": 3,
+  "skip_conf": 0.9,
+  "search_wr": 0.8816964285714286,
+  "noisy_wr": 0.8510044642857143,
+  "games": 1792,
+  "ticks_per_decision": 635.95,
+  "skipped": [
+   0.857,
+   0.856
+  ]
+ },
+ {
+  "h1": 24,
+  "k2": 3,
+  "skip_conf": 0.0,
+  "search_wr": 0.65625,
+  "noisy_wr": 0.6274038461538461,
+  "games": 832,
+  "ticks_per_decision": 584.0,
+  "skipped": [
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "h1": 40,
+  "k2": 2,
+  "skip_conf": 0.0,
+  "search_wr": 0.6736778846153846,
+  "noisy_wr": 0.6153846153846154,
+  "games": 832,
+  "ticks_per_decision": 716.0999999999999,
+  "skipped": [
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "h1": 40,
+  "k2": 3,
+  "skip_conf": 0.0,
+  "search_wr": 0.6848958333333334,
+  "noisy_wr": 0.6484375,
+  "games": 768,
+  "ticks_per_decision": 773.75,
+  "skipped": [
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "h1": 40,
+  "k2": 3,
+  "skip_conf": 0.9,
+  "search_wr": 0.6965144230769231,
+  "noisy_wr": 0.6586538461538461,
+  "games": 1664,
+  "ticks_per_decision": 305.45000000000005,
+  "skipped": [
+   0.821,
+   0.821
+  ]
+ },
+ {
+  "h1": 40,
+  "k2": 4,
+  "skip_conf": 0.0,
+  "search_wr": 0.6897321428571429,
+  "noisy_wr": 0.6618303571428571,
+  "games": 896,
+  "ticks_per_decision": 834.0,
+  "skipped": [
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "h1": 60,
+  "k2": 3,
+  "skip_conf": 0.0,
+  "search_wr": 0.740625,
+  "noisy_wr": 0.6609375,
+  "games": 640,
+  "ticks_per_decision": 996.8,
+  "skipped": [
+   0.0,
+   0.0
+  ]
+ }
+]
