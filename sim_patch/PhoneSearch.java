@@ -29,6 +29,13 @@ public final class PhoneSearch {
 
   public double[] lastScores = new double[0];
 
+  /** Forks that failed, and the first failure, for diagnosis on the phone. */
+  public volatile int failures = 0;
+
+  public volatile String firstError = null;
+
+  public volatile int forks = 0;
+
   public PhoneSearch(int horizon, int spread, double margin, double elixirWeight) {
     this.horizon = horizon;
     this.spread = spread;
@@ -154,7 +161,15 @@ public final class PhoneSearch {
                 v[j] = info[Schema.I_FAULT] != 0 ? -1e9 : value(obs, 0);
               } catch (RuntimeException | AssertionError | StackOverflowError e) {
                 v[j] = -1e9;
+                failures++;
+                if (firstError == null) {
+                  java.io.StringWriter w = new java.io.StringWriter();
+                  e.printStackTrace(new java.io.PrintWriter(w));
+                  String t = w.toString();
+                  firstError = t.length() > 3000 ? t.substring(0, 3000) : t;
+                }
               }
+              forks++;
             });
     lastCandidates = cand;
     lastScores = v;
