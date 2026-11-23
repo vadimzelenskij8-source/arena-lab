@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       src: { default: "u1" }
+      args: { default: "" }
 permissions: { contents: write }
 env:
   CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
@@ -43,7 +44,7 @@ jobs:
           mkdir -p out && git fetch origin results
           git show origin/results:${{ github.event.inputs.src || 'u1' }}/policy.pt > out/policy.pt
           python train/distill.py --install sim/env --tables sim/tables --out out --envs 16 --threads 4 --fork 0 \
-            --resume out/policy.pt --export-phone out/phone 2>&1 | tail -30
+            --resume out/policy.pt --export-phone out/phone ${{ github.event.inputs.args }} 2>&1 | tail -30
           ls -la out/phone && cat out/phone/check.json
       - name: publish
         run: |

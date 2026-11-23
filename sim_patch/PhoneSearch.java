@@ -36,11 +36,39 @@ public final class PhoneSearch {
 
   public volatile int forks = 0;
 
+  /** Two-stage search: every candidate is looked at for h1 ticks first, the best k2 (and the proposal) to the horizon. */
+  public int h1 = 0;
+
+  public int k2 = 3;
+
+  /** Ticks simulated, for the speed report. */
+  public volatile long ticks = 0;
+
   public PhoneSearch(int horizon, int spread, double margin, double elixirWeight) {
     this.horizon = horizon;
     this.spread = spread;
     this.margin = margin;
     this.elixirWeight = elixirWeight;
+  }
+
+  /** A fork with the candidate played, run to {@code until} ticks after the decision. */
+  private LadderEnv start(LadderEnv source, int seat, int a) {
+    LadderEnv fork = source.fork(seat);
+    fork.step(seat == 0 ? a : Schema.WAIT, seat == 0 ? Schema.WAIT : a);
+    return fork;
+  }
+
+  private double runTo(LadderEnv fork, int seat, int until) {
+    int t0 = fork.tick();
+    while (!fork.done() && fork.tick() < until) {
+      fork.step(Schema.WAIT, Schema.WAIT);
+    }
+    ticks += fork.tick() - t0;
+    int[] obs = new int[Schema.SEAT_INTS];
+    fork.copyObservation(seat, obs, 0);
+    int[] info = new int[Schema.INFO_INTS];
+    fork.copyInfo(info, 0);
+    return info[Schema.I_FAULT] != 0 ? -1e9 : value(obs, 0);
   }
 
   /** Teacher.value: towers, characters' worth by hit points, the seat's elixir. */
@@ -141,6 +169,9 @@ public final class PhoneSearch {
     cs.add(0);
     cs.add(proposal);
     int[] cand = cs.stream().filter(a -> a >= 0 && a < Schema.ACTIONS && mask[a] != 0).mapToInt(Integer::intValue).sorted().toArray();
+    if (h1 > 0 && h1 < horizon) {
+      return twoStage(source, seat, proposal, cand);
+    }
     double[] v = new double[cand.length];
     IntStream.range(0, cand.length)
         .parallel()
@@ -182,6 +213,87 @@ public final class PhoneSearch {
       }
     }
     return v[best] > base + margin ? cand[best] : proposal;
+  }
+
+  /**
+   * As train/teacher.py with h1 set: the short look keeps each fork, and the kept candidates' forks go
+   * on to the horizon (the same positions a fresh full look reaches: the battle is deterministic).
+   */
+  private int twoStage(LadderEnv source, int seat, int proposal, int[] cand) {
+    int n = cand.length;
+    LadderEnv[] forks = new LadderEnv[n];
+    int[] t0 = new int[n];
+    double[] v1 = new double[n];
+    IntStream.range(0, n)
+        .parallel()
+        .forEach(
+            j -> {
+              try {
+                int start = source.tick();
+                t0[j] = start;
+                forks[j] = start(source, seat, cand[j]);
+                v1[j] = runTo(forks[j], seat, start + h1);
+              } catch (RuntimeException | AssertionError | StackOverflowError e) {
+                v1[j] = -1e9;
+                forks[j] = null;
+                failures++;
+                if (firstError == null) {
+                  firstError = e.toString();
+                }
+              }
+              forks++;
+            });
+    Integer[] order = new Integer[n];
+    for (int j = 0; j < n; j++) {
+      order[j] = j;
+    }
+    Arrays.sort(order, (x, y) -> Double.compare(v1[y], v1[x])); // stable: ties keep candidate order
+    boolean[] keep = new boolean[n];
+    for (int r = 0; r < Math.min(k2, n); r++) {
+      keep[order[r]] = true;
+    }
+    int bi = Arrays.binarySearch(cand, proposal);
+    if (bi >= 0) {
+      keep[bi] = true;
+    }
+    double[] v = new double[n];
+    Arrays.fill(v, Double.NaN);
+    IntStream.range(0, n)
+        .parallel()
+        .forEach(
+            j -> {
+              if (!keep[j]) {
+                return;
+              }
+              try {
+                v[j] = forks[j] == null ? -1e9 : runTo(forks[j], seat, t0[j] + horizon);
+              } catch (RuntimeException | AssertionError | StackOverflowError e) {
+                v[j] = -1e9;
+              }
+            });
+    int m = 0;
+    for (boolean k : keep) {
+      m += k ? 1 : 0;
+    }
+    int[] c2 = new int[m];
+    double[] s2 = new double[m];
+    for (int j = 0, r = 0; j < n; j++) {
+      if (keep[j]) {
+        c2[r] = cand[j];
+        s2[r++] = v[j];
+      }
+    }
+    lastCandidates = c2;
+    lastScores = s2;
+    int b2 = Arrays.binarySearch(c2, proposal);
+    double base = b2 >= 0 ? s2[b2] : -1e9;
+    int best = 0;
+    for (int j = 1; j < m; j++) {
+      if (s2[j] > s2[best]) {
+        best = j;
+      }
+    }
+    return s2[best] > base + margin ? c2[best] : proposal;
   }
 
   /** The twin's battle. */

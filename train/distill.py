@@ -480,6 +480,7 @@ def main():
             # the phone's search (Java PhoneSearch) against train/teacher.py on the same battles and moves
             import jpype
             JPS = jpype.JClass("org.crforge.env.PhoneSearch")(int(a.horizon), int(a.spread), float(a.margin), 1.0)
+            JPS.h1 = int(a.h1); JPS.k2 = int(a.k2)
             JI = jpype.JArray(jpype.JInt)
             seats = reset_all(777, [random.choice(META) for _ in range(N)], False, [decks_gen.generate(grng, META) for _ in range(N)])
             st = fresh(); same = tot = changed = 0; t_py = t_j = 0.0
@@ -506,7 +507,7 @@ def main():
                     "vocabulary": [str(x) for x in vec.vocabulary], "cols": int(enc.s.cols), "rows": int(enc.s.rows),
                     "decks": {nm: {"name": d["name"], "rows": [ROW[c] for c in d["cards"]], "slots": [int(x) for x in slots_of(d)]}
                               for nm, d in (("xbow", MYD), ("opp", META[0]), ("opp2", META[len(META) // 2]))},
-                    "horizon": a.horizon, "spread": a.spread, "margin": a.margin, "top": a.top,
+                    "horizon": a.horizon, "spread": a.spread, "margin": a.margin, "top": a.top, "h1": a.h1, "k2": a.k2,
                     "check": res}
             json.dump(meta, open(Path(a.export_phone) / "meta.json", "w"))
             return
