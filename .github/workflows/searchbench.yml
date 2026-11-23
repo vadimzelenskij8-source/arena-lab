@@ -1,0 +1,100 @@
+name: searchbench
+on:
+  workflow_dispatch:
+    inputs:
+      minutes: { default: "180" }
+permissions: { contents: write }
+env:
+  CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
+  DATA_VERSION: "16.635.8"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: lab }
+      - run: git clone https://github.com/voonhous/crforge crforge && git -C crforge checkout "$CRFORGE_SHA" && python3 lab/sim_patch/apply.py crforge
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: gradle/actions/setup-gradle@v4
+      - working-directory: crforge
+        run: ./gradlew --no-daemon :env:installDist :tables:dataVersionTables -Pcrforge.assetSource=cdn -Pcrforge.dataVersion=$DATA_VERSION
+      - run: |
+          mkdir -p sim && cp -r crforge/env/build/install/env sim/env && cp -r crforge/python sim/python && cp -r ~/.crforge/tables/$DATA_VERSION sim/tables
+          tar czf sim.tgz sim
+      - uses: actions/upload-artifact@v4
+        with: { name: sim, path: sim.tgz, retention-days: 1 }
+  srch:
+    needs: [build]
+    strategy:
+      fail-fast: false
+      matrix:
+        w: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install ./sim/python && pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: search speed setting
+        run: |
+          mkdir -p out && git fetch origin results && git show origin/results:u1/policy.pt > out/policy.pt
+          # 8 settings x 2 jobs (different games); every setting plays the same games
+          case $(( ${{ matrix.w }} / 2 )) in
+            0) V="";;
+            1) V="--h1 40 --k2 3";;
+            2) V="--h1 40 --k2 4";;
+            3) V="--h1 60 --k2 3";;
+            4) V="--skip-conf 0.9";;
+            5) V="--h1 40 --k2 3 --skip-conf 0.9";;
+            6) V="--h1 24 --k2 3";;
+            7) V="--h1 40 --k2 2";;
+          esac
+          V="$V --search-seed $(( ${{ matrix.w }} % 2 * 500000 ))"
+          python train/distill.py --install sim/env --tables sim/tables --out out --envs 64 --threads 4 --fork 0 \
+            --resume out/policy.pt --search-only ${{ github.event.inputs.minutes || '180' }} $V 2>&1 | tail -5
+          cp out/search_variant.json sv-${{ matrix.w }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: "sv-${{ matrix.w }}", path: "sv-*.json", retention-days: 3 }
+  collect:
+    needs: [srch]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { pattern: "sv-*", merge-multiple: true, path: sv }
+      - name: summary
+        run: |
+          python3 - <<'PY'
+          import json, glob
+          agg = {}
+          for f in sorted(glob.glob("sv/*.json")):
+              v = json.load(open(f))
+              k = (v.get("h1", 0), v.get("k2", 3), v.get("skip_conf", 0.0))
+              t = agg.setdefault(k, {"search": [0, 0], "noisy": [0, 0], "ticks": [], "skipped": []})
+              for m in ("search", "noisy"):
+                  t[m][0] += v[m][0]; t[m][1] += v[m][1]
+              t["ticks"].append(v.get("ticks_per_decision")); t["skipped"].append(v.get("skipped"))
+          rows = []
+          for (h1, k2, sk), t in sorted(agg.items()):
+              rows.append({"h1": h1, "k2": k2, "skip_conf": sk, "search_wr": t["search"][0] / max(1, t["search"][1]),
+                           "noisy_wr": t["noisy"][0] / max(1, t["noisy"][1]), "games": t["search"][1],
+                           "ticks_per_decision": sum(x for x in t["ticks"] if x) / max(1, len([x for x in t["ticks"] if x])),
+                           "skipped": t["skipped"]})
+          json.dump(rows, open("search_speed.json", "w"), indent=1)
+          for r in rows: print(r)
+          PY
+      - name: publish
+        run: |
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          git fetch origin results && git worktree add ../res origin/results && cd ../res && git checkout -B results
+          mkdir -p phone && cp ../${{ github.event.repository.name }}/search_speed.json phone/search_speed.json
+          git add -A && git commit -q -m "search speed ${{ github.run_id }}" && git push origin results

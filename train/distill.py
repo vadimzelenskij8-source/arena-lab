@@ -99,6 +99,9 @@ def main():
     ap.add_argument("--mb", type=int, default=16, help="sequences per training step (bigger = faster on CPU)")
     ap.add_argument("--search-only", type=float, default=0, help="minutes: only measure network+search (normal and phone) on the champion")
     ap.add_argument("--spread", type=int, default=2)
+    ap.add_argument("--h1", type=int, default=0, help="two-stage search: screening horizon in ticks (0 = off)")
+    ap.add_argument("--k2", type=int, default=3, help="two-stage search: candidates looked at in full")
+    ap.add_argument("--skip-conf", type=float, default=0.0, help="no search when the network's move has this probability")
     ap.add_argument("--export-phone", default="", help="folder: check the torch encoder against numpy, export policy.onnx")
     ap.add_argument("--reply", type=int, default=0, help="search with the enemy's answer (our network from its side)")
     ap.add_argument("--reply-ticks", type=int, default=10, help="the enemy answers this many ticks after our move")
@@ -136,6 +139,7 @@ def main():
                                    rng=np.random.default_rng(a.seed + 77))
         else:
             teacher = Teacher(vec, horizon=a.horizon, margin=a.margin, spread=a.spread)
+        teacher.h1, teacher.k2 = a.h1, a.k2
         TOWERS = ["King_PrincessTowers", "King_CannonTowers", "King_KnifeTowers", "King_ChefTowers"]
 
         MYD = {"name": "X-Bow 3.0", "group": "X-Bow", "cards": MY["cards"], "evo": MY["evo"], "hero": MY["hero"]}
@@ -331,12 +335,16 @@ def main():
             hand[:, 0] = 0
             return hand, Oo[:, enc.h["elixir"][0]].astype(np.float32) / 100000.0
 
+        conf_ = {"last": None}
+
         def net_act(m_, b_, M_, h_):
             with torch.no_grad():
                 bt_ = to_t(b_); z_, tf_, hd_ = m_.encode(bt_); hn_ = m_.gru(z_, h_)
                 lg_, _ = m_.heads(hn_, tf_, hd_, bt_, torch.from_numpy(M_))
                 pr_ = torch.softmax(lg_, 1); play_ = pr_[:, 1:].clone(); play_[:, -1] = 0  # never the delegate
                 ac_ = torch.where(play_.sum(1) > a.play_thr, play_.argmax(1) + 1, torch.zeros_like(pr_[:, 0]).long()).numpy()
+                # how sure the network is: its chosen play's probability, or the wait's when it waits
+                conf_["last"] = torch.where(torch.from_numpy(ac_) > 0, play_.max(1).values, 1.0 - play_.sum(1)).numpy()
                 topk_ = (play_[:, :4 * enc.s.cols * enc.s.rows].topk(a.top, 1).indices + 1).numpy()
             return ac_, hn_, topk_
 
@@ -351,6 +359,8 @@ def main():
                 ac_, _h, _t = net_act(net, b_, M_, torch.zeros(len(Oe), 256))
                 return ac_
             teacher.reply_fn = reply_fn
+
+        skipped_ = {"n": 0, "all": 0}
 
         def tap_noise(x, mk_, r_):
             if 0 < x < 2305 and r_.random() < 0.15:
@@ -381,7 +391,12 @@ def main():
                         ac = teacher.refine(pr_, seats, ~done)
                     elif player in ("search", "noisy"):  # B: the network proposes, a short lookahead picks (as the phone twin will)
                         ac0, st["h"], tk = net_act(net, b, M, st["h"])
-                        ac = teacher.refine(ac0, seats, ~done, extra=[list(tk[i]) for i in range(N)])
+                        act_ = ~done
+                        skipped_["all"] += int((~done).sum())
+                        if a.skip_conf > 0:  # the network is sure: its move stands without a search
+                            act_ = act_ & (conf_["last"] < a.skip_conf)
+                            skipped_["n"] += int((~done & ~act_).sum())
+                        ac = teacher.refine(ac0, seats, act_, extra=[list(tk[i]) for i in range(N)])
                         if player == "noisy":  # the phone app's latency: ~125 ms on average
                             # one decision = 5 ticks of 1/30 s = 167 ms; a move lands one decision later with p=0.75
                             ac = np.asarray(ac, np.int64).copy(); ac_now = np.zeros(N, np.int64)
@@ -504,6 +519,10 @@ def main():
                     res[mode][0] += e_["wins"] + 0.5 * e_["draws"]; res[mode][1] += e_["games"]
                 k += 1; res["chunks"] = k
                 res.update(top=a.top, horizon=a.horizon, spread=a.spread, sw=a.sw, reply=a.reply, seconds=round(time.time() - t0s),
+                           h1=a.h1, k2=a.k2, skip_conf=a.skip_conf,
+                           ticks_per_search=round(teacher.stats["ticks"] / max(1, teacher.stats["searched"]), 1),
+                           ticks_per_decision=round(teacher.stats["ticks"] / max(1, skipped_["all"]), 1),
+                           skipped=round(skipped_["n"] / max(1, skipped_["all"]), 3),
                            ms_per_search=round(1000 * teacher.stats.get("t_reply", 0.0) / max(1, teacher.stats["searched"]), 2),
                            enemy_played=round(teacher.stats.get("reply_plays", 0) / max(1, teacher.stats.get("replies", 0)), 3),
                            search_wr=res["search"][0] / max(1, res["search"][1]), noisy_wr=res["noisy"][0] / max(1, res["noisy"][1]))

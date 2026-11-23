@@ -20,7 +20,8 @@ class Teacher:
         self.H, self.EI, self.ME = s.header_ints, s.entity_ints, s.max_entities
         self.fault = s.info["fault"]
         self.horizon, self.margin, self.spread, self.we = horizon, margin, spread, w_elixir
-        self.stats = {"searched": 0, "changed": 0}
+        self.stats = {"searched": 0, "changed": 0, "ticks": 0}
+        self.h1, self.k2 = 0, 3  # two-stage search (phone speed): screen all with h1 ticks, look h ticks at the best k2
 
     def value(self, O):
         e = self.e
@@ -81,7 +82,19 @@ class Teacher:
                 req_i += [i] * len(cs); req_a += cs
         if not req_i:
             return out
+        if self.h1 > 0:  # stage 1: a short look at every candidate; the best k2 and the proposal go on
+            obs, info = vec.lookahead(np.array(req_i), np.asarray(seats)[np.array(req_i)], np.array(req_a), self.h1)
+            self.stats["ticks"] += len(req_i) * self.h1
+            v1 = self.value(obs); v1[info[:, self.fault] != 0] = -1e9
+            own2, req_i, req_a = [], [], []
+            for i, st, cs in owner:
+                vv = v1[st:st + len(cs)]
+                keep = {cs[j] for j in np.argsort(-vv, kind="stable")[:self.k2]} | {int(out[i])}
+                cs2 = sorted(keep)
+                own2.append((i, len(req_a), cs2)); req_i += [i] * len(cs2); req_a += cs2
+            owner = own2
         obs, info = vec.lookahead(np.array(req_i), np.asarray(seats)[np.array(req_i)], np.array(req_a), self.horizon)
+        self.stats["ticks"] += len(req_i) * self.horizon
         v = self.value(obs)
         if self.value_fn is not None and self.vw > 0:
             v = v + self.vw * 20.0 * self.value_fn(obs)
