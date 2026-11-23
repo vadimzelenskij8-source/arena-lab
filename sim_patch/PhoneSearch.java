@@ -36,6 +36,11 @@ public final class PhoneSearch {
 
   public volatile int forks = 0;
 
+  /** Time spent copying battles (fork) and simulating them, in nanoseconds, summed over threads. */
+  public final java.util.concurrent.atomic.AtomicLong copyNanos = new java.util.concurrent.atomic.AtomicLong();
+
+  public final java.util.concurrent.atomic.AtomicLong simNanos = new java.util.concurrent.atomic.AtomicLong();
+
   /** Two-stage search: every candidate is looked at for h1 ticks first, the best k2 (and the proposal) to the horizon. */
   public int h1 = 0;
 
@@ -178,7 +183,10 @@ public final class PhoneSearch {
         .forEach(
             j -> {
               try {
+                long c0 = System.nanoTime();
                 LadderEnv fork = source.fork(seat);
+                long c1 = System.nanoTime();
+                copyNanos.addAndGet(c1 - c0);
                 int tStart = fork.tick();
                 int until = tStart + horizon;
                 int a = cand[j];
@@ -187,6 +195,7 @@ public final class PhoneSearch {
                   fork.step(Schema.WAIT, Schema.WAIT);
                 }
                 ticks += fork.tick() - tStart;
+                simNanos.addAndGet(System.nanoTime() - c1);
                 int[] obs = new int[Schema.SEAT_INTS];
                 fork.copyObservation(seat, obs, 0);
                 int[] info = new int[Schema.INFO_INTS];
