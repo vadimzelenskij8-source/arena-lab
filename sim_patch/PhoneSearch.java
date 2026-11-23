@@ -179,12 +179,14 @@ public final class PhoneSearch {
             j -> {
               try {
                 LadderEnv fork = source.fork(seat);
-                int until = fork.tick() + horizon;
+                int tStart = fork.tick();
+                int until = tStart + horizon;
                 int a = cand[j];
                 fork.step(seat == 0 ? a : Schema.WAIT, seat == 0 ? Schema.WAIT : a);
                 while (!fork.done() && fork.tick() < until) {
                   fork.step(Schema.WAIT, Schema.WAIT);
                 }
+                ticks += fork.tick() - tStart;
                 int[] obs = new int[Schema.SEAT_INTS];
                 fork.copyObservation(seat, obs, 0);
                 int[] info = new int[Schema.INFO_INTS];
