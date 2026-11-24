@@ -1,0 +1,84 @@
+diff --git a/lib/odin.py b/lib/odin.py
+index a126df6..9b0c097 100644
+--- a/lib/odin.py
++++ b/lib/odin.py
+@@ -277,7 +277,7 @@ class SupercellOdinGLTF:
+                 (positions_count, attribute.elements_count), dtype=attribute.data_type))
+             attribute_descriptor.append(attribute)
+             accessor = {
+-                "bufferView": len(self.buffers) + i,
++                "bufferView": len(self.buffers) + len(attribute_descriptor) - 1,
+                 "componentType": OdinAttributeFormat.to_accessor_component(attribute_format),
+                 "count": int(positions_count),
+                 "type": OdinAttributeFormat.to_accessor_type(attribute_format)
+@@ -695,4 +695,6 @@ class SupercellOdinGLTF:
+ 
+             array = array.astype(np.float32, copy=False)
+ 
++        if component_nb == 1:
++            array = array.reshape(-1)
+         return array
+diff --git a/lib/odin_attribute.py b/lib/odin_attribute.py
+index 9f4cbf8..3837c22 100644
+--- a/lib/odin_attribute.py
++++ b/lib/odin_attribute.py
+@@ -33,6 +33,8 @@ class OdinAttribute:
+                     y,
+                     z
+                 ], dtype=self._dtype)
++            case OdinAttributeFormat.HalfVector2:
++                array = np.frombuffer(data, dtype="<i2", offset=offset, count=2).astype(np.float32) / 32767.0
+             case _:
+                 array = np.frombuffer(
+                     data, dtype=self._dtype, offset=offset, count=self._elements_count)
+diff --git a/lib/odin_constants.py b/lib/odin_constants.py
+index 149dba3..bd3b4ce 100644
+--- a/lib/odin_constants.py
++++ b/lib/odin_constants.py
+@@ -42,6 +42,7 @@ class OdinAttributeFormat(IntEnum):
+     ColorRGBA = 9
+     UByteVector3 = 12
+     FloatVector2 = 29
++    HalfVector2 = 22
+     FloatVector3 = 30
+     NormalizedWeightVector = 36
+ 
+@@ -53,6 +54,7 @@ class OdinAttributeFormat(IntEnum):
+             OdinAttributeFormat.UByteVector4: False,
+             OdinAttributeFormat.NormalizedWeightVector: False,
+             OdinAttributeFormat.FloatVector2: False,
++            OdinAttributeFormat.HalfVector2: False,
+             OdinAttributeFormat.ColorRGBA: True,
+         }[component_type]
+ 
+@@ -64,6 +66,7 @@ class OdinAttributeFormat(IntEnum):
+             OdinAttributeFormat.UByteVector4: 'VEC4',
+             OdinAttributeFormat.NormalizedWeightVector: 'VEC4',
+             OdinAttributeFormat.FloatVector2: 'VEC2',
++            OdinAttributeFormat.HalfVector2: 'VEC2',
+             OdinAttributeFormat.ColorRGBA: 'VEC4',
+         }[component_type]
+ 
+@@ -75,6 +78,7 @@ class OdinAttributeFormat(IntEnum):
+             OdinAttributeFormat.UByteVector4: 5121,
+             OdinAttributeFormat.NormalizedWeightVector: 5126,
+             OdinAttributeFormat.FloatVector2: 5126,
++            OdinAttributeFormat.HalfVector2: 5126,
+             OdinAttributeFormat.ColorRGBA: 5121,
+         }[component_type]
+ 
+@@ -86,6 +90,7 @@ class OdinAttributeFormat(IntEnum):
+             OdinAttributeFormat.UByteVector4: np.ubyte,
+             OdinAttributeFormat.NormalizedWeightVector: np.float32,
+             OdinAttributeFormat.FloatVector2: np.float32,
++            OdinAttributeFormat.HalfVector2: np.float32,
+             OdinAttributeFormat.ColorRGBA: np.ubyte,
+         }[component_type]
+ 
+@@ -97,5 +102,6 @@ class OdinAttributeFormat(IntEnum):
+             OdinAttributeFormat.UByteVector4: 4,
+             OdinAttributeFormat.NormalizedWeightVector: 4,
+             OdinAttributeFormat.FloatVector2: 2,
++            OdinAttributeFormat.HalfVector2: 2,
+             OdinAttributeFormat.ColorRGBA: 4,
+         }[component_type]

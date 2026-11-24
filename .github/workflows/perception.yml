@@ -1,0 +1,25 @@
+name: perception
+on:
+  push:
+    branches: [main]
+    paths: ["perception/**", ".github/workflows/perception.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+env:
+  CDN: https://game-assets.clashroyaleapp.com
+  SHA: 062a11e0500c03cc041f123413b1ef1846b539a4
+jobs:
+  calib:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: deps + assets (downloaded from the game CDN, never committed)
+        run: |
+          pip install -q zstandard texture2ddecoder numpy pillow flatbuffers
+          git clone -q https://github.com/Daniil-SV/Supercell-Flat-Converter /tmp/sfc
+          cd /tmp/sfc && git checkout -q a0ac5f47b8e2088c088b0043f49508611f7bc660 && git apply $GITHUB_WORKSPACE/perception/sfc.patch && cd -
+          python3 perception/fetch_all.py /tmp/assets | tail -5
+      - name: calib
+        run: python3 perception/calib.py /tmp/assets
