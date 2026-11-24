@@ -21,13 +21,16 @@ if not imgs:  # Kaggle may have unpacked the archives already: link them in plac
         os.symlink(d, f"{root}/u{k}")
     imgs = sorted(glob.glob(root + "/**/images/*.jpg", recursive=True))
 print("images", len(imgs), "classes", len(classes))
+import random
+random.seed(0)
+imgs = random.sample(imgs, min(len(imgs), 20000))
 val = imgs[::40]
 open("/kaggle/working/train.txt", "w").write("\n".join(i for i in imgs if i not in set(val)))
 open("/kaggle/working/val.txt", "w").write("\n".join(val))
 yaml = "path: /kaggle/working\ntrain: train.txt\nval: val.txt\nnames:\n" + "".join(f"  {i}: '{c}'\n" for i, c in enumerate(classes))
 open("/kaggle/working/data.yaml", "w").write(yaml)
 from ultralytics import YOLO
-EPOCHS = int(os.environ.get("EPOCHS", "30"))
+EPOCHS = int(os.environ.get("EPOCHS", "20"))
 init = (glob.glob("/kaggle/input/**/best.pt", recursive=True) or ["yolo11n.pt"])[0]
 print("init weights", init)
 m = YOLO(init)
