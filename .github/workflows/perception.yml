@@ -2,24 +2,69 @@ name: perception
 on:
   push:
     branches: [main]
-    paths: ["perception/**", ".github/workflows/perception.yml"]
+    paths: ["perception/trigger_gen.txt"]
   workflow_dispatch:
 permissions:
   contents: write
 env:
   CDN: https://game-assets.clashroyaleapp.com
   SHA: 062a11e0500c03cc041f123413b1ef1846b539a4
+  KAGGLE_USERNAME: papai10095
+  KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+  KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_KEY }}
 jobs:
-  calib:
+  gen:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix: { shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] }
     steps:
       - uses: actions/checkout@v4
-      - name: deps + assets (downloaded from the game CDN, never committed)
+      - name: deps + assets (downloaded from the game CDN at run time, never committed)
         run: |
           pip install -q zstandard texture2ddecoder numpy pillow flatbuffers
           git clone -q https://github.com/Daniil-SV/Supercell-Flat-Converter /tmp/sfc
           cd /tmp/sfc && git checkout -q a0ac5f47b8e2088c088b0043f49508611f7bc660 && git apply $GITHUB_WORKSPACE/perception/sfc.patch && cd -
-          python3 perception/fetch_all.py /tmp/assets | tail -5
-      - name: calib
-        run: python3 perception/calib.py /tmp/assets
+          python3 perception/fetch_all.py /tmp/assets | tail -3
+          mkdir bg && for id in $(cat perception/real_frames.txt); do curl -fsSL "https://source.roboflow.com/03WjEzRyYIPwtXk7A2aqTNAuk4X2/$id/original.jpg" -o bg/$id.jpg || true; done
+      - name: generate
+        run: |
+          python3 perception/synth.py /tmp/assets bg synth 2500 $((300 + ${{ matrix.shard }})) 2>&1 | grep -v "render failed" | tail -15
+          tar -cf shard${{ matrix.shard }}.tar -C synth images labels
+          cp synth/classes.json . ; mkdir -p pv && cp synth/preview_* pv/
+      - uses: actions/upload-artifact@v4
+        with: { name: "shard${{ matrix.shard }}", path: "shard${{ matrix.shard }}.tar", retention-days: 3 }
+      - uses: actions/upload-artifact@v4
+        if: matrix.shard == 0
+        with: { name: classes, path: classes.json, retention-days: 30 }
+  train:
+    needs: gen
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { path: art }
+      - name: dataset to Kaggle
+        run: |
+          pip install -q -U kaggle
+          mkdir ds && mv art/shard*/*.tar ds/ && cp art/classes/classes.json ds/ && ls -la ds | head -30
+          cat > ds/dataset-metadata.json <<J
+          {"title": "cr synth det3", "id": "papai10095/cr-synth-det3", "licenses": [{"name": "other"}]}
+          J
+          kaggle datasets version -p ds -m "run ${{ github.run_id }}" -r tar 2>/dev/null || kaggle datasets create -p ds -r tar
+          for i in $(seq 1 40); do s=$(kaggle datasets status papai10095/cr-synth-det3 2>&1 | tail -1); echo "$s"; [ "$s" = "ready" ] && break; sleep 30; done
+      - name: train on Kaggle GPU (fine-tune from det-v1)
+        run: |
+          mkdir k && cp kaggle_train/train.py k/
+          cat > k/kernel-metadata.json <<J
+          {"id": "papai10095/cr-det-train3", "title": "cr det train3", "code_file": "train.py", "language": "python",
+           "kernel_type": "script", "is_private": true, "enable_gpu": true, "machine_shape": "NvidiaTeslaT4", "enable_internet": true,
+           "dataset_sources": ["papai10095/cr-synth-det3"], "competition_sources": [], "kernel_sources": ["papai10095/cr-det-train"]}
+          J
+          kaggle kernels push -p k
+          sleep 120
+          for i in $(seq 1 320); do s=$(kaggle kernels status papai10095/cr-det-train3 2>&1); echo "$(date +%H:%M) $s"
+            echo "$s" | grep -qiE "complete|error|cancel" && break; sleep 60; done

@@ -24,6 +24,7 @@ W, H = 540, 1200
 X0, PX = 8.0, 29.1
 Y0, PY = 143.0, 22.6
 KING_TOWER_PX = 100.0  # width of the king tower body on a real 540px frame
+UNIT_SCALE = 0.70  # units/buildings/effects are drawn smaller than the tower calibration (X-Bow 88px rendered vs ~62px real)
 
 
 def tile_to_px(tx, ty):
@@ -104,7 +105,7 @@ class Synth:
         except ValueError:
             sc = 1.0
         sc = sc if 0.05 < sc < 5 else 1.0
-        scale = self.k * sc * self.rng.uniform(0.9, 1.1)
+        scale = self.k * UNIT_SCALE * sc * self.rng.uniform(0.85, 1.15)
         yaw = self.rng.uniform(0, 360)
         try:
             img, org = self.bank.render(it, frame, direction=d, scale=scale, yaw=yaw)
@@ -175,7 +176,7 @@ class Synth:
                 continue
             it = self.rng.choice(self.fx[card])
             try:
-                img, (ox, oy) = self.bank.render_fx(it, self.rng, scale=self.k)
+                img, (ox, oy) = self.bank.render_fx(it, self.rng, scale=self.k * UNIT_SCALE)
             except Exception as e:  # noqa: BLE001
                 print("fx render failed", it["anim"], repr(e)[:120])
                 continue
@@ -209,22 +210,31 @@ class Synth:
                 continue
             cname = it["obj"] + "|spell" if it["team"] == "spell" else class_name(it)
             boxes.append([self.cid[cname], (bx0 + bx1) / 2, (by0 + by1) / 2, bx1 - bx0, by1 - by0])
-            if it["type"] in ("CHARACTER", "BUILDING", "EXT") and self.rng.random() < 0.6:
-                self._hpbar(canvas, (bx0 + bx1) / 2, by0 - 6, it["team"])
+            if it["type"] in ("CHARACTER", "BUILDING", "EXT", "BUILDINGS", "CHARACTERS") and self.rng.random() < 0.85:
+                self._hpbar(canvas, (bx0 + bx1) / 2, by0 - 5, it["team"])
+        if self.rng.random() < 0.3:  # enemy half tinted red while the player drags a card
+            tint = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            ImageDraw.Draw(tint).rectangle([0, 0, W, int(Y0 + 15.5 * PY)], fill=(200, 30, 40, self.rng.randint(40, 90)))
+            canvas.alpha_composite(tint)
         img = canvas.convert("RGB")
         if self.rng.random() < 0.3:
             img = img.filter(ImageFilter.GaussianBlur(self.rng.uniform(0.3, 0.9)))
         return img, boxes
 
     def _hpbar(self, canvas, cx, y, team):
+        """Game-like health bar: coloured level badge with a number + thin bar."""
         d = ImageDraw.Draw(canvas)
-        col = (220, 50, 60) if team == "red" else (60, 140, 230)
-        w = self.rng.choice([22, 28, 34])
-        f = self.rng.uniform(0.2, 1.0)
-        d.rectangle([cx - w / 2, y - 3, cx + w / 2, y + 1], fill=(30, 30, 30))
-        d.rectangle([cx - w / 2 + 1, y - 2, cx - w / 2 + 1 + (w - 2) * f, y], fill=col)
-        d.rectangle([cx - w / 2 - 9, y - 5, cx - w / 2 - 1, y + 3], fill=col)
-
+        red = team == "red" or (team not in ("blue",) and self.rng.random() < 0.5)
+        col = (205, 45, 75) if red else (45, 120, 220)
+        dark = (60, 25, 35) if red else (25, 35, 70)
+        w = self.rng.randint(28, 50)
+        f = self.rng.uniform(0.15, 1.0)
+        x0 = cx - w / 2 + 6
+        d.rectangle([x0, y - 2, x0 + w, y + 3], fill=dark)
+        d.rectangle([x0 + 1, y - 1, x0 + 1 + (w - 2) * f, y + 2], fill=col)
+        b = 13
+        d.rectangle([x0 - b, y - b / 2 - 1, x0, y + b / 2], fill=col, outline=(255, 255, 255) if self.rng.random() < 0.3 else None)
+        d.text((x0 - b + 1, y - b / 2), str(self.rng.choice([9, 10, 11, 11, 12, 13, 14, 15])), fill=(255, 255, 255))
 
 def main():
     assets, bg_dir, out, n, seed = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4]), int(sys.argv[5])
