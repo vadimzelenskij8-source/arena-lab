@@ -9,7 +9,7 @@ from ultralytics import YOLO
 W = "/kaggle/working"
 root = f"{W}/ds"
 os.makedirs(root, exist_ok=True)
-w = [p for p in glob.glob("/kaggle/input/**/best.pt", recursive=True) if "train3" in p] or glob.glob("/kaggle/input/**/best.pt", recursive=True)
+w = [p for p in glob.glob("/kaggle/input/**/best.pt", recursive=True) if "t3b" in p] or glob.glob("/kaggle/input/**/best.pt", recursive=True)
 print("weights", w, flush=True)
 classes = json.load(open(glob.glob("/kaggle/input/**/classes.json", recursive=True)[0]))
 for k, tar in enumerate(sorted(glob.glob("/kaggle/input/**/*.tar", recursive=True))):

@@ -85,7 +85,7 @@ jobs:
           cat > k/kernel-metadata.json <<J
           {"id": "papai10095/cr-det-train4", "title": "cr det train4", "code_file": "pseudo.py", "language": "python",
            "kernel_type": "script", "is_private": true, "enable_gpu": true, "enable_internet": true,
-           "dataset_sources": ["papai10095/cr-synth-det3", "papai10095/cr-real-frames"], "competition_sources": [], "kernel_sources": ["papai10095/cr-det-train3"]}
+           "dataset_sources": ["papai10095/cr-synth-det3", "papai10095/cr-real-frames"], "competition_sources": [], "kernel_sources": ["papai10095/cr-det-t3b"]}
           J
           kaggle kernels push -p k
           sleep 120

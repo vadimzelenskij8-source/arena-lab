@@ -18,14 +18,15 @@ jobs:
       - run: |
           pip install -q -U kaggle
           kaggle kernels status papai10095/cr-det-train3 || true
+          kaggle kernels delete papai10095/cr-det-train3 -y || yes | kaggle kernels delete papai10095/cr-det-train3 || true
           kaggle datasets status papai10095/cr-synth-det3 || true
           mkdir k && cp kaggle_train/train.py k/
           cat > k/kernel-metadata.json <<J
-          {"id": "papai10095/cr-det-train3", "title": "cr det train3", "code_file": "train.py", "language": "python",
+          {"id": "papai10095/cr-det-t3b", "title": "cr det t3b", "code_file": "train.py", "language": "python",
            "kernel_type": "script", "is_private": true, "enable_gpu": true, "enable_internet": true,
            "dataset_sources": ["papai10095/cr-synth-det3"], "competition_sources": [], "kernel_sources": ["papai10095/cr-det-train"]}
           J
           kaggle kernels push -p k
           sleep 120
-          for i in $(seq 1 330); do s=$(kaggle kernels status papai10095/cr-det-train3 2>&1); echo "$(date +%H:%M) $s"
+          for i in $(seq 1 330); do s=$(kaggle kernels status papai10095/cr-det-t3b 2>&1); echo "$(date +%H:%M) $s"
             echo "$s" | grep -qiE "complete|error|cancel" && break; sleep 60; done
