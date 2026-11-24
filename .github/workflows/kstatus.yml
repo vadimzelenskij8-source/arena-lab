@@ -11,4 +11,6 @@ jobs:
       - run: |
           pip install -q -U kaggle
           for k in cr-det-train cr-det-train3 cr-det-train4 cr-det-post; do kaggle kernels status papai10095/$k 2>&1 | tail -1; done
-          kaggle kernels list -m --page-size 10 2>&1 | head -12
+          kaggle kernels list -m --page-size 10 2>&1 | head -6
+          kaggle kernels -h 2>&1 | head -30
+          kaggle --version
