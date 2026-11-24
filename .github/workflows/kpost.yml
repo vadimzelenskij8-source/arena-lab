@@ -36,7 +36,7 @@ jobs:
       - name: publish eval
         run: |
           pip install -q pillow
-          mkdir -p r && cp out/model.tflite r/ 2>/dev/null; python3 - <<P
+          mkdir -p r && python3 - <<P
           import glob, os, shutil
           from PIL import Image
           for f in glob.glob("out/eval/*.jpg"):
