@@ -18,14 +18,20 @@ json.dump([names[i] for i in range(len(names))], open(f"{W}/classes.json", "w"))
 for f in glob.glob("/kaggle/input/**/results.csv", recursive=True):
     print(open(f).read()[-1500:])
 os.makedirs(f"{W}/eval", exist_ok=True)
-res = m.predict(sorted(glob.glob(f"{W}/frames/*.jpg")), imgsz=(832, 384), conf=0.3, verbose=False)
+fr = sorted(glob.glob(f"{W}/frames/*.jpg"))
+for sz in [(832, 384), 832, 1216, 640]:
+    rr = m.predict(fr, imgsz=sz, conf=0.05, verbose=False)
+    n = [sum(1 for c in r.boxes.cls if "tower" not in names[int(c)]) for r in rr]
+    top = sorted(((float(s), names[int(c)]) for r in rr for c, s in zip(r.boxes.cls, r.boxes.conf) if "tower" not in names[int(c)]), reverse=True)[:15]
+    print("IMGSZ", sz, "non-tower dets per frame", n, "top", top, flush=True)
+res = m.predict(fr, imgsz=(832, 384), conf=0.1, verbose=False)
 stats = []
 for r in res:
     r.save(filename=f"{W}/eval/{os.path.basename(r.path)}")
     stats.append({"frame": os.path.basename(r.path), "dets": [[names[int(c)], round(float(s), 2)] for c, s in zip(r.boxes.cls, r.boxes.conf)]})
 json.dump(stats, open(f"{W}/eval.json", "w"), indent=0)
 try:
-    f = m.export(format="tflite", imgsz=(832, 384), half=True)
+    f = m.export(format="tflite", imgsz=(832, 384))
     t = glob.glob(os.path.join(os.path.dirname(f), "*float16.tflite")) or [f]
     shutil.copy(t[0], f"{W}/model.tflite")
     print("tflite", os.path.getsize(f"{W}/model.tflite"))
