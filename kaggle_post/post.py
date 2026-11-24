@@ -3,6 +3,8 @@ import glob, json, os, shutil, subprocess, sys, urllib.request
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "ultralytics>=8.3", "onnx2tf", "tf_keras", "onnx_graphsurgeon", "sng4onnx", "onnxslim"], check=False)
 from ultralytics import YOLO
 pt = (glob.glob("/kaggle/input/**/best.pt", recursive=True) or [None])[0]
+for f in glob.glob("/kaggle/input/**/results.csv", recursive=True):
+    print("RESULTS", open(f).read().splitlines()[-1], flush=True)
 print("weights", pt)
 W = "/kaggle/working"
 ids = ['79LEx1kfj99LhfOsxqMR', 'pLFr8uEHuY5UdNBKSwaL', 'QNm6GEBGqPTbGHDrtg2p', 'VmuXAoaJxM3qZOTw2AR6', 'ZRVvEPQ8gYlOSWJVzSQ2', 'LbWYv11tdLfwK1LCCVSL', '03agofG7WQvosy92uxN4', '06U38jUQWN0TtWgjv54T', '08rfZf0EO9Ay3IIJuQEc', '0940ijpbbLl1Xr6EXPI8', '09IYML7ALVHwk02kzMul', '0DU9egwL0Wp35QUgzYpv', '0Dti7xFRSgjbl6gKYNKV', '0FMbqBe1RaMr4F0g01oX', '0IzHEpM6RXcuGmTTQjNg', '0KKfBVzQUcl7IHFbG9qH', '0MPHIYrOTaz08DN2sXYx', '0Vr2hpYNLYQYvJyzmG7r', '0WFiKk1iAUSShBwxsXA2', '0XxgMeqyNIUPYc1pLVxN', '0bVqslExai5ZHRkDJ8T9', '0cKSxzBbRPNtyHrQfRf2', '0kipun3NSbXC3oqjqUDZ', '0vva10j0JqBLLU8QQwwR', '10POmYExCEQWLzEJ9bEn', '13fePkwuT4OD4tJWGvp6', '1EI2082msrzcg2P2OXsf', '1Je2BIqZ4TmRLJyXKa6j', '1LzL9u1Y8Xvql1vyXQRf', '1PWAg3MNi7J2gJsYfLYP']

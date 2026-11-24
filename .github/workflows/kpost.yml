@@ -2,7 +2,7 @@ name: kpost
 on:
   push:
     branches: [main]
-    paths: ["kaggle_post/**", ".github/workflows/kpost.yml"]
+    paths: ["kaggle_post/source.txt"]
   workflow_dispatch:
 permissions:
   contents: write
@@ -23,7 +23,7 @@ jobs:
           cat > k/kernel-metadata.json <<J
           {"id": "papai10095/cr-det-post", "title": "cr det post", "code_file": "post.py", "language": "python",
            "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_internet": true,
-           "dataset_sources": [], "competition_sources": [], "kernel_sources": ["papai10095/cr-det-train"]}
+           "dataset_sources": [], "competition_sources": [], "kernel_sources": ["papai10095/$(cat kaggle_post/source.txt)"]}
           J
           kaggle kernels push -p k
       - name: wait
@@ -36,7 +36,7 @@ jobs:
       - name: publish eval
         run: |
           pip install -q pillow
-          mkdir -p r && python3 - <<P
+          mkdir -p r && cp out/model.tflite r/ 2>/dev/null; python3 - <<P
           import glob, os, shutil
           from PIL import Image
           for f in glob.glob("out/eval/*.jpg"):
