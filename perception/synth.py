@@ -246,8 +246,9 @@ def main():
     for k in range(n):
         try:
             img, boxes = s.make()
-        except Exception as e:  # noqa: BLE001
+        except (Exception, MemoryError) as e:  # noqa: BLE001
             print("make failed", repr(e)[:160])
+            s.bank._sc.clear(); s.bank._3d.clear()
             continue
         name = f"s{seed}_{k:06d}"
         img.save(f"{out}/images/{name}.jpg", quality=s.rng.randint(70, 95))

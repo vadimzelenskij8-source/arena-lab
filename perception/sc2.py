@@ -414,7 +414,7 @@ class SC2:
         else:
             x0, y0, x1, y1 = bbox
         W, H = int(x1 - x0), int(y1 - y0)
-        if W <= 0 or H <= 0 or W * H > 4096 * 4096:
+        if W <= 0 or H <= 0 or W * H > 1600 * 1600:
             return None, (0, 0)
         canvas = np.zeros((H, W, 4), np.float32)
         for tex, xy, uv, col, blend in tris:
