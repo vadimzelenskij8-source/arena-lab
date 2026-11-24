@@ -33,7 +33,7 @@ class Bank:
         if rel in self._sc:
             self._sc[rel] = self._sc.pop(rel)  # LRU order
         else:
-            while len(self._sc) >= 5:
+            while len(self._sc) >= 12:
                 self._sc.pop(next(iter(self._sc)))
             p = os.path.join(self.assets, rel)
             if not os.path.exists(p):

@@ -30,6 +30,8 @@ jobs:
           mkdir bg && for id in $(cat perception/real_frames.txt); do curl -fsSL "https://source.roboflow.com/03WjEzRyYIPwtXk7A2aqTNAuk4X2/$id/original.jpg" -o bg/$id.jpg || true; done
       - name: generate
         run: |
+          mkdir -p /tmp/texcache; export SC_TEX_CACHE=/tmp/texcache MALLOC_ARENA_MAX=2
+          ( while true; do sleep 120; free -m | sed -n 2p; done ) &
           python3 perception/synth.py /tmp/assets bg synth 2500 $((300 + ${{ matrix.shard }})) 2>&1 | grep -v "render failed" | tail -15
           tar -cf shard${{ matrix.shard }}.tar -C synth images labels
           cp synth/classes.json . ; mkdir -p pv && cp synth/preview_* pv/

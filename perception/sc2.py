@@ -199,6 +199,28 @@ def load_sctx(path):
 
 # ---------------------------------------------------------------- SC2 file
 
+class _MmapList(list):
+    """Decoded textures are cached as .npy files and memory-mapped, so repeated loads cost no heap memory."""
+
+    def __init__(self, path):
+        super().__init__()
+        d = os.environ.get("SC_TEX_CACHE")
+        self.prefix = os.path.join(d, os.path.basename(path)) if d else None
+
+    def add(self, decode):
+        if self.prefix is None:
+            return self.append(decode())
+        f = "%s_%d.npy" % (self.prefix, len(self))
+        if not os.path.exists(f):
+            img = decode()
+            if img is None:
+                return self.append(None)
+            np.save(f + ".tmp.npy", np.ascontiguousarray(img))
+            os.replace(f + ".tmp.npy", f)
+            del img
+        self.append(np.load(f, mmap_mode="r"))
+
+
 class Shape:
     __slots__ = ("id", "commands")  # commands: list of (texture, xy[n,2], uv[n,2])
 
@@ -314,7 +336,7 @@ class SC2:
                 self.exports[nm] = self.objects[oid]
         # textures
         self.texture_paths = []
-        self.textures = []
+        self.textures = _MmapList(path)
         if len(chunks) > 5:
             tx = T.root(body, chunks[5][0])
             for ts in tx.tables(0):
@@ -329,14 +351,14 @@ class SC2:
                         fmt = hi.scalar(0, "B")
                         w_, h_, pt = hi.scalar(2, "H"), hi.scalar(3, "H"), hi.scalar(1, "B")
                         if fmt & 8 or data[1:4] == b"KTX" or data[:4] == ZSTD_MAGIC:
-                            self.textures.append(load_ktx(data))
+                            self.textures.add(lambda data=data: load_ktx(data))
                         else:
-                            self.textures.append(_decode_sc1_pixels(data, w_, h_, pt))
+                            self.textures.add(lambda data=data, w_=w_, h_=h_, pt=pt: _decode_sc1_pixels(data, w_, h_, pt))
                         continue
                 if load_textures:
                     d = tex_dir or os.path.dirname(path)
                     tp = os.path.join(d, os.path.basename(ext)) if ext else None
-                    self.textures.append(load_sctx(tp) if tp and os.path.exists(tp) else None)
+                    self.textures.add(lambda tp=tp: load_sctx(tp) if tp and os.path.exists(tp) else None)
 
     # ------------------------------------------------------------ rendering
 
