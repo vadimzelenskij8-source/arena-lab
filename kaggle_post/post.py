@@ -12,7 +12,8 @@ for i in ids:
         urllib.request.urlretrieve(f"https://source.roboflow.com/03WjEzRyYIPwtXk7A2aqTNAuk4X2/{i}/original.jpg", f"{W}/frames/{i}.jpg")
     except Exception as e:
         print("frame", i, e)
-m = YOLO(pt)
+shutil.copy(pt, f"{W}/det.pt")
+m = YOLO(f"{W}/det.pt")
 names = m.names
 json.dump([names[i] for i in range(len(names))], open(f"{W}/classes.json", "w"))
 for f in glob.glob("/kaggle/input/**/results.csv", recursive=True):
