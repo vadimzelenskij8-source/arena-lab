@@ -65,7 +65,7 @@ jobs:
           mkdir k && cp kaggle_train/train.py k/
           cat > k/kernel-metadata.json <<J
           {"id": "papai10095/cr-det-train3", "title": "cr det train3", "code_file": "train.py", "language": "python",
-           "kernel_type": "script", "is_private": true, "enable_gpu": true, "machine_shape": "NvidiaTeslaT4", "enable_internet": true,
+           "kernel_type": "script", "is_private": true, "enable_gpu": true, "enable_internet": true,
            "dataset_sources": ["papai10095/cr-synth-det3"], "competition_sources": [], "kernel_sources": ["papai10095/cr-det-train"]}
           J
           kaggle kernels push -p k
@@ -84,7 +84,7 @@ jobs:
           mkdir k && cp kaggle_train/pseudo.py k/
           cat > k/kernel-metadata.json <<J
           {"id": "papai10095/cr-det-train4", "title": "cr det train4", "code_file": "pseudo.py", "language": "python",
-           "kernel_type": "script", "is_private": true, "enable_gpu": true, "machine_shape": "NvidiaTeslaT4", "enable_internet": true,
+           "kernel_type": "script", "is_private": true, "enable_gpu": true, "enable_internet": true,
            "dataset_sources": ["papai10095/cr-synth-det3", "papai10095/cr-real-frames"], "competition_sources": [], "kernel_sources": ["papai10095/cr-det-train3"]}
           J
           kaggle kernels push -p k
