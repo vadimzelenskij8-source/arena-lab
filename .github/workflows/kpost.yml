@@ -1,0 +1,47 @@
+name: kpost
+on:
+  push:
+    branches: [main]
+    paths: ["kaggle_post/**", ".github/workflows/kpost.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+env:
+  KAGGLE_USERNAME: papai10095
+  KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+  KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_KEY }}
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: push kernel
+        run: |
+          pip install -q -U kaggle
+          mkdir k && cp kaggle_post/post.py k/
+          cat > k/kernel-metadata.json <<J
+          {"id": "papai10095/cr-det-post", "title": "cr det post", "code_file": "post.py", "language": "python",
+           "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_internet": true,
+           "dataset_sources": [], "competition_sources": [], "kernel_sources": ["papai10095/cr-det-train"]}
+          J
+          kaggle kernels push -p k
+      - name: wait
+        run: |
+          sleep 60
+          for i in $(seq 1 100); do s=$(kaggle kernels status papai10095/cr-det-post 2>&1); echo "$(date +%H:%M) $s"
+            echo "$s" | grep -qiE "complete|error|cancel" && break; sleep 60; done
+          mkdir out && kaggle kernels output papai10095/cr-det-post -p out || true
+          ls -la out; cat out/*.log 2>/dev/null | tail -80
+      - name: publish eval
+        run: |
+          pip install -q pillow
+          mkdir -p r && python3 - <<P
+          import glob, os, shutil
+          from PIL import Image
+          for f in glob.glob("out/eval/*.jpg"):
+              im = Image.open(f); im.thumbnail((360, 800)); im.save("r/" + os.path.basename(f), quality=80)
+          for f in ("out/eval.json", "out/classes.json"):
+              if os.path.exists(f): shutil.copy(f, "r/")
+          P
+          cd r && git init -q -b det-eval && git config user.name ci && git config user.email ci@local && git add -A && git commit -qm eval && git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" det-eval
