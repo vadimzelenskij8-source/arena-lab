@@ -1,0 +1,38 @@
+name: ilprobe
+on: { workflow_dispatch: {} }
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: probe
+        run: |
+          pip install -q -U huggingface_hub pyarrow pandas
+          python3 - <<'P'
+          from huggingface_hub import HfApi, hf_hub_download
+          import pyarrow.parquet as pq
+          api = HfApi()
+          for rid in ["VanguardX101/IL_Replay"]:
+              try:
+                  info = api.dataset_info(rid, files_metadata=True)
+                  print("CARD", (info.card_data or ""), "gated", info.gated)
+                  fs = [(s.rfilename, s.size) for s in info.siblings]
+                  print("NFILES", len(fs), "TOTAL_MB", sum((x or 0) for _, x in fs) // 2**20)
+                  for f in fs[:60]: print("F", f)
+                  pqs = sorted([f for f in fs if f[0].endswith(".parquet")], key=lambda x: x[1] or 0)
+                  for name, _ in pqs[:2]:
+                      p = hf_hub_download(rid, name, repo_type="dataset")
+                      t = pq.read_table(p); print("FILE", name, t.num_rows); print(t.schema)
+                      df = t.slice(0, 3).to_pandas()
+                      for c in df.columns: print("COL", c, repr(df[c].iloc[0])[:600])
+                  for name, _ in fs:
+                      if name.lower().endswith((".md", ".json", ".txt")) and _ and _ < 200000:
+                          print("==", name); print(open(hf_hub_download(rid, name, repo_type="dataset")).read()[:3000])
+              except Exception as e:
+                  print("ERR", rid, repr(e)[:500])
+          P
+      - name: converter repos
+        run: |
+          for r in ethan-mcgee/clash-ai sjdoane/clash-royale-project; do
+            git clone -q --depth 1 https://github.com/$r /tmp/$(basename $r) && echo "== $r" && (cd /tmp/$(basename $r) && find . -name "*.py" -path "*replay*" -o -name "*.py" -path "*convert*" | head -20; ls; head -c 1500 LICENSE 2>/dev/null | head -3)
+          done
