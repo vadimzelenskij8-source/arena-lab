@@ -10,7 +10,7 @@ print("download s", round(time.time() - t0), flush=True)
 t1 = time.time()
 convert.main(["--deck", "all", "--limit", str(N), "--out", "/tmp/conv", "--batch", "32"])
 print("convert s", round(time.time() - t1), flush=True)
-docs = sorted(f for f in glob.glob("/tmp/conv/*.json"))
+docs = sorted(f for f in glob.glob("/tmp/conv/docs/*.json"))
 print("docs", len(docs), flush=True)
 from crforge_env.labels import label_replays, flag_names
 t2 = time.time()
@@ -22,9 +22,10 @@ for r in getattr(run, "labels", getattr(run, "replays", [])):
     for f in r.flags[r.flags != 0]:
         for n_ in flag_names(int(f)): fl[n_] = fl.get(n_, 0) + 1
     real = r.masks[:, 1:].any(1)
-    b = io.BytesIO(); np.savez_compressed(b, o=r.observations[real], a=r.actions[real]); sizes.append((b.tell(), int(real.sum())))
+    b = io.BytesIO(); np.savez_compressed(b, o=r.observations, m=np.packbits(r.masks, 1), a=r.actions); sizes.append((b.tell(), int(real.sum()), r.rows))
     if r.drive: repro += bool(r.drive.get("reproduced")); keys = list(r.drive)
 print("LABEL replays", len(sizes), "rows", rows, "plays", nz, "flags", fl, "reproduced", repro, keys, flush=True)
 if sizes:
-    print("SIZE per replay (real-choice rows, compressed) KB", round(np.mean([s for s, _ in sizes]) / 1024), "rows", round(np.mean([n for _, n in sizes])), flush=True)
-print("RUN", {k: v for k, v in vars(run).items() if k not in ("labels", "replays")} if hasattr(run, "__dict__") else run, flush=True)
+    print("SIZE per replay all rows compressed KB", round(np.mean([x[0] for x in sizes]) / 1024), "real rows", round(np.mean([x[1] for x in sizes])), "rows", round(np.mean([x[2] for x in sizes])), flush=True)
+print("TOTALS", run.totals(), "unreadable", run.unreadable[:3], flush=True)
+print("DRIVE0", [r.drive for r in run.replays[:2]], flush=True)
