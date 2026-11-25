@@ -10,7 +10,7 @@ jobs:
     steps:
       - run: |
           pip install -q -U kaggle
-          for k in cr-det-all-5 cr-det-all-6 cr-det-all-7 cr-det-all-8 cr-det-all-9; do kaggle kernels status papai10095/$k 2>&1 | tail -1; done
+          for k in cr-det-cpu cr-det-all-9 cr-det-all-10 cr-det-all-11 cr-det-all-12 cr-det-all-13 cr-det-all-14; do kaggle kernels status papai10095/$k 2>&1 | tail -1; done
           kaggle kernels list -m --page-size 10 2>&1 | head -6
           kaggle kernels -h 2>&1 | head -30
           kaggle --version

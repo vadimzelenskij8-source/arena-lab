@@ -1,0 +1,20 @@
+name: kcpu
+on:
+  push:
+    branches: [main]
+    paths: ["kaggle_train/all_cpu.py", ".github/workflows/kcpu.yml"]
+env:
+  KAGGLE_USERNAME: papai10095
+  KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+  KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_KEY }}
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          pip install -q -U kaggle
+          mkdir k && cp kaggle_train/all_cpu.py k/
+          printf '{"id": "papai10095/cr-det-cpu", "title": "cr det cpu", "code_file": "all_cpu.py", "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_internet": true, "dataset_sources": ["papai10095/cr-synth-det3", "papai10095/cr-real-frames"], "competition_sources": [], "kernel_sources": ["papai10095/cr-det-train"]}' > k/kernel-metadata.json
+          kaggle kernels push -p k
+          for i in $(seq 1 10); do sleep 60; kaggle kernels status papai10095/cr-det-cpu 2>&1 | tail -1; done
