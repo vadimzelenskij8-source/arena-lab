@@ -39,17 +39,18 @@ def feats(enc, O):
 
 
 class Data:
-    def __init__(self, files, enc):
-        self.files, self.enc, self.cache = files, enc, {}
+    def __init__(self, files, enc, na):
+        self.files, self.enc, self.na, self.cache = files, enc, na, {}
 
     def seq(self, f, seat):
         key = (f, seat)
         if key not in self.cache:
-            if len(self.cache) > 400:
+            if len(self.cache) > 150:
                 self.cache.pop(next(iter(self.cache)))
             z = np.load(f)
             sel = z["s"] == seat
-            O, M, A, K = z["o"][sel], z["m"][sel].astype(bool), z["a"][sel].astype(np.int64), z["k"][sel].astype(bool)
+            O, A, K = z["o"][sel], z["a"][sel].astype(np.int64), z["k"][sel].astype(bool)
+            M = np.unpackbits(z["m"][sel], axis=1, count=self.na).astype(bool)
             if len(O) < 8:
                 self.cache[key] = None
                 return None
@@ -68,7 +69,14 @@ def chunk(d, f, seat, T, burn, rng):
     b, M, A, K, res = s
     n = len(A)
     L = burn + T
-    st = 0 if n <= L else int(rng.integers(0, n - L + 1))
+    plays = np.flatnonzero((A != 0) & K)
+    if n <= L:
+        st = 0
+    elif len(plays) and rng.random() < 0.7:  # most chunks hold a human play in their loss window
+        p_ = int(plays[rng.integers(len(plays))])
+        st = int(np.clip(p_ - burn - rng.integers(0, T), 0, n - L))
+    else:
+        st = int(rng.integers(0, n - L + 1))
     ix = np.arange(st, min(n, st + L))
     pad = L - len(ix)
     ix = np.concatenate([ix, np.full(pad, ix[-1])])
@@ -146,7 +154,7 @@ def main():
     if a.init:
         print("init", net.load_state_dict(torch.load(a.init), strict=False), flush=True)
     opt = torch.optim.AdamW(net.parameters(), lr=a.lr, weight_decay=1e-4)
-    dtr, dval = Data(tr, enc), Data(val, enc)
+    dtr, dval = Data(tr, enc, NA), Data(val, enc, NA)
     L = a.burn + a.T
     vrng = np.random.default_rng(123)
     vitems = [(f, s) for f in val for s in (0, 1)]

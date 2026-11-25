@@ -1,0 +1,140 @@
+name: il
+on:
+  workflow_dispatch:
+    inputs:
+      jobs: { default: "8" }
+      limit: { default: "2000" }
+      conv_minutes: { default: "60" }
+      bc_minutes: { default: "120" }
+permissions: { contents: write }
+concurrency: { group: il, cancel-in-progress: false }
+env:
+  CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
+  DATA_VERSION: "16.635.8"
+  EC_SHA: caa528332e48cb3c5e2f9f86b0653e5d705df50f
+  CLASHAI_DATA: /tmp/cd
+  CLASHAI_NO_ENGINE_BUILD: "1"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs: { matrix: "${{ steps.m.outputs.matrix }}" }
+    steps:
+      - id: m
+        run: echo "matrix=$(python3 -c "print(list(range(int('${{ inputs.jobs }}'))))")" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v4
+        with: { path: lab }
+      - run: git clone -q https://github.com/voonhous/crforge crforge && git -C crforge checkout -q "$CRFORGE_SHA" && python3 lab/sim_patch/apply.py crforge
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: gradle/actions/setup-gradle@v4
+      - working-directory: crforge
+        run: ./gradlew -q --no-daemon :env:installDist :tables:dataVersionTables -Pcrforge.assetSource=cdn -Pcrforge.dataVersion=$DATA_VERSION
+      - run: |
+          git clone -q https://github.com/ethan-mcgee/clash-ai ec && git -C ec checkout -q "$EC_SHA" && rm -rf ec/.git ec/third_party
+          mkdir -p sim && cp -r crforge/env/build/install/env sim/env && cp -r crforge/python sim/python && cp -r ~/.crforge/tables/$DATA_VERSION sim/tables && mv ec sim/ec
+          tar czf sim.tgz sim
+      - uses: actions/upload-artifact@v4
+        with: { name: sim, path: sim.tgz, retention-days: 2 }
+
+  s1:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy: { fail-fast: false, matrix: { j: "${{ fromJSON(needs.build.outputs.matrix) }}" } }
+    steps: &train
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          pip install -q ./sim/python && pip install -q --no-deps -e ./sim/ec && pip install -q pyyaml pyarrow
+          pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+      - name: init
+        run: |
+          if [ "${{ github.job }}" = "s1" ]; then git fetch -q origin results && git show origin/results:u1/policy.pt > init.pt; STAGE=0; else STAGE=1; fi
+          echo "STAGE=$STAGE" >> $GITHUB_ENV
+      - uses: actions/download-artifact@v4
+        if: github.job == 's2'
+        with: { name: soup1 }
+      - name: data
+        run: |
+          [ -f soup1.pt ] && cp soup1.pt init.pt; ls -la init.pt
+          export CLASHAI_CRFORGE_INSTALL=$PWD/sim/env CLASHAI_TABLES=$PWD/sim/tables CLASHAI_JAVA_HOME=$JAVA_HOME
+          python -m clashai.data.download 2>&1 | tail -2
+          python il/conv.py --shard $(( STAGE * ${{ inputs.jobs }} + ${{ matrix.j }} )) --of 32 --limit ${{ inputs.limit }} --minutes ${{ inputs.conv_minutes }} --out data 2>&1 | grep -E "selected|progress|DONE|Error|Traceback|error" | tail -20
+          du -sh data; ls data | wc -l
+      - name: bc
+        run: |
+          set -o pipefail
+          python il/bc.py --data data --install sim/env --tables sim/tables --init init.pt --out out --minutes ${{ inputs.bc_minutes }} --seed ${{ matrix.j }} 2>&1 | tee out_log.txt | grep -E "VAL|replays|init|Error|Traceback|step [0-9]*00 " | tail -60
+          mkdir -p out && cp out_log.txt out/log.txt && cp data/conv_stats.json out/ || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: "${{ github.job }}-${{ matrix.j }}", path: out/, retention-days: 3 }
+
+  soup1:
+    needs: [s1]
+    if: always()
+    runs-on: ubuntu-latest
+    steps: &soup
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { pattern: "${{ github.job == 'soup1' && 's1' || 's2' }}-*", path: parts }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q torch --index-url https://download.pytorch.org/whl/cpu && python il/soup.py parts ${{ github.job }}.pt
+      - uses: actions/upload-artifact@v4
+        with: { name: "${{ github.job }}", path: "${{ github.job }}*", retention-days: 3 }
+
+  s2:
+    needs: [build, soup1]
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy: { fail-fast: false, matrix: { j: "${{ fromJSON(needs.build.outputs.matrix) }}" } }
+    steps: *train
+
+  soup2:
+    needs: [s2]
+    if: always()
+    runs-on: ubuntu-latest
+    steps: *soup
+
+  exam1:
+    needs: [soup1]
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps: &exam
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/download-artifact@v4
+        with: { name: "${{ github.job == 'exam1' && 'soup1' || 'soup2' }}" }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q ./sim/python && pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+      - name: exam
+        run: |
+          P=$(ls soup*.pt | head -1); echo "exam of $P"
+          python train/distill.py --install sim/env --tables sim/tables --out ex --envs 64 --threads 4 --minutes 0 --eval-minutes 0 \
+            --eval-games 2112 --final 1 --search-games 256 --resume $P 2>&1 | grep -vE "^\{'iter'" | tail -30
+          mkdir -p pub && cp ex/eval.json pub/eval.json 2>/dev/null; cp soup*.pt soup*_hist.json pub/
+          python3 -c "import json;e=json.load(open('pub/eval.json'));print('EXAM winrate',e['winrate'],e.get('games'),'search',e.get('search'))" || true
+      - name: publish
+        run: |
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          git fetch -q origin results && git worktree add ../res origin/results && cd ../res && git checkout -q -B results
+          D=il/${{ github.job }}; mkdir -p $D && cp ../${{ github.event.repository.name }}/pub/* $D/
+          git add -A && git commit -q -m "il ${{ github.job }} ${{ github.run_id }}" && git push -q origin results
+
+  exam2:
+    needs: [soup2, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps: *exam
