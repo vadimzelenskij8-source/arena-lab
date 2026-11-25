@@ -13,8 +13,11 @@ for k, tar in enumerate(sorted(glob.glob("/kaggle/input/**/*.tar", recursive=Tru
     d = f"{root}/{k}"; os.makedirs(d, exist_ok=True)
     subprocess.run(["tar", "-xf", tar, "-C", d], check=True)
 classes = json.load(open(glob.glob("/kaggle/input/**/classes.json", recursive=True)[0]))
-synth = sorted(glob.glob(root + "/**/images/*.jpg", recursive=True))
-real = sorted(glob.glob(root + "/**/frames/*.jpg", recursive=True))
+subprocess.run("find /kaggle/input -maxdepth 4 | head -40", shell=True)
+synth = sorted(glob.glob(root + "/**/images/*.jpg", recursive=True)) or sorted(glob.glob("/kaggle/input/**/images/*.jpg", recursive=True))
+real = sorted(glob.glob(root + "/**/frames/*.jpg", recursive=True)) or sorted(glob.glob("/kaggle/input/**/frames/*.jpg", recursive=True))
+if synth and synth[0].startswith("/kaggle/input"):  # read-only input: labels sit next to images, YOLO finds them
+    pass
 print(f"STEP 0 data: synth {len(synth)} real {len(real)} classes {len(classes)} ({time.time()-t0:.0f}s)", flush=True)
 names = "".join(f"  {i}: '{c}'\n" for i, c in enumerate(classes))
 random.seed(0)

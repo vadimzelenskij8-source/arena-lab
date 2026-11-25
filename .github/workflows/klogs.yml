@@ -10,4 +10,4 @@ jobs:
     steps:
       - run: |
           pip install -q -U kaggle
-          kaggle kernels logs papai10095/${{ inputs.slug }} 2>&1 | tail -60
+          kaggle kernels logs papai10095/${{ inputs.slug }} 2>&1 | grep -v "dist-packages\|\^\^\|~~~" | head -60
