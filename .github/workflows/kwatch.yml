@@ -1,0 +1,65 @@
+name: kwatch
+on:
+  push:
+    branches: [main]
+    paths: ["kaggle_train/trigger_watch.txt"]
+  workflow_dispatch:
+permissions:
+  contents: write
+env:
+  KAGGLE_USERNAME: papai10095
+  KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+  KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_KEY }}
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: free the stuck GPU slots
+        run: |
+          pip install -q -U kaggle
+          for k in cr-det-t3b cr-det-all; do kaggle kernels delete papai10095/$k -y 2>&1 | tail -1 || true; done
+      - name: push training, re-push if Kaggle leaves it QUEUED > 15 min
+        run: |
+          set +e
+          for n in $(seq 1 14); do
+            slug=cr-det-all-$n
+            rm -rf k && mkdir k && cp kaggle_train/all.py k/
+            printf '{"id": "papai10095/%s", "title": "cr det all %s", "code_file": "all.py", "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": true, "enable_internet": true, "dataset_sources": ["papai10095/cr-synth-det3", "papai10095/cr-real-frames"], "competition_sources": [], "kernel_sources": ["papai10095/cr-det-train"]}' $slug $n > k/kernel-metadata.json
+            kaggle kernels push -p k
+            started=0
+            for i in $(seq 1 15); do sleep 60; s=$(kaggle kernels status papai10095/$slug 2>&1 | tail -1); echo "$(date +%H:%M) try $n $s"
+              echo "$s" | grep -qiE "running|complete|error" && { started=1; break; }; done
+            if [ $started = 1 ]; then echo "$slug" > slug.txt; break; fi
+            echo "still queued -> delete and push again"; kaggle kernels delete papai10095/$slug -y 2>&1 | tail -1
+          done
+          [ -f slug.txt ] || { echo "Kaggle never started the run"; exit 1; }
+          slug=$(cat slug.txt)
+          for i in $(seq 1 300); do s=$(kaggle kernels status papai10095/$slug 2>&1 | tail -1); echo "$(date +%H:%M) $s"
+            echo "$s" | grep -qiE "complete|error|cancel" && break; sleep 60; done
+          echo "$s" | grep -qi complete || { kaggle kernels logs papai10095/$slug 2>&1 | tail -60; exit 1; }
+      - name: evaluate on real frames + phone export (CPU kernel)
+        run: |
+          slug=$(cat slug.txt)
+          rm -rf k && mkdir k && cp kaggle_post/post.py k/
+          printf '{"id": "papai10095/cr-det-post", "title": "cr det post", "code_file": "post.py", "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_internet": true, "dataset_sources": [], "competition_sources": [], "kernel_sources": ["papai10095/%s"]}' $slug > k/kernel-metadata.json
+          kaggle kernels push -p k; sleep 60
+          for i in $(seq 1 90); do s=$(kaggle kernels status papai10095/cr-det-post 2>&1 | tail -1); echo "$(date +%H:%M) $s"
+            echo "$s" | grep -qiE "complete|error|cancel" && break; sleep 60; done
+          mkdir out && kaggle kernels output papai10095/cr-det-post -p out || true
+          python3 -c "import json,glob;[print(e['data'],end='') for f in glob.glob('out/*.log') for e in json.load(open(f)) if any(k in e['data'] for k in ('IMGSZ','RESULTS','tflite','STEP','Error'))]"
+          mkdir t && kaggle kernels output papai10095/$slug -p t -f real_stats.json 2>/dev/null; kaggle kernels output papai10095/$slug -p t 2>/dev/null | tail -2; cat t/real_stats.json 2>/dev/null | head -c 3000
+      - name: publish eval pictures
+        if: always()
+        run: |
+          pip install -q pillow; mkdir -p r
+          python3 -c "
+          import glob, os, shutil
+          from PIL import Image
+          for f in glob.glob('out/eval/*.jpg') + glob.glob('t/review/*.jpg'):
+              im = Image.open(f); im.thumbnail((360, 800)); im.save('r/' + ('rev_' if '/review/' in f else '') + os.path.basename(f), quality=80)
+          for f in ('out/eval.json', 't/real_stats.json'):
+              os.path.exists(f) and shutil.copy(f, 'r/')
+          "
+          cd r && git init -q -b det-eval && git config user.name ci && git config user.email ci@local && git add -A && git commit -qm eval && git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" det-eval
