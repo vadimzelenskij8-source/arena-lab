@@ -115,11 +115,14 @@ def run(net, B, M, A, K, R, W, nb, L, wait_w, val_w, train=True):
     vw = torch.from_numpy(W.reshape(-1))
     lv = ((v - torch.from_numpy(R.reshape(-1))) ** 2 * vw).sum() / vw.sum().clamp(min=1)
     with torch.no_grad():
-        pr = lg.argmax(1); kk = k > 0
+        kk = k > 0
         pl = kk & (y != 0)
+        pr = lg[:, 1:].argmax(1) + 1  # on play rows: which card and tile, given that the human played
+        pw = lg.argmax(1)
         stats = dict(acc_play=float((pr[pl] == y[pl]).float().mean()) if pl.any() else 0.0,
                      acc_card=float((((pr[pl] - 1) // 576) == ((y[pl] - 1) // 576)).float().mean()) if pl.any() else 0.0,
-                     acc_wait=float((pr[kk & (y == 0)] == 0).float().mean()) if (kk & (y == 0)).any() else 1.0,
+                     acc_wait=float((pw[kk & (y == 0)] == 0).float().mean()) if (kk & (y == 0)).any() else 1.0,
+                     p_play=float((1 - torch.softmax(lg, 1)[:, 0])[pl].mean()) if pl.any() else 0.0,
                      n_play=int(pl.sum()))
     return ce + val_w * lv, ce, lv, stats
 
@@ -161,12 +164,12 @@ def main():
     vb = [batch(dval, vitems[i:i + a.mb], a.T, a.burn, vrng, NA) for i in range(0, len(vitems), a.mb)]
 
     def evaluate():
-        net.eval(); agg = dict(ce=0.0, lv=0.0, acc_play=0.0, acc_card=0.0, acc_wait=0.0, n=0)
+        net.eval(); agg = dict(ce=0.0, lv=0.0, acc_play=0.0, acc_card=0.0, acc_wait=0.0, p_play=0.0, n=0)
         with torch.no_grad():
             for B, M, A, K, R, W, nb in vb:
                 _, ce, lv, s = run(net, B, M, A, K, R, W, nb, L, a.wait_w, a.val_w)
                 agg["ce"] += float(ce); agg["lv"] += float(lv); agg["n"] += 1
-                for k_ in ("acc_play", "acc_card", "acc_wait"):
+                for k_ in ("acc_play", "acc_card", "acc_wait", "p_play"):
                     agg[k_] += s[k_]
         net.train()
         return {k: round(v / max(1, agg["n"]), 4) for k, v in agg.items() if k != "n"}
