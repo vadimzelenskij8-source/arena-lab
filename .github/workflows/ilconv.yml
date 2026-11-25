@@ -1,0 +1,36 @@
+name: ilconv
+on:
+  workflow_dispatch:
+    inputs:
+      n: { default: "64" }
+env:
+  CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
+  DATA_VERSION: "16.635.8"
+  EC_SHA: caa528332e48cb3c5e2f9f86b0653e5d705df50f
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: lab }
+      - run: git clone -q https://github.com/voonhous/crforge crforge && git -C crforge checkout -q "$CRFORGE_SHA" && python3 lab/sim_patch/apply.py crforge
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: gradle/actions/setup-gradle@v4
+      - working-directory: crforge
+        run: ./gradlew -q --no-daemon :env:installDist :tables:dataVersionTables -Pcrforge.assetSource=cdn -Pcrforge.dataVersion=$DATA_VERSION
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          git clone -q https://github.com/ethan-mcgee/clash-ai ec && git -C ec checkout -q "$EC_SHA"
+          pip install -q ./crforge/python && pip install -q --no-deps -e ./ec && pip install -q pyyaml pyarrow numpy
+      - name: probe
+        env:
+          CLASHAI_DATA: /tmp/cd
+          CLASHAI_CRFORGE_INSTALL: ${{ github.workspace }}/crforge/env/build/install/env
+          CLASHAI_NO_ENGINE_BUILD: "1"
+        run: |
+          export CLASHAI_TABLES=$HOME/.crforge/tables/$DATA_VERSION CLASHAI_JAVA_HOME=$JAVA_HOME
+          python3 lab/il/probe.py ${{ inputs.n }} 2>&1 | grep -v "^\s*$" | tail -80
+          du -sh /tmp/cd/datasets/* /tmp/conv 2>/dev/null; ls /tmp/conv | head -5; head -c 1500 /tmp/conv/summary.jsonl
