@@ -1,0 +1,24 @@
+name: kcropwatch
+on:
+  schedule: [{ cron: "*/30 * * * *" }]
+  workflow_dispatch:
+permissions: { contents: write, actions: write }
+env:
+  KAGGLE_USERNAME: papai10095
+  KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+  KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_KEY }}
+  GH_TOKEN: ${{ github.token }}
+jobs:
+  w:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          [ "$(cat kaggle_post/source.txt)" = "cr-det-crop" ] && { echo "already posted"; exit 0; }
+          pip install -q -U kaggle
+          s=$(kaggle kernels status papai10095/cr-det-crop 2>&1 | tail -1); echo "$s"
+          echo "$s" | grep -qi complete || exit 0
+          echo cr-det-crop > kaggle_post/source.txt
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          git commit -qam "post cr-det-crop" && git push -q
+          gh workflow run kpost.yml --ref main
