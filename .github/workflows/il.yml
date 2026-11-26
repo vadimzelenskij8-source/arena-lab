@@ -7,9 +7,11 @@ on:
       conv_minutes: { default: "60" }
       bc_minutes: { default: "120" }
       init: { default: "u1/policy.pt" }
-      shards: { default: "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19" }
-      of: { default: "32" }
+      shards: { default: "32:0:0 32:1:0", description: "per job: of:shard:skip[+...]" }
       tag: { default: "g1" }
+      stages: { default: "2", description: "1: one BC stage then self-play (sp_minutes > 0)" }
+      champ: { default: "", description: "results path of the champion for the vs-champion exam" }
+      sp_minutes: { default: "0" }
 permissions: { contents: write }
 concurrency: { group: il, cancel-in-progress: false }
 env:
@@ -69,8 +71,8 @@ jobs:
           [ -f soup1.pt ] && cp soup1.pt init.pt; ls -la init.pt
           export CLASHAI_CRFORGE_INSTALL=$PWD/sim/env CLASHAI_TABLES=$PWD/sim/tables CLASHAI_JAVA_HOME=$JAVA_HOME
           python -m clashai.data.download 2>&1 | tail -2
-          SH=$(python3 -c "print('${{ inputs.shards }}'.split()[$STAGE * ${{ inputs.jobs }} + ${{ matrix.j }}])"); echo "shard $SH of ${{ inputs.of }}"
-          python il/conv.py --shard $SH --of ${{ inputs.of }} --limit ${{ inputs.limit }} --minutes ${{ inputs.conv_minutes }} --out data 2>&1 | grep -E "selected|progress|DONE|Error|Traceback|error" | tail -20
+          SH=$(python3 -c "print('${{ inputs.shards }}'.split()[$STAGE * ${{ inputs.jobs }} + ${{ matrix.j }}])"); echo "spec $SH"
+          python il/conv.py --spec $SH --limit ${{ inputs.limit }} --minutes ${{ inputs.conv_minutes }} --out data 2>&1 | grep -E "selected|progress|DONE|Error|Traceback|error" | tail -20
           du -sh data; ls data | wc -l
       - name: bc
         run: |
@@ -97,6 +99,7 @@ jobs:
 
   s2:
     needs: [build, soup1]
+    if: inputs.stages == '2'
     runs-on: ubuntu-latest
     timeout-minutes: 340
     strategy: { fail-fast: false, matrix: { j: "${{ fromJSON(needs.build.outputs.matrix) }}" } }
@@ -104,7 +107,7 @@ jobs:
 
   soup2:
     needs: [s2]
-    if: always()
+    if: always() && inputs.stages == '2'
     runs-on: ubuntu-latest
     steps: *soup
 
@@ -118,7 +121,7 @@ jobs:
         with: { name: sim }
       - run: tar xzf sim.tgz
       - uses: actions/download-artifact@v4
-        with: { name: "${{ github.job == 'exam1' && 'soup1' || 'soup2' }}" }
+        with: { name: "${{ github.job == 'exam1' && 'soup1' || (github.job == 'examsp' && 'soupsp' || 'soup2') }}" }
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: "21" }
       - uses: actions/setup-python@v5
@@ -127,10 +130,11 @@ jobs:
       - name: exam
         run: |
           P=$(ls soup*.pt | head -1); echo "exam of $P"
+          CH=""; if [ -n "${{ inputs.champ }}" ]; then git fetch -q origin results && git show "origin/results:${{ inputs.champ }}" > champ.pt && CH="--champ champ.pt --champ-games 512"; fi
           python train/distill.py --install sim/env --tables sim/tables --out ex --envs 64 --threads 4 --minutes 0 --eval-minutes 0 \
-            --eval-games 2112 --final 1 --search-games 256 --resume $P 2>&1 | grep -vE "^\{'iter'" | tail -30
+            --eval-games 2112 --final 1 --search-games 256 --resume $P $CH 2>&1 | grep -vE "^\{'iter'" | tail -30
           mkdir -p pub && cp ex/eval.json pub/eval.json 2>/dev/null; cp soup*.pt soup*_hist.json pub/
-          python3 -c "import json;e=json.load(open('pub/eval.json'));print('EXAM winrate',e['winrate'],e.get('games'),'search',e.get('search'))" || true
+          python3 -c "import json;e=json.load(open('pub/eval.json'));print('EXAM winrate',e['winrate'],e.get('games'),'search',e.get('search'),'vs_champ',e.get('vs_champ'))" || true
       - name: publish
         run: |
           git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
@@ -140,6 +144,65 @@ jobs:
 
   exam2:
     needs: [soup2, build]
+    if: inputs.stages == '2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps: *exam
+
+  # Self-play on top of the human imitation: search teacher (AlphaZero loop), the net plays itself and a league of
+  # earlier human-like soups; a KL anchor keeps it near the imitation policy. Workers start from soup1 and are averaged.
+  sp:
+    needs: [build, soup1]
+    if: inputs.sp_minutes != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy: { fail-fast: false, matrix: { j: "${{ fromJSON(needs.build.outputs.matrix) }}" } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/download-artifact@v4
+        with: { name: soup1 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q ./sim/python && pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+      - name: self-play
+        run: |
+          set +e -o pipefail
+          git fetch -q origin results; mkdir -p league out
+          for f in il/exam2/soup2.pt il/g2/exam1/soup1.pt il/g2/exam2/soup2.pt u1/policy.pt; do git show "origin/results:$f" > "league/$(echo $f | tr / _)" 2>/dev/null || rm -f "league/$(echo $f | tr / _)"; done
+          [ -n "${{ inputs.champ }}" ] && git show "origin/results:${{ inputs.champ }}" > champ.pt
+          git show origin/results:crapi/decks_api.json > api.json 2>/dev/null && API="--api-decks api.json" || API=""
+          ls league
+          python train/distill.py --install sim/env --tables sim/tables --out out --envs 64 --threads 4 --resume soup1.pt \
+            --anchor 0.3 --anchor-pt soup1.pt --az 1 --strong 1 --both 1 --league league --league-share 0.5 $API \
+            --lr 1e-4 --minutes ${{ inputs.sp_minutes }} --eval-minutes 2 --eval-games 256 --final 0 --seed $(( 7000 + ${{ matrix.j }} )) \
+            2>&1 | tee out/full.txt | grep -vE "^\{'iter'" | tail -40; R=$?
+          grep "^{'iter'" out/full.txt | tail -3 | cut -c1-600; tail -c 20000 out/full.txt > out/log.txt; rm out/full.txt
+          ls -la out; exit $R
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: "sp-${{ matrix.j }}", path: out/, retention-days: 3 }
+
+  soupsp:
+    needs: [sp]
+    if: always() && inputs.sp_minutes != '0'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { pattern: "sp-*", path: parts }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q torch --index-url https://download.pytorch.org/whl/cpu && python il/soup.py parts soupsp.pt
+      - uses: actions/upload-artifact@v4
+        with: { name: soupsp, path: "soupsp*", retention-days: 3 }
+
+  examsp:
+    needs: [soupsp, build]
     runs-on: ubuntu-latest
     timeout-minutes: 340
     steps: *exam

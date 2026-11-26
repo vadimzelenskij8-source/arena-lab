@@ -78,7 +78,8 @@ def main():
     ap.add_argument("--T", type=int, default=64)
     # accepted for compatibility with hparams.py
     ap.add_argument("--ent", type=float, default=0)
-    ap.add_argument("--anchor", type=float, default=0)
+    ap.add_argument("--anchor", type=float, default=0, help="KL(anchor policy || net): keeps the human-imitation style while self-play improves it")
+    ap.add_argument("--anchor-pt", default="", help="anchor policy (default: the --resume start)")
     ap.add_argument("--cap", type=float, default=99)
     # next generation: D (rewards), exploiters, API decks, imitation, search exam (B)
     ap.add_argument("--pg", type=float, default=0.0, help="D: policy-gradient weight on the network's own moves (BC = anchor)")
@@ -242,6 +243,13 @@ def main():
                 league.append((f_.stem, m_))
             except Exception as e:  # noqa: BLE001
                 print("league skip", f_, e, flush=True)
+        anchor_net = None
+        if a.anchor > 0:
+            apath = a.anchor_pt or a.resume
+            anchor_net = Net(enc, NA + 1); print("anchor", apath, anchor_net.load_state_dict(torch.load(apath), strict=False), flush=True)
+            anchor_net.eval()
+            for p_ in anchor_net.parameters():
+                p_.requires_grad_(False)
         champ = None
         cpath = a.champ or a.resume
         if cpath and Path(cpath).exists():
@@ -670,7 +678,7 @@ def main():
             torch.set_num_threads(4)
             acc_p = []; acc_w = []
 
-            pg_l = []
+            pg_l = []; kl_l = []
 
             def step_chunk(pk, ix, fresh_=False):
                 nb = len(ix)
@@ -702,6 +710,16 @@ def main():
                     h0z = net.gru(z.reshape(T * nb, -1), torch.zeros(T * nb, 256)); h0z = h0z + net.wide(h0z)
                     lval = lval + a.v0_w * F.mse_loss(net.v(h0z).squeeze(-1), torch.from_numpy(pk["RET"][:, ix].reshape(-1)))
                 loss = lbc + a.soft_w * lsoft + a.val_w * lval + 0.1 * la + 0.1 * le
+                if anchor_net is not None:
+                    with torch.no_grad():
+                        za, tfa, handa = anchor_net.encode(flat); za = za.view(T, nb, -1)
+                        ha = torch.zeros(nb, 256); hsa = []
+                        for t in range(T):
+                            ha = anchor_net.gru(za[t], ha); hsa.append(ha); ha = ha * (1 - Dm[t]).unsqueeze(1)
+                        lga, _ = anchor_net.heads(torch.stack(hsa).view(T * nb, -1), tfa, handa, flat, mk)
+                        pa = F.softmax(lga, -1)
+                    lkl = torch.where(pa > 0, pa * (torch.log(pa.clamp(min=1e-12)) - logp), torch.zeros_like(pa)).sum(1).mean()
+                    loss = loss + a.anchor * lkl; kl_l.append(float(lkl))
                 if a.pg > 0 and fresh_ and "OW" in pk:  # D: learn from results on its own moves; BC keeps it near the teacher
                     ow = torch.from_numpy(pk["OW"][:, ix].reshape(-1))
                     if ow.sum() > 8:
@@ -739,7 +757,7 @@ def main():
                  "teacher_changed": round(teacher.stats["changed"] / max(1, teacher.stats["searched"]), 3),
                  "soft": round(float(lsoft), 4), "value_loss": round(float(lval), 4),
                  "forks": teacher.stats.get("forks", 0), "delayed": teacher.stats.get("delayed", 0),
-                 "league": {k: v[:] for k, v in lstats.items()}, "pg": round(float(np.mean(pg_l)), 4) if pg_l else None}
+                 "league": {k: v[:] for k, v in lstats.items()}, "pg": round(float(np.mean(pg_l)), 4) if pg_l else None, "kl": round(float(np.mean(kl_l)), 4) if kl_l else None}
             metrics["iters"].append(m); metrics["timing"] = {k: round(v_, 1) for k, v_ in tm.items()}
             if it % 10 == 0:
                 print(m, metrics["timing"], flush=True)

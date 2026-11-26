@@ -21,8 +21,7 @@ def shard_of(tag, K):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--shard", type=int, required=True)
-    ap.add_argument("--of", type=int, required=True)
+    ap.add_argument("--spec", required=True, help="of:shard:skip[+of:shard:skip...]")
     ap.add_argument("--limit", type=int, default=2000)
     ap.add_argument("--out", required=True)
     ap.add_argument("--batch", type=int, default=64)
@@ -31,7 +30,10 @@ def main():
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     tmp = Path("/tmp/conv_docs"); shutil.rmtree(tmp, ignore_errors=True)
     root = dataset_dir()
-    reps = [r for r in read_replays(root) if shard_of(r.tag, a.of) == a.shard][:a.limit]
+    allr = read_replays(root); reps = []
+    for sp in a.spec.split("+"):
+        of, sh, sk = (int(x) for x in sp.split(":"))
+        reps += [r for r in allr if shard_of(r.tag, of) == sh][sk:sk + a.limit]
     print("selected", len(reps), flush=True)
     events = C.load_events(root, {r.tag for r in reps})
     paths.ensure_java()
@@ -41,7 +43,7 @@ def main():
                           config=LadderConfig(decision_ticks=1, level=C.DEFAULT_LEVEL, tower_level=C.DEFAULT_LEVEL, arena=C.ARENA))
     names = CardNames(vector.vocabulary[i] for i in vector.card_types())
     table = C.SeedTable()
-    rng = np.random.default_rng(a.shard)
+    rng = np.random.default_rng(abs(hash(a.spec)) % 2**31)
     t0 = time.time(); stats = dict(converted=0, problems=0, labelled=0, rows=0, plays=0, result_match=0)
     pending = []
 

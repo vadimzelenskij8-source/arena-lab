@@ -1,0 +1,35 @@
+name: spsmoke
+on:
+  workflow_dispatch:
+    inputs:
+      n: { default: "64" }
+env:
+  CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
+  DATA_VERSION: "16.635.8"
+  EC_SHA: caa528332e48cb3c5e2f9f86b0653e5d705df50f
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: lab }
+      - run: git clone -q https://github.com/voonhous/crforge crforge && git -C crforge checkout -q "$CRFORGE_SHA" && python3 lab/sim_patch/apply.py crforge
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: gradle/actions/setup-gradle@v4
+      - working-directory: crforge
+        run: ./gradlew -q --no-daemon :env:installDist :tables:dataVersionTables -Pcrforge.assetSource=cdn -Pcrforge.dataVersion=$DATA_VERSION
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          git clone -q https://github.com/ethan-mcgee/clash-ai ec && git -C ec checkout -q "$EC_SHA"
+          pip install -q ./crforge/python && pip install -q --no-deps -e ./ec && pip install -q pyyaml pyarrow numpy
+      - name: sp smoke
+        run: |
+          pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+          git -C lab fetch -q origin results && git -C lab show origin/results:il/g2/exam2/soup2.pt > s.pt && mkdir -p league && cp s.pt league/a.pt
+          cd lab && python train/distill.py --install ../crforge/env/build/install/env --tables $HOME/.crforge/tables/$DATA_VERSION --out /tmp/o --envs 16 --threads 4 \
+            --resume ../s.pt --anchor 0.3 --anchor-pt ../s.pt --az 1 --strong 1 --both 1 --league ../league --league-share 0.5 --lr 1e-4 \
+            --minutes 6 --eval-minutes 1 --eval-games 32 --final 0 --champ ../s.pt --champ-games 16 2>&1 | cut -c1-700 | grep -vE "^\s*$" | tail -25
+          ls -la /tmp/o
