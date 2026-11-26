@@ -5,20 +5,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          pip install -q huggingface_hub
+          pip install -q huggingface_hub pyarrow
           python3 - <<'P'
-          from huggingface_hub import HfApi, hf_hub_download
-          from collections import Counter
-          api = HfApi(); rid = "SudhishNeel/clash-royale-detection"
-          info = api.dataset_info(rid, files_metadata=True)
-          fs = [(s.rfilename, s.size or 0) for s in info.siblings]
-          print("NFILES", len(fs), "GB", round(sum(x for _, x in fs) / 2**30, 2))
-          top = Counter(); sz = Counter()
-          for f, s in fs:
-              k = "/".join(f.split("/")[:2]) if f.count("/") >= 2 else f
-              top[k] += 1; sz[k] += s
-          for k, n in sorted(top.items()): print("DIR", k, n, round(sz[k] / 2**20), "MB")
-          for f, s in fs:
-              if f.endswith((".txt", ".md", ".yaml", ".json")) and s < 300000 and f.count("/") <= 1:
-                  print("==", f); print(open(hf_hub_download(rid, f, repo_type="dataset")).read()[:2500])
+          import tarfile, io, pyarrow.parquet as pq
+          from huggingface_hub import hf_hub_download
+          rid = "SudhishNeel/clash-royale-detection"
+          t = tarfile.open(hf_hub_download(rid, "bundles/ZC8MrzA1lKw.tar", repo_type="dataset"))
+          ms = t.getmembers(); print("BUNDLE members", len(ms))
+          for m in ms[:25]: print("  ", m.name, m.size)
+          for m in ms:
+              if m.name.endswith((".txt", ".json", ".csv")) and m.size < 20000:
+                  print("==", m.name); print(t.extractfile(m).read().decode()[:600]); break
+          for f in ("synthetic_arena/train-b3-00001-of-00002.parquet",):
+              pf = pq.ParquetFile(hf_hub_download(rid, f, repo_type="dataset"))
+              print("SYN schema", pf.schema_arrow, "rows", pf.metadata.num_rows)
+              r = pf.read_row_group(0).slice(0, 2).to_pylist()
+              for row in r: print({k: (str(v)[:300] if k != "image" else "img") for k, v in row.items()})
           P
+          python3 -c "
+          from huggingface_hub import hf_hub_download; import json
+          print(open(hf_hub_download('SudhishNeel/clash-royale-detection','classes.txt',repo_type='dataset')).read().split())" | tr ',' '\n' | wc -l
