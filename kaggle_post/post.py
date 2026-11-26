@@ -31,36 +31,35 @@ def phone_export():
     IH, IW = 832, nw + (-nw) % 32
     pl = (IW - nw) // 2
     print("letterbox", nh, nw, IH, IW, pl, flush=True)
-    net = YOLO(f"{W}/det.pt").model.float().fuse().eval()
-    for mod in net.modules():
-        if isinstance(mod, Detect):
-            mod.export, mod.format, mod.dynamic = True, "tflite", False
-    sc = torch.ones(1, 4 + len(names), 1); of = torch.zeros(1, 4 + len(names), 1)
+    # Wrap the SavedModel that ultralytics' own tflite export made (it works) in plain TF: crop + letterbox + box remap.
+    import tensorflow as tf
+    smd = glob.glob(f"{W}/det_saved_model")[0]
+    sm = tf.saved_model.load(smd); fn = sm.signatures["serving_default"]
+    in_name = list(fn.structured_input_signature[1].keys())[0]
+    print("saved_model in", fn.structured_input_signature[1], flush=True)
+    nc4 = 4 + len(names)
+    sc = np.ones((1, nc4, 1), np.float32); of = np.zeros((1, nc4, 1), np.float32)
     sc[0, 0, 0] = IW / nw * cw / FW; of[0, 0, 0] = (C[0] - pl / nw * cw) / FW
     sc[0, 2, 0] = IW / nw * cw / FW
     sc[0, 1, 0] = chh / FH; of[0, 1, 0] = C[1] / FH
     sc[0, 3, 0] = chh / FH
-    class Wrap(nn.Module):
-        def __init__(s):
-            super().__init__(); s.net = net; s.register_buffer("sc", sc); s.register_buffer("of", of)
-        def forward(s, x):
-            c = x[:, :, C[1]:C[3], C[0]:C[2]]
-            c = F.interpolate(c, size=(nh, nw), mode="bilinear", align_corners=False)
-            c = F.pad(c, (pl, IW - nw - pl, 0, IH - nh), value=114 / 255)
-            y = s.net(c)
-            if isinstance(y, (list, tuple)): y = y[0]
-            return y * s.sc + s.of
-    wm = Wrap().eval()
-    dummy = torch.zeros(1, 3, FH, FW)
-    with torch.no_grad():
-        print("wrap out", tuple(wm(dummy).shape), flush=True)
-    ox = f"{W}/full.onnx"
-    torch.onnx.export(wm, dummy, ox, opset_version=17, input_names=["images"], output_names=["output0"], do_constant_folding=True, dynamo=False)
-    import onnx2tf
-    onnx2tf.convert(input_onnx_file_path=ox, output_folder_path=f"{W}/tf", not_use_onnxsim=True, verbosity="error",
-                    disable_group_convolution=True, enable_batchmatmul_unfold=True)
-    tf32 = glob.glob(f"{W}/tf/*float32.tflite")[0]
-    shutil.copy(tf32, f"{W}/model.tflite")
+
+    class Wrap(tf.Module):
+        @tf.function(input_signature=[tf.TensorSpec([1, FH, FW, 3], tf.float32)])
+        def __call__(self, x):
+            c = x[:, C[1]:C[3], C[0]:C[2], :]
+            c = tf.image.resize(c, (nh, nw), method="bilinear")
+            c = tf.pad(c, [[0, 0], [0, IH - nh], [pl, IW - nw - pl], [0, 0]], constant_values=114 / 255)
+            y = list(fn(**{in_name: c}).values())[0]
+            if y.shape[1] != nc4:
+                y = tf.transpose(y, [0, 2, 1])
+            return y * sc + of
+
+    w = Wrap()
+    print("wrap out", w(tf.zeros([1, FH, FW, 3])).shape, flush=True)
+    cv = tf.lite.TFLiteConverter.from_concrete_functions([w.__call__.get_concrete_function()], w)
+    cv.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS]
+    open(f"{W}/model.tflite", "wb").write(cv.convert())
     with zipfile.ZipFile(f"{W}/model.tflite", "a", zipfile.ZIP_DEFLATED) as z:
         z.writestr("metadata.json", json.dumps({"names": {str(i): names[i] for i in range(len(names))}, "crop_on_540x1200": C}))
     print("tflite", os.path.getsize(f"{W}/model.tflite"), flush=True)
@@ -94,8 +93,6 @@ def phone_export():
             tot += 1; hit += any(c == tc and iou(b, tb) > 0.6 for tc, tb, _ in td)
         extra += sum(1 for tc, tb, _ in td if not any(c == tc and iou(b, tb) > 0.6 for c, b in pd))
     print("VERIFY pt-dets", tot, "matched-by-tflite", hit, "tflite-extra", extra, "OK" if tot and hit >= 0.85 * tot else "MISMATCH", flush=True)
-    shutil.rmtree(f"{W}/tf", ignore_errors=True)
-    os.remove(ox)
 
 cj = (glob.glob("/kaggle/input/**/crop.json", recursive=True) or [None])[0]
 if cj:
@@ -121,7 +118,7 @@ if cj:
         stats.append({"frame": os.path.basename(r.path), "dets": [[names[int(c)], round(float(s), 2)] for c, s in zip(r.boxes.cls, r.boxes.conf)]})
     json.dump(stats, open(f"{W}/eval.json", "w"), indent=0)
     try:
-        m.export(format="tflite", imgsz=832)
+        m.export(format="tflite", imgsz=(832, 576))
     except Exception as e:
         print("plain export failed", e, flush=True)
     try:
