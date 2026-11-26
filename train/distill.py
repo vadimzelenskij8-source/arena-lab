@@ -719,7 +719,7 @@ def main():
                         lga, _ = anchor_net.heads(torch.stack(hsa).view(T * nb, -1), tfa, handa, flat, mk)
                         pa = F.softmax(lga, -1)
                     lkl = torch.where(pa > 0, pa * (torch.log(pa.clamp(min=1e-12)) - logp), torch.zeros_like(pa)).sum(1).mean()
-                    loss = loss + a.anchor * lkl; kl_l.append(float(lkl))
+                    loss = loss + a.anchor * lkl; kl_l.append(float(lkl.detach()))
                 if a.pg > 0 and fresh_ and "OW" in pk:  # D: learn from results on its own moves; BC keeps it near the teacher
                     ow = torch.from_numpy(pk["OW"][:, ix].reshape(-1))
                     if ow.sum() > 8:
