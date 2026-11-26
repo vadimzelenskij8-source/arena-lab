@@ -8,4 +8,4 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.11" }
       - run: pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cpu && pip install -q ultralytics huggingface_hub pyarrow
-      - run: python perception/sn_ft_smoke.py 2>&1 | grep -E "SMOKE|Error|Traceback|error" | tail -20
+      - run: python perception/sn_ft_smoke.py 2>&1 | grep -vE "^\s*$" | tail -40
