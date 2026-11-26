@@ -1,7 +1,7 @@
 # Fine-tune SudhishNeel's phone-frame detector (YOLOv8n v9) to OUR phone, all 187 classes.
 # 1) teacher ensemble (v8n + v9n + v10s, weighted box fusion) labels our 3079 real frames on the fitted arena crop
 # 2) 10k frames of their synthetic_arena (real cut-outs on real arena backgrounds)
-# 3) train v9n (head grown 185 -> 187) on real-pseudo x3 + synth, CPU or GPU, within the time budget
+# 3) train v9n (head grown 185 -> 208) on real-pseudo x3 + synth, CPU or GPU, within the time budget
 # Outputs: best.pt, crop.json, classes.json, stats.json
 import glob, io, json, os, random, shutil, subprocess, sys, time
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "ultralytics>=8.3", "huggingface_hub", "pyarrow", "ensemble_boxes"], check=False)
@@ -18,7 +18,12 @@ print("device", DEV, flush=True)
 CROP = [8, 103, 532, 886]; CS = (568, 896)
 RID, MID = "SudhishNeel/clash-royale-detection", "SudhishNeel/clash-royale-detector"
 names = open(hf_hub_download(RID, "classes.txt", repo_type="dataset")).read().split()
-NC = len(names); print("classes", NC, flush=True)
+# The synthetic parquet carries the full, newer class list (208: heroes, terry, royal-chef...); ids only ever get appended.
+_pf = pq.ParquetFile(hf_hub_download(RID, "synthetic_arena/train-c001a-00000-of-00002.parquet", repo_type="dataset"))
+_syn = json.loads(_pf.schema_arrow.metadata[b"huggingface"])["info"]["features"]["objects"]["feature"]["category"]["names"]
+if len(_syn) > len(names) and _syn[:len(names)] == names:
+    names = _syn
+NC = len(names); print("classes", NC, names[187:], flush=True)
 for s in ("images/train", "images/val", "labels/train", "labels/val"):
     os.makedirs(f"{D}/{s}", exist_ok=True)
 
