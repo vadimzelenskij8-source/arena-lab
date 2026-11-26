@@ -1,1 +1,1 @@
-cr-det-sn
+cr-det-crop
