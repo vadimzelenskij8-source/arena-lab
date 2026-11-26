@@ -1,0 +1,25 @@
+name: ksn
+on: { workflow_dispatch: {} }
+permissions: { contents: write, actions: write }
+env:
+  KAGGLE_USERNAME: papai10095
+  KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+  KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_KEY }}
+  GH_TOKEN: ${{ github.token }}
+jobs:
+  k:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          pip install -q -U kaggle
+          mkdir k && cp kaggle_sn/sn.py k/
+          printf '{"id": "papai10095/cr-det-sn", "title": "cr det sn", "code_file": "sn.py", "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_internet": true, "dataset_sources": [], "competition_sources": [], "kernel_sources": []}' > k/kernel-metadata.json
+          kaggle kernels push -p k
+          for i in $(seq 1 40); do sleep 60; s=$(kaggle kernels status papai10095/cr-det-sn 2>&1 | tail -1); echo "$s"; echo "$s" | grep -qiE "complete|error" && break; done
+          echo "$s" | grep -qi complete || exit 1
+          echo cr-det-sn > kaggle_post/source.txt
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          git commit -qam "post cr-det-sn" && git push -q
+          gh workflow run kpost.yml --ref main
