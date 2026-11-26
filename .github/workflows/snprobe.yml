@@ -1,0 +1,14 @@
+name: snprobe
+on: { workflow_dispatch: {} }
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cpu && pip install -q ultralytics huggingface_hub
+      - run: python perception/sn_probe.py 2>&1 | grep -vE "^\s*$" | tail -60
+      - uses: actions/upload-artifact@v4
+        with: { name: sn-eval, path: /tmp/sn/eval_*, retention-days: 3 }
