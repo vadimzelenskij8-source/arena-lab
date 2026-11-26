@@ -5,7 +5,25 @@ from huggingface_hub import hf_hub_download
 from ultralytics import YOLO
 from ultralytics.nn.tasks import DetectionModel
 RID, MID = "SudhishNeel/clash-royale-detection", "SudhishNeel/clash-royale-detector"
-names = open(hf_hub_download(RID, "classes.txt", repo_type="dataset")).read().split(); NC = len(names)
+names = open(hf_hub_download(RID, "classes.txt", repo_type="dataset")).read().split()
+pf = pq.ParquetFile(hf_hub_download(RID, "synthetic_arena/train-c001a-00000-of-00002.parquet", repo_type="dataset"))
+meta = json.loads(pf.schema_arrow.metadata[b"huggingface"])
+feat = meta["info"]["features"]["objects"]
+print("SMOKE feat", json.dumps(feat)[:300])
+def find_names(o):
+    if isinstance(o, dict):
+        if "names" in o and isinstance(o["names"], list): return o["names"]
+        for v in o.values():
+            r = find_names(v)
+            if r: return r
+    if isinstance(o, list):
+        for v in o:
+            r = find_names(v)
+            if r: return r
+syn_names = find_names(feat) or []
+print("SMOKE syn names", len(syn_names), "prefix-equal", syn_names[:len(names)] == names, "extra", syn_names[len(names):])
+if len(syn_names) > len(names) and syn_names[:len(names)] == names: names = syn_names
+NC = len(names)
 D = "/tmp/ds"
 for s in ("images/train", "images/val", "labels/train", "labels/val"): os.makedirs(f"{D}/{s}", exist_ok=True)
 t = pq.read_table(hf_hub_download(RID, "synthetic_arena/train-c001a-00000-of-00002.parquet", repo_type="dataset"), columns=["image", "objects"]).slice(0, 12).to_pylist()
