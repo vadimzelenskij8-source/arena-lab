@@ -6,6 +6,10 @@ on:
       limit: { default: "2000" }
       conv_minutes: { default: "60" }
       bc_minutes: { default: "120" }
+      init: { default: "u1/policy.pt" }
+      shards: { default: "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19" }
+      of: { default: "32" }
+      tag: { default: "g1" }
 permissions: { contents: write }
 concurrency: { group: il, cancel-in-progress: false }
 env:
@@ -55,7 +59,7 @@ jobs:
           pip install -q torch --index-url https://download.pytorch.org/whl/cpu
       - name: init
         run: |
-          if [ "${{ github.job }}" = "s1" ]; then git fetch -q origin results && git show origin/results:u1/policy.pt > init.pt; STAGE=0; else STAGE=1; fi
+          if [ "${{ github.job }}" = "s1" ]; then git fetch -q origin results && git show "origin/results:${{ inputs.init }}" > init.pt; STAGE=0; else STAGE=1; fi
           echo "STAGE=$STAGE" >> $GITHUB_ENV
       - uses: actions/download-artifact@v4
         if: github.job == 's2'
@@ -65,7 +69,8 @@ jobs:
           [ -f soup1.pt ] && cp soup1.pt init.pt; ls -la init.pt
           export CLASHAI_CRFORGE_INSTALL=$PWD/sim/env CLASHAI_TABLES=$PWD/sim/tables CLASHAI_JAVA_HOME=$JAVA_HOME
           python -m clashai.data.download 2>&1 | tail -2
-          python il/conv.py --shard $(( STAGE * ${{ inputs.jobs }} + ${{ matrix.j }} )) --of 32 --limit ${{ inputs.limit }} --minutes ${{ inputs.conv_minutes }} --out data 2>&1 | grep -E "selected|progress|DONE|Error|Traceback|error" | tail -20
+          SH=$(python3 -c "print('${{ inputs.shards }}'.split()[$STAGE * ${{ inputs.jobs }} + ${{ matrix.j }}])"); echo "shard $SH of ${{ inputs.of }}"
+          python il/conv.py --shard $SH --of ${{ inputs.of }} --limit ${{ inputs.limit }} --minutes ${{ inputs.conv_minutes }} --out data 2>&1 | grep -E "selected|progress|DONE|Error|Traceback|error" | tail -20
           du -sh data; ls data | wc -l
       - name: bc
         run: |
@@ -130,7 +135,7 @@ jobs:
         run: |
           git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
           git fetch -q origin results && git worktree add ../res origin/results && cd ../res && git checkout -q -B results
-          D=il/${{ github.job }}; mkdir -p $D && cp ../${{ github.event.repository.name }}/pub/* $D/
+          D=il/${{ inputs.tag }}/${{ github.job }}; mkdir -p $D && cp ../${{ github.event.repository.name }}/pub/* $D/
           git add -A && git commit -q -m "il ${{ github.job }} ${{ github.run_id }}" && git push -q origin results
 
   exam2:
