@@ -1,0 +1,20 @@
+{
+ "base": {
+  "vs_scripted": 0.8906,
+  "scripted_games": 64,
+  "vs_g2_wins": 36,
+  "vs_g2_losses": 28,
+  "vs_g2_games": 64,
+  "vs_g2_decisive": 0.5625,
+  "changed": 0.0
+ },
+ "0.3": {
+  "vs_scripted": 0.9688,
+  "scripted_games": 64,
+  "vs_g2_wins": 52,
+  "vs_g2_losses": 11,
+  "vs_g2_games": 64,
+  "vs_g2_decisive": 0.8254,
+  "changed": 0.089
+ }
+}
