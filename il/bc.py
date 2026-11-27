@@ -11,6 +11,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+LOSE_W = 1.0
 import torch.nn.functional as F
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "train"))
@@ -110,7 +111,9 @@ def run(net, B, M, A, K, R, W, nb, L, wait_w, val_w, train=True):
     mk[torch.arange(len(y)), y] = True
     lg, v = net.heads(H, tf, hand, flat, mk)
     k = torch.from_numpy(K.reshape(-1)).float()
-    wts = k * torch.where(y == 0, wait_w, 1.0)
+    r_ = torch.from_numpy(R.reshape(-1))
+    seqw = torch.where(r_ > 0, 1.0, torch.where(r_ < 0, LOSE_W, (1.0 + LOSE_W) / 2))  # learn the winners' moves more
+    wts = k * torch.where(y == 0, wait_w, 1.0) * seqw
     ce = (F.cross_entropy(lg, y, reduction="none") * wts).sum() / wts.sum().clamp(min=1)
     vw = torch.from_numpy(W.reshape(-1))
     lv = ((v - torch.from_numpy(R.reshape(-1))) ** 2 * vw).sum() / vw.sum().clamp(min=1)
@@ -142,7 +145,9 @@ def main():
     ap.add_argument("--wait-w", type=float, default=0.15)
     ap.add_argument("--val-w", type=float, default=0.25)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--lose-w", type=float, default=1.0, help="weight of the losing side's moves (1 = plain imitation)")
     a = ap.parse_args()
+    global LOSE_W; LOSE_W = a.lose_w
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); random.seed(a.seed)
     torch.set_num_threads(4)
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)

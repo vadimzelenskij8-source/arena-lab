@@ -77,7 +77,7 @@ jobs:
       - name: bc
         run: |
           set -o pipefail
-          python il/bc.py --data data --install sim/env --tables sim/tables --init init.pt --out out --minutes ${{ inputs.bc_minutes }} --seed ${{ matrix.j }} 2>&1 | tee out_log.txt | grep -E "VAL|replays|init|Error|Traceback|step [0-9]*00 " | tail -60
+          python il/bc.py --data data --install sim/env --tables sim/tables --init init.pt --out out --minutes ${{ inputs.bc_minutes }} --seed ${{ matrix.j }} $(cat il/bc_args.txt) 2>&1 | tee out_log.txt | grep -E "VAL|replays|init|Error|Traceback|step [0-9]*00 " | tail -60
           mkdir -p out && cp out_log.txt out/log.txt && cp data/conv_stats.json out/ || true
       - uses: actions/upload-artifact@v4
         if: always()
