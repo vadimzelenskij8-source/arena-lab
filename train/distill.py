@@ -108,6 +108,10 @@ def main():
     ap.add_argument("--reply-ticks", type=int, default=10, help="the enemy answers this many ticks after our move")
     ap.add_argument("--search-seed", type=int, default=0, help="offset of the search-exam games (parallel jobs of one setting)")
     ap.add_argument("--card-w", default="", help="per-card exam results: decks with weak cards are trained more")
+    ap.add_argument("--pikl", default="", help="piKL exam only: lam (or 'base' = old margin search); score = Q + lam*log pi(net)")
+    ap.add_argument("--pikl-part", default="0/1", help="k/K: this job plays every K-th batch from k")
+    ap.add_argument("--pikl-games", type=int, default=256)
+    ap.add_argument("--pikl-champ-games", type=int, default=512)
     ap.add_argument("--champ", default="", help="the current champion (frozen): exploiters' opponent and the vs-champion exam")
     a = ap.parse_args()
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
@@ -353,6 +357,7 @@ def main():
                 ac_ = torch.where(play_.sum(1) > a.play_thr, play_.argmax(1) + 1, torch.zeros_like(pr_[:, 0]).long()).numpy()
                 # how sure the network is: its chosen play's probability, or the wait's when it waits
                 conf_["last"] = torch.where(torch.from_numpy(ac_) > 0, play_.max(1).values, 1.0 - play_.sum(1)).numpy()
+                conf_["logp"] = torch.log(torch.cat([(1.0 - play_.sum(1, keepdim=True)).clamp_min(1e-6), play_.clamp_min(1e-6)], 1)).numpy()
                 topk_ = (play_[:, :4 * enc.s.cols * enc.s.rows].topk(a.top, 1).indices + 1).numpy()
             return ac_, hn_, topk_
 
@@ -397,6 +402,19 @@ def main():
                     if player == "teacher":
                         pr_ = scripted_batch(vec, jpol, seats, seed_base + bi * 37 + step_ + 5)
                         ac = teacher.refine(pr_, seats, ~done)
+                    elif player == "pikl":  # piKL / Gumbel-style choice: argmax over checked moves of Q(a) + lam*log pi(a)
+                        ac0, st["h"], tk = net_act(net, b, M, st["h"])
+                        lp_ = conf_["logp"]
+                        ac = np.array(teacher.refine(ac0, seats, ~done, extra=[list(tk[i]) for i in range(N)]), np.int64)
+                        ac[:] = ac0
+                        for i in range(N):
+                            sf = teacher.soft[i]
+                            if done[i] or sf is None:
+                                continue
+                            ks_, p_ = sf
+                            sc_ = np.log(np.maximum(p_, 1e-12)) + pikl_lam[0] * lp_[i, np.asarray(ks_)]
+                            ac[i] = int(ks_[int(np.argmax(sc_))])
+                            pikl_st[0] += 1; pikl_st[1] += int(ac[i] != ac0[i])
                     elif player in ("search", "noisy"):  # B: the network proposes, a short lookahead picks (as the phone twin will)
                         ac0, st["h"], tk = net_act(net, b, M, st["h"])
                         act_ = ~done
@@ -518,6 +536,23 @@ def main():
                     "horizon": a.horizon, "spread": a.spread, "margin": a.margin, "top": a.top, "h1": a.h1, "k2": a.k2, "skip_conf": a.skip_conf,
                     "check": res}
             json.dump(meta, open(Path(a.export_phone) / "meta.json", "w"))
+            return
+        pikl_lam = [0.0]; pikl_st = [0, 0]
+        if a.pikl:  # piKL exam: network + anchored search vs scripted bots and vs the frozen champion (net alone)
+            k_, K_ = (int(x) for x in a.pikl_part.split("/"))
+            mode_ = "search" if a.pikl == "base" else "pikl"
+            if mode_ == "pikl":
+                pikl_lam[0] = float(a.pikl); teacher.margin = 0.0
+            t0p = time.time(); res = {"lam": a.pikl, "part": a.pikl_part}
+            e1 = run_eval(a.pikl_games, 10 ** 6, player=mode_, part=(k_, K_))
+            res["scripted"] = {k: e1[k] for k in ("games", "wins", "losses", "draws", "winrate")}
+            print("pikl scripted", res["scripted"], round(time.time() - t0p), flush=True)
+            if champ is not None and a.pikl_champ_games:
+                e2 = run_eval(a.pikl_champ_games, 3 * 10 ** 6, player=mode_, part=(k_, K_), opp="champ")
+                res["champ"] = {k: e2[k] for k in ("games", "wins", "losses", "draws", "winrate")}
+                print("pikl champ", res["champ"], round(time.time() - t0p), flush=True)
+            res["changed"] = pikl_st[1] / max(1, pikl_st[0]); res["seconds"] = round(time.time() - t0p)
+            json.dump(res, open(out / "pikl.json", "w"))
             return
         if a.search_only:  # the search settings on the same games (paired), until the time budget runs out
             t0s = time.time(); res = {"search": [0, 0], "noisy": [0, 0], "chunks": 0}

@@ -1,0 +1,94 @@
+name: pikl
+on:
+  workflow_dispatch:
+    inputs:
+      lams: { default: "base 0 0.1 0.3 1" }
+      parts: { default: "4" }
+      games: { default: "256" }
+      champ_games: { default: "512" }
+      net: { default: "il/g2/exam2/soup2.pt" }
+      champ: { default: "il/g2/exam2/soup2.pt" }
+      tag: { default: "pikl1" }
+permissions: { contents: write }
+env:
+  CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
+  DATA_VERSION: "16.635.8"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs: { matrix: "${{ steps.m.outputs.matrix }}" }
+    steps:
+      - id: m
+        run: |
+          echo "matrix=$(python3 -c "
+          import json;L='${{ inputs.lams }}'.split();K=int('${{ inputs.parts }}')
+          print(json.dumps([f'{l}|{k}' for l in L for k in range(K)]))")" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v4
+        with: { path: lab }
+      - run: git clone -q https://github.com/voonhous/crforge crforge && git -C crforge checkout -q "$CRFORGE_SHA" && python3 lab/sim_patch/apply.py crforge
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: gradle/actions/setup-gradle@v4
+      - working-directory: crforge
+        run: ./gradlew -q --no-daemon :env:installDist :tables:dataVersionTables -Pcrforge.assetSource=cdn -Pcrforge.dataVersion=$DATA_VERSION
+      - run: |
+          mkdir -p sim && cp -r crforge/env/build/install/env sim/env && cp -r crforge/python sim/python && cp -r ~/.crforge/tables/$DATA_VERSION sim/tables
+          tar czf sim.tgz sim
+      - uses: actions/upload-artifact@v4
+        with: { name: sim, path: sim.tgz, retention-days: 2 }
+  ex:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy: { fail-fast: false, matrix: { j: "${{ fromJSON(needs.build.outputs.matrix) }}" } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q ./sim/python && pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+      - name: exam
+        run: |
+          set +e
+          J="${{ matrix.j }}"; L="${J%%|*}"; K="${J##*|}"
+          git fetch -q origin results
+          git show "origin/results:${{ inputs.net }}" > net.pt; git show "origin/results:${{ inputs.champ }}" > champ.pt
+          python train/distill.py --install sim/env --tables sim/tables --out ex --envs 64 --threads 4 --minutes 0 --eval-minutes 0 \
+            --resume net.pt --champ champ.pt --pikl "$L" --pikl-part "$K/${{ inputs.parts }}" \
+            --pikl-games ${{ inputs.games }} --pikl-champ-games ${{ inputs.champ_games }} 2>&1 | grep -vE "^\{'iter'" | tail -25
+          mkdir -p pub && cp ex/pikl.json "pub/pikl_${L}_${K}.json"; cat pub/*.json
+      - uses: actions/upload-artifact@v4
+        with: { name: "p-${{ strategy.job-index }}", path: pub }
+  gather:
+    needs: [ex]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { path: parts, pattern: "p-*", merge-multiple: true }
+      - run: |
+          python3 - <<'P'
+          import json,glob,collections
+          T=collections.defaultdict(lambda:{"scripted":[0,0,0],"champ":[0,0,0],"changed":[]})
+          for f in glob.glob("parts/*.json"):
+              d=json.load(open(f)); t=T[d["lam"]]
+              for k in ("scripted","champ"):
+                  if k in d: t[k][0]+=d[k]["wins"]; t[k][1]+=d[k]["losses"]; t[k][2]+=d[k]["games"]
+              t["changed"].append(d.get("changed",0))
+          out={}
+          for l,t in T.items():
+              s,c=t["scripted"],t["champ"]
+              out[l]={"vs_scripted":round(s[0]/max(1,s[2]),4),"scripted_games":s[2],
+                      "vs_g2_wins":c[0],"vs_g2_losses":c[1],"vs_g2_games":c[2],"vs_g2_decisive":round(c[0]/max(1,c[0]+c[1]),4),
+                      "changed":round(sum(t["changed"])/max(1,len(t["changed"])),3)}
+          json.dump(out,open("table.json","w"),indent=1); print(json.dumps(out,indent=1))
+          P
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          git fetch -q origin results && git worktree add ../res origin/results && cd ../res && git checkout -q -B results
+          D=il/${{ inputs.tag }}; mkdir -p $D && cp ../${{ github.event.repository.name }}/table.json $D/ && cp ../${{ github.event.repository.name }}/parts/*.json $D/
+          git add -A && git commit -q -m "pikl ${{ github.run_id }}" && git push -q origin results
