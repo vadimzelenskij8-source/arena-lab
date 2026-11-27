@@ -9,6 +9,7 @@ on:
       net: { default: "il/g2/exam2/soup2.pt" }
       champ: { default: "il/g2/exam2/soup2.pt" }
       tag: { default: "pikl1" }
+      extra: { default: "" }
 permissions: { contents: write }
 env:
   CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
@@ -59,7 +60,7 @@ jobs:
           git show "origin/results:${{ inputs.net }}" > net.pt; git show "origin/results:${{ inputs.champ }}" > champ.pt
           python train/distill.py --install sim/env --tables sim/tables --out ex --envs 64 --threads 4 --minutes 0 --eval-minutes 0 \
             --resume net.pt --champ champ.pt --pikl "$L" --pikl-part "$K/${{ inputs.parts }}" \
-            --pikl-games ${{ inputs.games }} --pikl-champ-games ${{ inputs.champ_games }} 2>&1 | grep -vE "^\{'iter'" | tail -25
+            --pikl-games ${{ inputs.games }} --pikl-champ-games ${{ inputs.champ_games }} ${{ inputs.extra }} 2>&1 | grep -vE "^\{'iter'" | tail -25
           mkdir -p pub && cp ex/pikl.json "pub/pikl_${L}_${K}.json"; cat pub/*.json
       - uses: actions/upload-artifact@v4
         with: { name: "p-${{ strategy.job-index }}", path: pub }
