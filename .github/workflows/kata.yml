@@ -1,14 +1,12 @@
 name: kata
 on: { workflow_dispatch: {} }
-env: { GH_TOKEN: "${{ github.token }}" }
 jobs:
   p:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          gh api repos/wty-yy/Clash-Royale-Detection-Dataset --jq '[.size, .default_branch, .pushed_at] | @tsv'
-          gh api repos/wty-yy/Clash-Royale-Detection-Dataset/releases --jq '.[] | .tag_name + " " + ([.assets[] | .name + ":" + (.size|tostring)] | join(" "))' | head
-          gh api "repos/wty-yy/Clash-Royale-Detection-Dataset/git/trees/HEAD" --jq '.tree[] | .type + " " + .path + " " + ((.size // 0)|tostring)'
-          gh api "repos/wty-yy/Clash-Royale-Detection-Dataset/git/trees/HEAD?recursive=1" --jq '.truncated, (.tree | length)'
-          gh api "repos/wty-yy/Clash-Royale-Detection-Dataset/git/trees/HEAD?recursive=1" --jq '.tree[] | select(.type=="blob") | .path' | awk -F/ '{print $1"/"$2"/"$3}' | sort | uniq -c | sort -rn | head -40
-          gh api repos/wty-yy/Clash-Royale-Detection-Dataset/readme --jq .content | base64 -d | head -90
+          curl -sL https://codeload.github.com/wty-yy/Clash-Royale-Detection-Dataset/tar.gz/master | tar xz --wildcards '*/images/part2/*' 2>/dev/null; D=$(ls -d Clash-Royale-Detection-Dataset-*); du -sh $D
+          find $D/images/part2 -name "*.txt" | wc -l; find $D/images/part2 -name "*.jpg" -o -name "*.png" | wc -l
+          f=$(find $D/images/part2 -name "*.txt" | head -1); echo $f; head -5 $f; ls $(dirname $f) | head -5
+          python3 -c "from PIL import Image;import glob;fs=glob.glob('$D/images/part2/**/*.jpg',recursive=True)[:3];print([Image.open(x).size for x in fs])"
+          curl -s https://raw.githubusercontent.com/wty-yy/KataCR/master/katacr/constants/label_list.py | head -60
