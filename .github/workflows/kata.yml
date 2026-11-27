@@ -1,11 +1,14 @@
 name: kata
 on: { workflow_dispatch: {} }
+env: { GH_TOKEN: "${{ github.token }}" }
 jobs:
   p:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          git clone -q --depth 1 --filter=blob:none --no-checkout https://github.com/wty-yy/Clash-Royale-Detection-Dataset kd
-          cd kd && git ls-tree -r -l HEAD | awk '{n=split($5,p,"/"); d=p[1]"/"p[2]"/"p[3]; s[d]+=$4; c[d]++} END {for (k in s) print k, c[k], int(s[k]/1048576)"MB"}' | sort | head -60
-          git ls-tree -r --name-only HEAD | grep -iE "readme|\.md$|label_list|\.yaml$|\.txt$" | grep -v "/labels/\|images" | head -20
-          git checkout HEAD -- README.md 2>/dev/null && sed -n 1,80p README.md
+          gh api repos/wty-yy/Clash-Royale-Detection-Dataset --jq '[.size, .default_branch, .pushed_at] | @tsv'
+          gh api repos/wty-yy/Clash-Royale-Detection-Dataset/releases --jq '.[] | .tag_name + " " + ([.assets[] | .name + ":" + (.size|tostring)] | join(" "))' | head
+          gh api "repos/wty-yy/Clash-Royale-Detection-Dataset/git/trees/HEAD" --jq '.tree[] | .type + " " + .path + " " + ((.size // 0)|tostring)'
+          gh api "repos/wty-yy/Clash-Royale-Detection-Dataset/git/trees/HEAD?recursive=1" --jq '.truncated, (.tree | length)'
+          gh api "repos/wty-yy/Clash-Royale-Detection-Dataset/git/trees/HEAD?recursive=1" --jq '.tree[] | select(.type=="blob") | .path' | awk -F/ '{print $1"/"$2"/"$3}' | sort | uniq -c | sort -rn | head -40
+          gh api repos/wty-yy/Clash-Royale-Detection-Dataset/readme --jq .content | base64 -d | head -90
