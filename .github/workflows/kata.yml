@@ -1,12 +1,25 @@
 name: kata
-on: { workflow_dispatch: {} }
+on:
+  workflow_dispatch:
+    inputs:
+      n: { default: "1500" }
+      extra: { default: "cr-det-snft-cpu" }
+env:
+  KAGGLE_USERNAME: papai10095
+  KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+  KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_KEY }}
 jobs:
   p:
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cpu && pip install -q ultralytics huggingface_hub pyarrow kaggle
       - run: |
-          curl -sL https://codeload.github.com/wty-yy/Clash-Royale-Detection-Dataset/tar.gz/master | tar xz --wildcards '*/images/part2/*' 2>/dev/null; D=$(ls -d Clash-Royale-Detection-Dataset-*); du -sh $D
-          find $D/images/part2 -name "*.txt" | wc -l; find $D/images/part2 -name "*.jpg" -o -name "*.png" | wc -l
-          f=$(find $D/images/part2 -name "*.txt" | head -1); echo $f; head -5 $f; ls $(dirname $f) | head -5
-          python3 -c "from PIL import Image;import glob;fs=glob.glob('$D/images/part2/**/*.jpg',recursive=True)[:3];print([Image.open(x).size for x in fs])"
-          curl -s https://raw.githubusercontent.com/wty-yy/KataCR/master/katacr/constants/label_list.py | head -60
+          curl -sL https://codeload.github.com/wty-yy/Clash-Royale-Detection-Dataset/tar.gz/master | tar xz --wildcards '*/images/part2/*' 2>/dev/null || true
+          mkdir -p /tmp/extra
+          for k in ${{ inputs.extra }}; do kaggle kernels output papai10095/$k -p /tmp/k_$k --file-pattern 'best.pt' >/dev/null 2>&1 || kaggle kernels output papai10095/$k -p /tmp/k_$k >/dev/null 2>&1; cp /tmp/k_$k/best.pt /tmp/extra/$k.pt 2>/dev/null; done
+          ls -la /tmp/extra
+          python perception/kata_eval.py Clash-Royale-Detection-Dataset-master ${{ inputs.n }} 2>&1 | grep -E "^(json|SAMPLE|GT|unmapped|RESULT)|Traceback|Error" | cut -c1-600
