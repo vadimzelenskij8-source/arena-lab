@@ -21,6 +21,6 @@ jobs:
           set +e
           curl -sL https://codeload.github.com/wty-yy/Clash-Royale-Detection-Dataset/tar.gz/master | tar xz --wildcards '*/images/part2/*' 2>/dev/null || true
           mkdir -p /tmp/extra
-          for k in ${{ inputs.extra }}; do kaggle kernels output papai10095/$k -p /tmp/k_$k --file-pattern 'best.pt' >/dev/null 2>&1 || kaggle kernels output papai10095/$k -p /tmp/k_$k >/dev/null 2>&1; f=$(find /tmp/k_$k -name best.pt | head -1); [ -n "$f" ] && cp "$f" /tmp/extra/$k.pt || echo "no best.pt for $k"; done
+          for k in ${{ inputs.extra }}; do kaggle kernels output papai10095/$k -p /tmp/k_$k 2>&1 | tail -2; ls -R /tmp/k_$k | head; f=$(find /tmp/k_$k -name best.pt | head -1); [ -n "$f" ] && cp "$f" /tmp/extra/$k.pt || echo "no best.pt for $k"; done
           ls -la /tmp/extra || true
           python perception/kata_eval.py Clash-Royale-Detection-Dataset-master ${{ inputs.n }} 2>&1 | grep -E "^(json|SAMPLE|GT|unmapped|RESULT)|Traceback|Error" | cut -c1-600

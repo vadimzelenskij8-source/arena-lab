@@ -11,7 +11,10 @@ RID, MID = "SudhishNeel/clash-royale-detection", "SudhishNeel/clash-royale-detec
 pf = pq.ParquetFile(hf_hub_download(RID, "synthetic_arena/train-c001a-00000-of-00002.parquet", repo_type="dataset"))
 names = json.loads(pf.schema_arrow.metadata[b"huggingface"])["info"]["features"]["objects"]["feature"]["category"]["names"]
 idx = {n: i for i, n in enumerate(names)}
-js = sorted(glob.glob(f"{K}/images/part2/**/*.json", recursive=True))
+import hashlib
+def held(j):  # the exam folders: never used for training (same rule in sn_ft2.py)
+    return int(hashlib.sha1(os.path.dirname(j).encode().split(b"part2/")[-1]).hexdigest()[:6], 16) % 5 == 0
+js = sorted(j for j in glob.glob(f"{K}/images/part2/**/*.json", recursive=True) if held(j))
 random.Random(0).shuffle(js)
 print("json files", len(js)); print("SAMPLE", js[0], open(js[0]).read()[:400].replace("\n", " "))
 D = "/tmp/kv"; os.makedirs(f"{D}/images/val", exist_ok=True); os.makedirs(f"{D}/labels/val", exist_ok=True)
@@ -30,7 +33,7 @@ for j in js:
     sizes[(W, H)] += 1
     lines = []; bad = False
     for s in d.get("shapes", []):
-        lb = s["label"]; nm = re.sub(r"\d+$", "", lb)  # trailing digit = side (0 ours, 1 enemy)
+        lb = s["label"]; nm = re.sub(r"\d+$", "", re.sub(r"(_[a-z]+)+$", "", lb))  # "_attack/_freeze" states, then side digit
         nm = {"king-tower-bar": None, "tower-bar": None, "bar": None, "bar-level": None, "selected": None, "clock": "clock", "elixir": "elixir",
               "text": None, "emote": None, "evolution-symbol": None}.get(nm, nm)
         if nm is None: continue
