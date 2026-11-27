@@ -145,6 +145,7 @@ def main():
     ap.add_argument("--wait-w", type=float, default=0.15)
     ap.add_argument("--val-w", type=float, default=0.25)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--ema", type=float, default=0.0, help="weight EMA decay (e.g. 0.999); the EMA copy is saved if its val CE is lower")
     ap.add_argument("--lose-w", type=float, default=1.0, help="weight of the losing side's moves (1 = plain imitation)")
     a = ap.parse_args()
     global LOSE_W; LOSE_W = a.lose_w
@@ -182,13 +183,23 @@ def main():
     hist = [dict(step=0, t=0, **evaluate())]
     print("VAL", hist[-1], flush=True)
     best = hist[-1]["ce"]; torch.save(net.state_dict(), out / "policy.pt")
-    t0 = time.time(); step = 0; last_eval = t0
+    t0 = time.time(); step = 0; last_eval = t0; ema = None
     while time.time() - t0 < a.minutes * 60:
         items = [(tr[int(rng.integers(len(tr)))], int(rng.integers(2))) for _ in range(a.mb)]
         B, M, A, K, R, W, nb = batch(dtr, items, a.T, a.burn, rng, NA)
         loss, ce, lv, s = run(net, B, M, A, K, R, W, nb, L, a.wait_w, a.val_w)
         opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(net.parameters(), 1.0); opt.step()
         step += 1
+        if a.ema > 0:
+            with torch.no_grad():
+                if ema is None:
+                    ema = {k: v.detach().clone() for k, v in net.state_dict().items()}
+                d_ = min(a.ema, (1 + step) / (10 + step))
+                for k, v in net.state_dict().items():
+                    if v.dtype.is_floating_point:
+                        ema[k].mul_(d_).add_(v.detach(), alpha=1 - d_)
+                    else:
+                        ema[k].copy_(v)
         if step % 50 == 0:
             print("step", step, "ce", round(float(ce), 3), "v", round(float(lv), 3), s, flush=True)
         if time.time() - last_eval > 600:
@@ -198,7 +209,14 @@ def main():
                 best = hist[-1]["ce"]; torch.save(net.state_dict(), out / "policy.pt")
     hist.append(dict(step=step, t=round(time.time() - t0), **evaluate())); print("VAL", hist[-1], flush=True)
     if hist[-1]["ce"] < best:
-        torch.save(net.state_dict(), out / "policy.pt")
+        best = hist[-1]["ce"]; torch.save(net.state_dict(), out / "policy.pt")
+    if ema is not None:  # the averaged weights (nearly free; usually a little stronger than the last iterate)
+        raw = {k: v.clone() for k, v in net.state_dict().items()}
+        net.load_state_dict(ema); he = dict(step=step, t=round(time.time() - t0), ema=1, **evaluate()); hist.append(he)
+        print("VAL ema", he, flush=True)
+        if he["ce"] < best:
+            torch.save(ema, out / "policy.pt"); print("saved ema", flush=True)
+        net.load_state_dict(raw)
     json.dump(hist, open(out / "bc_history.json", "w"), indent=1)
 
 
