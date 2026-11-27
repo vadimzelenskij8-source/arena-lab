@@ -18,7 +18,7 @@ jobs:
           python - <<'P'
           from clashai.data.download import dataset_dir
           from clashai.data.replays import read_replays
-                    import json, glob, pyarrow.parquet as pq
+          import json, glob, pyarrow.parquet as pq
           d = dataset_dir(); print("MANIFEST", open(f"{d}/manifest.json").read()[:1500])
           for sub in sorted({f.split("/")[-2] for f in glob.glob(f"{d}/*/*.parquet")}):
               print("ROWS", sub, sum(pq.ParquetFile(f).metadata.num_rows for f in glob.glob(f"{d}/{sub}/*.parquet")))
