@@ -383,6 +383,8 @@ def main():
                 return y_ if mk_[y_] else x
             return x
 
+        prof_ = {"obs": 0.0, "me": 0.0, "opp": 0.0, "step": 0.0, "n": 0}
+
         def run_eval(n_games, seed_base, any_deck=True, opp_any=False, player="net", part=None, opp="scripted"):
             """player: "net" (the network alone, as on the phone) or "teacher" (scripted + lookahead: the
             practical ceiling of each matchup). part=(k, K): only every K-th batch, from k (split jobs)."""
@@ -398,7 +400,7 @@ def main():
                 st = fresh(); stc = fresh(); done = np.zeros(N, bool); ot = np.zeros(N, bool)
                 pend = np.zeros(N, np.int64); nrng = np.random.default_rng(seed_base + bi)
                 for step_ in range(1800):
-                    O, M, b = batch_obs(seats, st)
+                    _t = time.perf_counter(); O, M, b = batch_obs(seats, st); prof_["obs"] += time.perf_counter() - _t; _t = time.perf_counter()
                     if player == "teacher":
                         pr_ = scripted_batch(vec, jpol, seats, seed_base + bi * 37 + step_ + 5)
                         ac = teacher.refine(pr_, seats, ~done)
@@ -442,6 +444,7 @@ def main():
                             pr = torch.softmax(lg, 1)
                             play = pr[:, 1:].clone(); play[:, -1] = 0  # never the delegate
                             ac = torch.where(play.sum(1) > a.play_thr, play.argmax(1) + 1, torch.zeros_like(pr[:, 0]).long()).numpy()
+                    prof_["me"] += time.perf_counter() - _t; _t = time.perf_counter()
                     acts = np.zeros((N, 2), np.int32)
                     if opp == "champ":
                         _Oc, Mc, bc = batch_obs(1 - seats, stc)
@@ -453,7 +456,9 @@ def main():
                         acts[i, me] = ac[i]
                         acts[i, 1 - me] = oppa[i]
                         ot[i] |= bool(O[i, enc.h["overtime"][0]])
+                    prof_["opp"] += time.perf_counter() - _t; _t = time.perf_counter()
                     vec.step(acts)
+                    prof_["step"] += time.perf_counter() - _t; prof_["n"] += 1
                     for i in range(N):
                         if vec.dones[i] and not done[i]:
                             done[i] = True
@@ -540,7 +545,7 @@ def main():
         pikl_lam = [0.0]; pikl_st = [0, 0]
         if a.pikl:  # piKL exam: network + anchored search vs scripted bots and vs the frozen champion (net alone)
             k_, K_ = (int(x) for x in a.pikl_part.split("/"))
-            mode_ = "search" if a.pikl == "base" else "pikl"
+            mode_ = {"base": "search", "net": "net"}.get(a.pikl, "pikl")
             if mode_ == "pikl":
                 pikl_lam[0] = float(a.pikl); teacher.margin = 0.0
             t0p = time.time(); res = {"lam": a.pikl, "part": a.pikl_part}
@@ -552,6 +557,9 @@ def main():
                 res["champ"] = {k: e2[k] for k in ("games", "wins", "losses", "draws", "winrate")}
                 print("pikl champ", res["champ"], round(time.time() - t0p), flush=True)
             res["changed"] = pikl_st[1] / max(1, pikl_st[0]); res["seconds"] = round(time.time() - t0p)
+            res["prof_ms_per_decision"] = {k: round(1000 * v / max(1, prof_["n"]), 2) for k, v in prof_.items() if k != "n"}
+            res["prof_decisions"] = prof_["n"]; res["prof_search"] = dict(teacher.stats)
+            print("PROF", res["prof_ms_per_decision"], prof_["n"], teacher.stats, flush=True)
             json.dump(res, open(out / "pikl.json", "w"))
             return
         if a.search_only:  # the search settings on the same games (paired), until the time budget runs out
