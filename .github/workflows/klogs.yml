@@ -10,4 +10,4 @@ jobs:
     steps:
       - run: |
           pip install -q -U kaggle
-          kaggle kernels logs papai10095/${{ inputs.slug }} 2>&1 | grep -v "dist-packages\|\^\^\|~~~" | head -60
+          kaggle kernels logs papai10095/${{ inputs.slug }} 2>&1 | grep -v "dist-packages\|\^\^\|~~~" > /tmp/l.txt; head -30 /tmp/l.txt; echo ====; grep -a "EXAM\|mAP\|Traceback\|Error" /tmp/l.txt | tail -30; echo ====; tail -40 /tmp/l.txt; kaggle kernels status papai10095/${{ inputs.slug }}
