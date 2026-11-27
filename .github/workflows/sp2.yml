@@ -1,0 +1,106 @@
+name: sp2
+on:
+  workflow_dispatch:
+    inputs:
+      start: { default: "il/g2/exam2/soup2.pt" }
+      minutes: { default: "220" }
+      tag: { default: "sp2" }
+      jobs: { default: "16" }
+permissions: { contents: write }
+concurrency: { group: sp2, cancel-in-progress: false }
+env:
+  CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
+  DATA_VERSION: "16.635.8"
+  EC_SHA: caa528332e48cb3c5e2f9f86b0653e5d705df50f
+  CLASHAI_DATA: /tmp/cd
+  CLASHAI_NO_ENGINE_BUILD: "1"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs: { matrix: "${{ steps.m.outputs.matrix }}" }
+    steps:
+      - id: m
+        run: echo "matrix=$(python3 -c "print(list(range(int('${{ inputs.jobs }}'))))")" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v4
+        with: { path: lab }
+      - run: git clone -q https://github.com/voonhous/crforge crforge && git -C crforge checkout -q "$CRFORGE_SHA" && python3 lab/sim_patch/apply.py crforge
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: gradle/actions/setup-gradle@v4
+      - working-directory: crforge
+        run: ./gradlew -q --no-daemon :env:installDist :tables:dataVersionTables -Pcrforge.assetSource=cdn -Pcrforge.dataVersion=$DATA_VERSION
+      - run: |
+          git clone -q https://github.com/ethan-mcgee/clash-ai ec && git -C ec checkout -q "$EC_SHA" && rm -rf ec/.git ec/third_party
+          mkdir -p sim && cp -r crforge/env/build/install/env sim/env && cp -r crforge/python sim/python && cp -r ~/.crforge/tables/$DATA_VERSION sim/tables && mv ec sim/ec
+          tar czf sim.tgz sim
+      - uses: actions/upload-artifact@v4
+        with: { name: sim, path: sim.tgz, retention-days: 2 }
+
+  sp:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy: { fail-fast: false, matrix: { j: "${{ fromJSON(needs.build.outputs.matrix) }}" } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q ./sim/python && pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+      - name: train + own exam
+        run: |
+          set +e -o pipefail
+          git fetch -q origin results; mkdir -p league out
+          git show "origin/results:${{ inputs.start }}" > start.pt; cp start.pt champ.pt
+          for f in il/exam2/soup2.pt il/g2/exam2/soup2.pt il/g3/exam1/soup1.pt u1/policy.pt; do git show "origin/results:$f" > "league/$(echo $f | tr / _)" 2>/dev/null || rm -f "league/$(echo $f | tr / _)"; done
+          git show origin/results:crapi/decks_api.json > api.json 2>/dev/null && API="--api-decks api.json" || API=""
+          # grid: teacher = network + search (az, value weight 0 or 0.2), small steps, strong anchor to the start
+          J=${{ matrix.j }}
+          LR=$(python3 -c "print([2e-5, 5e-5][$J % 2])"); VW=$(python3 -c "print([0.0, 0.2][($J // 2) % 2])"); AN=$(python3 -c "print([1.0, 2.0][($J // 4) % 2])"); PG=$(python3 -c "print([0.0, 0.3][($J // 8) % 2])")
+          echo "CONFIG lr=$LR az_vw=$VW anchor=$AN pg=$PG" | tee out/config.txt
+          python train/distill.py --install sim/env --tables sim/tables --out out --envs 64 --threads 4 --resume start.pt \
+            --anchor $AN --anchor-pt start.pt --az 1 --az-vw $VW --pg $PG --strong 1 --both 1 --league league --league-share 0.5 $API \
+            --lr $LR --minutes ${{ inputs.minutes }} --eval-minutes 0 --eval-games 1056 --final 1 --champ champ.pt --champ-games 512 \
+            --seed $(( 9100 + J )) 2>&1 | tee out/full.txt | grep -E "mini_eval|segment|vs champion|winrate|Traceback|Error" | tail -20
+          grep "^{'iter'" out/full.txt | tail -2 | cut -c1-400; tail -c 20000 out/full.txt > out/log.txt; rm out/full.txt
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: "sp-${{ matrix.j }}", path: out/, retention-days: 4 }
+
+  pick:
+    needs: [sp]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { pattern: "sp-*", path: parts }
+      - name: pick the best by the vs-start exam
+        run: |
+          python3 - <<'PY'
+          import json, glob, os, shutil
+          rows = []
+          for d in sorted(glob.glob("parts/sp-*")):
+              try:
+                  e = json.load(open(f"{d}/eval.json")); c = open(f"{d}/config.txt").read().strip()
+                  vc = e.get("vs_champ") or {}
+                  rows.append((vc.get("wins", 0) - vc.get("losses", 0), vc.get("winrate"), e.get("winrate"), d, c, vc))
+              except Exception as ex:
+                  print("skip", d, ex)
+          rows.sort(key=lambda r: (r[0], r[2] or 0), reverse=True)
+          for r in rows: print("ROW", r[3], r[4], "vs_start", r[5], "net", r[2])
+          os.makedirs("pub", exist_ok=True); json.dump([dict(dir=r[3], config=r[4], vs_start=r[5], net=r[2]) for r in rows], open("pub/table.json", "w"), indent=1)
+          if rows:
+              shutil.copy(f"{rows[0][3]}/policy.pt", "pub/best.pt"); shutil.copy(f"{rows[0][3]}/eval.json", "pub/best_eval.json")
+          PY
+      - name: publish
+        run: |
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          git fetch -q origin results && git worktree add ../res origin/results && cd ../res && git checkout -q -B results
+          D=il/${{ inputs.tag }}; mkdir -p $D && cp ../${{ github.event.repository.name }}/pub/* $D/
+          git add -A && git commit -q -m "${{ inputs.tag }} ${{ github.run_id }}" && git push -q origin results
