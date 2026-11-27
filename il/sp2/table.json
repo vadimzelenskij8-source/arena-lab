@@ -1,0 +1,178 @@
+[
+ {
+  "dir": "parts/sp-12",
+  "config": "CONFIG lr=2e-05 az_vw=0.0 anchor=2.0 pg=0.3",
+  "vs_start": {
+   "games": 511,
+   "winrate": 0.2779,
+   "wins": 142,
+   "losses": 369
+  },
+  "net": 0.5802
+ },
+ {
+  "dir": "parts/sp-14",
+  "config": "CONFIG lr=2e-05 az_vw=0.2 anchor=2.0 pg=0.3",
+  "vs_start": {
+   "games": 511,
+   "winrate": 0.2681,
+   "wins": 137,
+   "losses": 374
+  },
+  "net": 0.6027
+ },
+ {
+  "dir": "parts/sp-4",
+  "config": "CONFIG lr=2e-05 az_vw=0.0 anchor=2.0 pg=0.0",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.2637,
+   "wins": 135,
+   "losses": 377
+  },
+  "net": 0.5977
+ },
+ {
+  "dir": "parts/sp-5",
+  "config": "CONFIG lr=5e-05 az_vw=0.0 anchor=2.0 pg=0.0",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.2578,
+   "wins": 132,
+   "losses": 380
+  },
+  "net": 0.6006
+ },
+ {
+  "dir": "parts/sp-15",
+  "config": "CONFIG lr=5e-05 az_vw=0.2 anchor=2.0 pg=0.3",
+  "vs_start": {
+   "games": 511,
+   "winrate": 0.2446,
+   "wins": 125,
+   "losses": 386
+  },
+  "net": 0.6016
+ },
+ {
+  "dir": "parts/sp-7",
+  "config": "CONFIG lr=5e-05 az_vw=0.2 anchor=2.0 pg=0.0",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.2441,
+   "wins": 125,
+   "losses": 387
+  },
+  "net": 0.5533
+ },
+ {
+  "dir": "parts/sp-3",
+  "config": "CONFIG lr=5e-05 az_vw=0.2 anchor=1.0 pg=0.0",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.2422,
+   "wins": 124,
+   "losses": 388
+  },
+  "net": 0.5801
+ },
+ {
+  "dir": "parts/sp-2",
+  "config": "CONFIG lr=2e-05 az_vw=0.2 anchor=1.0 pg=0.0",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.2227,
+   "wins": 114,
+   "losses": 398
+  },
+  "net": 0.5503
+ },
+ {
+  "dir": "parts/sp-13",
+  "config": "CONFIG lr=5e-05 az_vw=0.0 anchor=2.0 pg=0.3",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.2207,
+   "wins": 113,
+   "losses": 399
+  },
+  "net": 0.5791
+ },
+ {
+  "dir": "parts/sp-0",
+  "config": "CONFIG lr=2e-05 az_vw=0.0 anchor=1.0 pg=0.0",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.2168,
+   "wins": 111,
+   "losses": 400
+  },
+  "net": 0.5543
+ },
+ {
+  "dir": "parts/sp-9",
+  "config": "CONFIG lr=5e-05 az_vw=0.0 anchor=1.0 pg=0.3",
+  "vs_start": {
+   "games": 511,
+   "winrate": 0.2153,
+   "wins": 110,
+   "losses": 401
+  },
+  "net": 0.5303
+ },
+ {
+  "dir": "parts/sp-6",
+  "config": "CONFIG lr=2e-05 az_vw=0.2 anchor=2.0 pg=0.0",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.2109,
+   "wins": 108,
+   "losses": 404
+  },
+  "net": 0.583
+ },
+ {
+  "dir": "parts/sp-8",
+  "config": "CONFIG lr=2e-05 az_vw=0.0 anchor=1.0 pg=0.3",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.1973,
+   "wins": 101,
+   "losses": 411
+  },
+  "net": 0.5059
+ },
+ {
+  "dir": "parts/sp-11",
+  "config": "CONFIG lr=5e-05 az_vw=0.2 anchor=1.0 pg=0.3",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.1758,
+   "wins": 90,
+   "losses": 421
+  },
+  "net": 0.4971
+ },
+ {
+  "dir": "parts/sp-10",
+  "config": "CONFIG lr=2e-05 az_vw=0.2 anchor=1.0 pg=0.3",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.166,
+   "wins": 85,
+   "losses": 426
+  },
+  "net": 0.4922
+ },
+ {
+  "dir": "parts/sp-1",
+  "config": "CONFIG lr=5e-05 az_vw=0.0 anchor=1.0 pg=0.0",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.1602,
+   "wins": 82,
+   "losses": 430
+  },
+  "net": 0.4985
+ }
+]
