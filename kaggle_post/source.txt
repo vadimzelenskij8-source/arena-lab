@@ -1,1 +1,1 @@
-cr-det-snft-cpu
+cr-det-sn
