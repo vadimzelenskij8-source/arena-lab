@@ -1,0 +1,24 @@
+name: deck
+on: { workflow_dispatch: {} }
+permissions: { contents: write }
+env:
+  EC_SHA: caa528332e48cb3c5e2f9f86b0653e5d705df50f
+  CLASHAI_DATA: /tmp/cd
+  CLASHAI_NO_ENGINE_BUILD: "1"
+jobs:
+  d:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          git clone -q https://github.com/ethan-mcgee/clash-ai ec && git -C ec checkout -q "$EC_SHA" && rm -rf ec/third_party
+          pip install -q --no-deps -e ./ec && pip install -q numpy pyyaml pyarrow huggingface_hub
+          python -m clashai.data.download 2>&1 | tail -1
+          D=$(python -c "from clashai.data.download import dataset_dir;print(dataset_dir())")
+          python il/deck.py "$D" deck.json
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          git fetch -q origin results && git worktree add ../res origin/results && cd ../res && git checkout -q -B results
+          mkdir -p il/deck && cp ../${{ github.event.repository.name }}/deck.json il/deck/ && git add -A && git commit -q -m deck && git push -q origin results
