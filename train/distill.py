@@ -407,11 +407,14 @@ def main():
                     elif player == "pikl":  # piKL / Gumbel-style choice: argmax over checked moves of Q(a) + lam*log pi(a)
                         ac0, st["h"], tk = net_act(net, b, M, st["h"])
                         lp_ = conf_["logp"]
-                        ac = np.array(teacher.refine(ac0, seats, ~done, extra=[list(tk[i]) for i in range(N)]), np.int64)
+                        act_ = ~done
+                        if a.skip_conf > 0:  # the network is sure: its move stands without a search
+                            act_ = act_ & (conf_["last"] < a.skip_conf)
+                        ac = np.array(teacher.refine(ac0, seats, act_, extra=[list(tk[i]) for i in range(N)]), np.int64)
                         ac[:] = ac0
                         for i in range(N):
                             sf = teacher.soft[i]
-                            if done[i] or sf is None:
+                            if not act_[i] or sf is None:
                                 continue
                             ks_, p_ = sf
                             sc_ = np.log(np.maximum(p_, 1e-12)) + pikl_lam[0] * lp_[i, np.asarray(ks_)]
