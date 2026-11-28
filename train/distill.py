@@ -110,6 +110,8 @@ def main():
     ap.add_argument("--card-w", default="", help="per-card exam results: decks with weak cards are trained more")
     ap.add_argument("--pikl", default="", help="piKL exam only: lam (or 'base' = old margin search); score = Q + lam*log pi(net)")
     ap.add_argument("--pikl-teach", type=float, default=0.0, help="teacher = piKL: among the search's checked moves, argmax Q + lam*log pi(net)")
+    ap.add_argument("--gen-dir", default="", help="piKL data generation: save each game's own-seat rows (o,m,a,s,k) as npz here")
+    ap.add_argument("--gen-minutes", type=float, default=0)
     ap.add_argument("--pikl-part", default="0/1", help="k/K: this job plays every K-th batch from k")
     ap.add_argument("--pikl-games", type=int, default=256)
     ap.add_argument("--pikl-champ-games", type=int, default=512)
@@ -384,6 +386,7 @@ def main():
                 return y_ if mk_[y_] else x
             return x
 
+        gen_ = {"dir": "", "n": 0, "rows": 0}
         prof_ = {"obs": 0.0, "me": 0.0, "opp": 0.0, "step": 0.0, "n": 0}
 
         def run_eval(n_games, seed_base, any_deck=True, opp_any=False, player="net", part=None, opp="scripted"):
@@ -399,6 +402,7 @@ def main():
                 mine = [ANY[(bi * N + i) % len(ANY)] for i in range(N)] if any_deck else None
                 seats = reset_all(seed_base + bi * 1009, ds, mine=mine)
                 st = fresh(); stc = fresh(); done = np.zeros(N, bool); ot = np.zeros(N, bool)
+                gbuf = [[] for _ in range(N)] if gen_["dir"] else None
                 pend = np.zeros(N, np.int64); nrng = np.random.default_rng(seed_base + bi)
                 for step_ in range(1800):
                     _t = time.perf_counter(); O, M, b = batch_obs(seats, st); prof_["obs"] += time.perf_counter() - _t; _t = time.perf_counter()
@@ -449,6 +453,10 @@ def main():
                             play = pr[:, 1:].clone(); play[:, -1] = 0  # never the delegate
                             ac = torch.where(play.sum(1) > a.play_thr, play.argmax(1) + 1, torch.zeros_like(pr[:, 0]).long()).numpy()
                     prof_["me"] += time.perf_counter() - _t; _t = time.perf_counter()
+                    if gbuf is not None:
+                        for i in range(N):
+                            if not done[i]:
+                                gbuf[i].append((O[i].copy(), vec.masks[i, seats[i]].copy(), int(ac[i]), int(seats[i])))
                     acts = np.zeros((N, 2), np.int32)
                     if opp == "champ":
                         _Oc, Mc, bc = batch_obs(1 - seats, stc)
@@ -466,6 +474,16 @@ def main():
                     for i in range(N):
                         if vec.dones[i] and not done[i]:
                             done[i] = True
+                            if gbuf is not None and len(gbuf[i]) >= 8 and not int(vec.infos[i, I["fault"]]):
+                                rows_ = gbuf[i]; gen_["n"] += 1
+                                np.savez_compressed(f'{gen_["dir"]}/g{a.seed}_{gen_["n"]:06d}.npz', o=np.stack([r_[0] for r_ in rows_]),
+                                                    m=np.packbits(np.stack([r_[1] for r_ in rows_]).astype(bool), 1),
+                                                    a=np.array([r_[2] for r_ in rows_], np.int64), s=np.array([r_[3] for r_ in rows_], np.int64),
+                                                    k=np.ones(len(rows_), bool))
+                                gen_["rows"] += len(rows_)
+                            gbuf_clear = gbuf is not None
+                            if gbuf_clear:
+                                gbuf[i] = []
                             w_ = int(vec.infos[i, I["winner"]])
                             k = "faults" if int(vec.infos[i, I["fault"]]) else ("wins" if w_ == seats[i] else ("losses" if w_ in (0, 1) else "draws"))
                             ev[k] += 1
@@ -553,6 +571,15 @@ def main():
             if mode_ == "pikl":
                 pikl_lam[0] = float(a.pikl); teacher.margin = 0.0
             t0p = time.time(); res = {"lam": a.pikl, "part": a.pikl_part}
+            if a.gen_dir:  # data generation: piKL games vs scripted bots and vs the champion, until the time budget
+                Path(a.gen_dir).mkdir(parents=True, exist_ok=True); gen_["dir"] = a.gen_dir; kk = 0; wl = {"scripted": [0, 0], "champ": [0, 0]}
+                while time.time() - t0p < a.gen_minutes * 60:
+                    op_ = "champ" if (kk % 2 == 0 and champ is not None) else "scripted"
+                    e_ = run_eval(N, 7 * 10 ** 6 + 104729 * kk + 1000003 * a.seed, player=mode_, opp=op_)
+                    wl[op_][0] += e_["wins"]; wl[op_][1] += e_["games"]; kk += 1
+                    print("gen", kk, op_, e_["winrate"], gen_["n"], gen_["rows"], round(time.time() - t0p), flush=True)
+                json.dump({"games": gen_["n"], "rows": gen_["rows"], "wl": wl}, open(out / "gen.json", "w"))
+                return
             e1 = run_eval(a.pikl_games, 10 ** 6, player=mode_, part=(k_, K_))
             res["scripted"] = {k: e1[k] for k in ("games", "wins", "losses", "draws", "winrate")}
             print("pikl scripted", res["scripted"], round(time.time() - t0p), flush=True)

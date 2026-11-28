@@ -1,0 +1,144 @@
+name: pikgen
+on:
+  workflow_dispatch:
+    inputs:
+      jobs: { default: "14" }
+      gen_minutes: { default: "190" }
+      conv_jobs: { default: "4" }
+      lam: { default: "0.3" }
+      init: { default: "il/g2/exam2/soup2.pt" }
+      bc_minutes: { default: "150" }
+      bc_args: { default: "--lr 3e-5 --ema 0.999 --val-w 0.5" }
+      tag: { default: "ex1" }
+permissions: { contents: write }
+concurrency: { group: pikgen, cancel-in-progress: false }
+env:
+  CRFORGE_SHA: bff1988ea5771744d898cf2ef5dfa71a6579cc6c
+  DATA_VERSION: "16.635.8"
+  EC_SHA: caa528332e48cb3c5e2f9f86b0653e5d705df50f
+  CLASHAI_DATA: /tmp/cd
+  CLASHAI_NO_ENGINE_BUILD: "1"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs: { matrix: "${{ steps.m.outputs.matrix }}", cm: "${{ steps.m.outputs.cm }}" }
+    steps:
+      - id: m
+        run: |
+          echo "matrix=$(python3 -c "print(list(range(int('${{ inputs.jobs }}'))))")" >> $GITHUB_OUTPUT
+          echo "cm=$(python3 -c "print(list(range(int('${{ inputs.conv_jobs }}'))))")" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v4
+        with: { path: lab }
+      - run: git clone -q https://github.com/voonhous/crforge crforge && git -C crforge checkout -q "$CRFORGE_SHA" && python3 lab/sim_patch/apply.py crforge
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: gradle/actions/setup-gradle@v4
+      - working-directory: crforge
+        run: ./gradlew -q --no-daemon :env:installDist :tables:dataVersionTables -Pcrforge.assetSource=cdn -Pcrforge.dataVersion=$DATA_VERSION
+      - run: |
+          git clone -q https://github.com/ethan-mcgee/clash-ai ec && git -C ec checkout -q "$EC_SHA" && rm -rf ec/.git ec/third_party
+          mkdir -p sim && cp -r crforge/env/build/install/env sim/env && cp -r crforge/python sim/python && cp -r ~/.crforge/tables/$DATA_VERSION sim/tables && mv ec sim/ec
+          tar czf sim.tgz sim
+      - uses: actions/upload-artifact@v4
+        with: { name: sim, path: sim.tgz, retention-days: 2 }
+  gen:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 260
+    strategy: { fail-fast: false, matrix: { j: "${{ fromJSON(needs.build.outputs.matrix) }}" } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q ./sim/python && pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+      - run: |
+          set +e
+          git fetch -q origin results; git show "origin/results:${{ inputs.init }}" > net.pt; cp net.pt champ.pt
+          python train/distill.py --install sim/env --tables sim/tables --out ex --envs 64 --threads 4 --minutes 0 --eval-minutes 0 \
+            --resume net.pt --champ champ.pt --pikl ${{ inputs.lam }} --gen-dir gen --gen-minutes ${{ inputs.gen_minutes }} --seed ${{ matrix.j }} 2>&1 \
+            | grep -E "^gen|Traceback|Error" | tail -30
+          cat ex/gen.json; ls gen | wc -l; du -sh gen
+      - uses: actions/upload-artifact@v4
+        with: { name: "gen-${{ matrix.j }}", path: gen/, retention-days: 3 }
+  conv:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy: { fail-fast: false, matrix: { j: "${{ fromJSON(needs.build.outputs.cm) }}" } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          pip install -q ./sim/python && pip install -q --no-deps -e ./sim/ec && pip install -q pyyaml pyarrow
+          export CLASHAI_CRFORGE_INSTALL=$PWD/sim/env CLASHAI_TABLES=$PWD/sim/tables CLASHAI_JAVA_HOME=$JAVA_HOME
+          python -m clashai.data.download 2>&1 | tail -2
+          python il/conv.py --spec "64:$(( 40 + ${{ matrix.j }} )):0" --limit 3000 --minutes 180 --out human 2>&1 | grep -E "selected|DONE|Error|Traceback" | tail -5
+          ls human | wc -l
+      - uses: actions/upload-artifact@v4
+        with: { name: "human-${{ matrix.j }}", path: human/, retention-days: 3 }
+  train:
+    needs: [gen, conv]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/download-artifact@v4
+        with: { pattern: "gen-*", path: data/gen, merge-multiple: true }
+      - uses: actions/download-artifact@v4
+        with: { pattern: "human-*", path: data/human, merge-multiple: true }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q ./sim/python && pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+      - run: |
+          set -o pipefail
+          echo "gen files $(ls data/gen | wc -l), human files $(ls data/human 2>/dev/null | grep -c npz)"
+          git fetch -q origin results; git show "origin/results:${{ inputs.init }}" > init.pt
+          python il/bc.py --data data --install sim/env --tables sim/tables --init init.pt --out out --minutes ${{ inputs.bc_minutes }} ${{ inputs.bc_args }} 2>&1 \
+            | tee log.txt | grep -E "VAL|replays|init|Error|Traceback|saved" | tail -40
+          cp log.txt out/
+      - uses: actions/upload-artifact@v4
+        with: { name: student, path: out/, retention-days: 4 }
+  exam:
+    needs: [train]
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: sim }
+      - run: tar xzf sim.tgz
+      - uses: actions/download-artifact@v4
+        with: { name: student, path: student }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q ./sim/python && pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+      - run: |
+          set +e
+          git fetch -q origin results; git show "origin/results:${{ inputs.init }}" > champ.pt
+          python train/distill.py --install sim/env --tables sim/tables --out ex --envs 64 --threads 4 --minutes 0 --eval-minutes 0 \
+            --eval-games 2112 --final 1 --resume student/policy.pt --champ champ.pt --champ-games 512 2>&1 | grep -vE "^\{'iter'" | tail -12
+          mkdir -p pub && cp ex/eval.json pub/ && cp student/policy.pt student/bc_history.json pub/ 2>/dev/null
+          python3 -c "import json;e=json.load(open('pub/eval.json'));print('EXAM net',e['winrate'],'vs_g2',e.get('vs_champ'))"
+          git config user.name lab-bot; git config user.email lab-bot@users.noreply.github.com
+          git worktree add ../res origin/results && cd ../res && git checkout -q -B results
+          D=il/${{ inputs.tag }}; mkdir -p $D && cp ../${{ github.event.repository.name }}/pub/* $D/
+          git add -A && git commit -q -m "pikgen ${{ inputs.tag }} ${{ github.run_id }}" && git push -q origin results
