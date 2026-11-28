@@ -109,6 +109,7 @@ def main():
     ap.add_argument("--search-seed", type=int, default=0, help="offset of the search-exam games (parallel jobs of one setting)")
     ap.add_argument("--card-w", default="", help="per-card exam results: decks with weak cards are trained more")
     ap.add_argument("--pikl", default="", help="piKL exam only: lam (or 'base' = old margin search); score = Q + lam*log pi(net)")
+    ap.add_argument("--pikl-teach", type=float, default=0.0, help="teacher = piKL: among the search's checked moves, argmax Q + lam*log pi(net)")
     ap.add_argument("--pikl-part", default="0/1", help="k/K: this job plays every K-th batch from k")
     ap.add_argument("--pikl-games", type=int, default=256)
     ap.add_argument("--pikl-champ-games", type=int, default=512)
@@ -625,6 +626,19 @@ def main():
             return dict(B=Bk, Mm=np.stack(bf["m"]), Y=np.stack(bf["y"]), D=D_, AH=np.stack(bf["ah"]), AE=np.stack(bf["ae"]),
                         SKa=np.stack(bf["sk"]), SPa=np.stack(bf["sp"]), RET=RET_, h0=h0_, X=np.stack(bf["x"]), OW=np.stack(bf["o"]))
 
+        def pikl_rescore(tact_, soft_, lg_):  # anchored search target: p ~ p_search * pi_net^lam (the piKL policy)
+            lp = torch.log_softmax(lg_, 1).numpy(); tact_ = np.array(tact_, np.int64).copy(); out_ = list(soft_)
+            for i in range(len(tact_)):
+                if soft_[i] is None:
+                    continue
+                ks_, p_ = soft_[i]; ks_ = np.asarray(ks_)
+                sc_ = np.log(np.maximum(p_, 1e-12)) + a.pikl_teach * lp[i, ks_]
+                tact_[i] = int(ks_[int(np.argmax(sc_))])
+                q_ = np.exp(sc_ - sc_.max()); out_[i] = (list(ks_), q_ / q_.sum())
+            return tact_, out_
+
+        if a.pikl_teach > 0:
+            teacher.margin = 0.0
         while time.time() < t_train_end:
             frac = a.p0 + (a.p1 - a.p0) * min(1.0, (time.time() - t0) / max(1, t_train_end - t0))
             beta = a.beta0 + (a.beta1 - a.beta0) * frac
@@ -642,7 +656,7 @@ def main():
                     gk = (pl - torch.log(-torch.log(torch.rand_like(pl).clamp(1e-9, 1 - 1e-9)))).topk(a.top, 1).indices.numpy() + 1
                     okp = (pl.gather(1, torch.from_numpy(gk - 1)) > -1e8).numpy()
                     btb = to_t(bb); zb, tfb, hdb = net.encode(btb); hnb = net.gru(zb, st_b["h"])
-                    _, vpb = net.heads(hnb, tfb, hdb, btb, torch.from_numpy(Mb))
+                    lgb, vpb = net.heads(hnb, tfb, hdb, btb, torch.from_numpy(Mb))
                 tm["net"] += time.time() - t1; t1 = time.time()
                 acts = np.zeros((N, 2), np.int32)
                 jseed += 1
@@ -665,9 +679,14 @@ def main():
                     tact = teacher.refine(prop, seats, np.ones(N, bool), extra); soft = teacher.soft
                 else:
                     tact = teacher.refine(prop, seats, np.ones(N, bool)); soft = teacher.soft
+                if a.pikl_teach > 0:
+                    tact, soft = pikl_rescore(tact, soft, lg)
                 SK, SP = soft_arrays(soft)
                 if a.both:  # the teacher also plays/labels the opponent's seat: twice the labels, a stronger opponent
-                    tactB = teacher.refine(propB, oseat, np.ones(N, bool)); SKB, SPB = soft_arrays(teacher.soft)
+                    tactB = teacher.refine(propB, oseat, np.ones(N, bool)); softB = teacher.soft
+                    if a.pikl_teach > 0:
+                        tactB, softB = pikl_rescore(tactB, softB, lgb)
+                    SKB, SPB = soft_arrays(softB)
                 else:
                     tactB = propB; SKB, SPB = soft_arrays([None] * N)
                 tm["teacher"] += time.time() - t1; t1 = time.time()
