@@ -1,0 +1,24 @@
+name: deckprobe
+on: { workflow_dispatch: {} }
+env:
+  EC_SHA: caa528332e48cb3c5e2f9f86b0653e5d705df50f
+  CLASHAI_DATA: /tmp/cd
+  CLASHAI_NO_ENGINE_BUILD: "1"
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          git clone -q https://github.com/ethan-mcgee/clash-ai ec && git -C ec checkout -q "$EC_SHA" && rm -rf ec/third_party
+          pip install -q --no-deps -e ./ec && pip install -q numpy pyyaml pyarrow huggingface_hub
+          python -m clashai.data.download 2>&1 | tail -1
+          python - <<'P'
+          import glob, pyarrow.parquet as pq
+          from clashai.data.download import dataset_dir
+          d = dataset_dir()
+          for sub in sorted({f.split("/")[-2] for f in glob.glob(f"{d}/*/*.parquet")}):
+              f = sorted(glob.glob(f"{d}/{sub}/*.parquet"))[0]; t = pq.read_table(f).slice(0, 3)
+              print("TABLE", sub, t.schema.names); print(t.to_pylist()[:2])
+          P
