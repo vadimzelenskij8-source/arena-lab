@@ -16,7 +16,7 @@ import torch.nn.functional as F
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "train"))
 from crforge_env import LadderConfig, VectorBattle  # noqa: E402
-from ppo2 import Enc, Net, to_t  # noqa: E402
+from ppo2 import Enc, Net, to_t, h_of  # noqa: E402
 
 
 def feats(enc, O):
@@ -102,7 +102,7 @@ def run(net, B, M, A, K, R, W, nb, L, wait_w, val_w, train=True):
     flat = {k: torch.from_numpy(np.ascontiguousarray(v.reshape(L * nb, *v.shape[2:]))) for k, v in B.items()}
     flat["num"] = flat["num"].float()
     z, tf, hand = net.encode(flat); z = z.view(L, nb, -1)
-    h = torch.zeros(nb, 256); hs = []
+    h = torch.zeros(nb, net.H); hs = []
     for t in range(L):
         h = net.gru(z[t], h); hs.append(h)
     H = torch.stack(hs).view(L * nb, -1)
@@ -136,6 +136,7 @@ def main():
     ap.add_argument("--install", required=True)
     ap.add_argument("--tables", required=True)
     ap.add_argument("--init", default="")
+    ap.add_argument("--H", type=int, default=0, help="GRU width (0: same as --init, else 256)")
     ap.add_argument("--out", default="bc_out")
     ap.add_argument("--minutes", type=float, default=60)
     ap.add_argument("--T", type=int, default=32)
@@ -159,9 +160,14 @@ def main():
     print("replays", len(files), "train", len(tr), "val", len(val), flush=True)
     vec = VectorBattle(1, 1, install=a.install, tables=a.tables, config=LadderConfig(decision_ticks=5))  # kept open: Enc reads its schema
     enc = Enc(vec); NA = vec.schema.actions
-    net = Net(enc, NA + 1)
-    if a.init:
-        print("init", net.load_state_dict(torch.load(a.init), strict=False), flush=True)
+    torch.manual_seed(12345)  # the same fresh layers in every job, so the model soup averages like with like
+    net = Net(enc, NA + 1, H=a.H or h_of(a.init))
+    torch.manual_seed(a.seed)
+    if a.init:  # same-shaped weights only (a wider net keeps the encoder of the old one)
+        sd0 = torch.load(a.init); own = net.state_dict()
+        keep = {k: v for k, v in sd0.items() if k in own and own[k].shape == v.shape}
+        print("init", len(keep), "of", len(own), "tensors", net.load_state_dict(keep, strict=False), flush=True)
+    print("params", sum(p_.numel() for p_ in net.parameters()), "H", net.H, flush=True)
     opt = torch.optim.AdamW(net.parameters(), lr=a.lr, weight_decay=1e-4)
     dtr, dval = Data(tr, enc, NA), Data(val, enc, NA)
     L = a.burn + a.T

@@ -193,10 +193,19 @@ class Enc:
         return g, {k: v.astype(np.int64) for k, v in ids.items()}
 
 
+def h_of(path, default=256):
+    """The GRU width of a saved policy (256 for our older nets)."""
+    try:
+        return int(torch.load(path, map_location="cpu")["gru.weight_hh"].shape[1]) if path else default
+    except Exception:  # noqa: BLE001
+        return default
+
+
 class Net(nn.Module):
-    def __init__(self, enc, na):
+    def __init__(self, enc, na, H=256):
         super().__init__()
         D = 128
+        self.H = H
         self.na = na
         self.cap = 99.0
         self.card = nn.Embedding(enc.V, 32)
@@ -215,17 +224,17 @@ class Net(nn.Module):
         self.cnn = nn.Sequential(nn.Conv2d(18, 24, 3, padding=1), nn.ReLU(), nn.Conv2d(24, 32, 3, padding=1), nn.ReLU())
         gin = enc.g_dim + 32 * 4 + 32 + 32 + 32
         self.glob = nn.Sequential(nn.Linear(gin, 256), nn.ReLU())
-        self.trunk = nn.Sequential(nn.Linear(2 * D + 256 + 32, 256), nn.ReLU())
-        self.gru = nn.GRUCell(256, 256)
-        self.wait = nn.Linear(256, 1)
-        self.slot = nn.Sequential(nn.Linear(256 + 32 + 3, 128), nn.ReLU(), nn.Linear(128, 33))
-        self.abil = nn.Linear(256, 2)
-        self.dele = nn.Linear(256, 1)
-        self.v = nn.Linear(256, 1)
-        self.wide = nn.Sequential(nn.Linear(256, 512), nn.ReLU(), nn.Linear(512, 256))  # more capacity for the heads
+        self.trunk = nn.Sequential(nn.Linear(2 * D + 256 + 32, H), nn.ReLU())
+        self.gru = nn.GRUCell(H, H)
+        self.wait = nn.Linear(H, 1)
+        self.slot = nn.Sequential(nn.Linear(H + 32 + 3, 128), nn.ReLU(), nn.Linear(128, 33))
+        self.abil = nn.Linear(H, 2)
+        self.dele = nn.Linear(H, 1)
+        self.v = nn.Linear(H, 1)
+        self.wide = nn.Sequential(nn.Linear(H, 2 * H), nn.ReLU(), nn.Linear(2 * H, H))  # more capacity for the heads
         nn.init.zeros_(self.wide[2].weight); nn.init.zeros_(self.wide[2].bias)
-        self.aux_hand = nn.Linear(256, enc.V)
-        self.aux_el = nn.Linear(256, 1)
+        self.aux_hand = nn.Linear(H, enc.V)
+        self.aux_el = nn.Linear(H, 1)
         ys, xs = torch.meshgrid(torch.linspace(0, 1, 32), torch.linspace(0, 1, 18), indexing="ij")
         self.register_buffer("coords", torch.stack([xs, ys])[None])
 
@@ -357,7 +366,7 @@ def main():
 
         # ---- per-env state ----
         def fresh_state():
-            return dict(h=torch.zeros(N, 256), last_play=np.full((N, 8), -1, np.int64), prev_seen=np.full((N, 8), -1, np.int64),
+            return dict(h=torch.zeros(N, net.H), last_play=np.full((N, 8), -1, np.int64), prev_seen=np.full((N, 8), -1, np.int64),
                         tw=None, cr=None, ids_me={}, ids_en={}, recent=[[] for _ in range(N)], ot=np.zeros(N, bool))
 
         def batch_obs(seats, st):

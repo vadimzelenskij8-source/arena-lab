@@ -19,7 +19,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from crforge_env import LadderConfig, ScriptedBot, SideSetup, VectorBattle
 
-from ppo2 import META, MY, OTHER, ROW, Enc, Net, to_t
+from ppo2 import META, MY, OTHER, ROW, Enc, Net, to_t, h_of
 from teacher import ForkTeacher, Teacher
 from jbot import PlayoutTeacher, ReplyTeacher, make_policy, scripted_batch
 import decks_gen
@@ -235,7 +235,7 @@ def main():
                 out_.append(d_)
             return out_
 
-        net = Net(enc, NA + 1)
+        net = Net(enc, NA + 1, H=h_of(a.resume))
         if a.resume and Path(a.resume).exists():
             try:
                 miss = net.load_state_dict(torch.load(a.resume), strict=False); print("resumed", miss, flush=True)
@@ -246,14 +246,14 @@ def main():
         league = []
         for f_ in sorted(Path(a.league).glob("*.pt")) if a.league else []:
             try:
-                m_ = Net(enc, NA + 1); m_.load_state_dict(torch.load(f_), strict=False); m_.eval()
+                m_ = Net(enc, NA + 1, H=h_of(f_)); m_.load_state_dict(torch.load(f_), strict=False); m_.eval()
                 league.append((f_.stem, m_))
             except Exception as e:  # noqa: BLE001
                 print("league skip", f_, e, flush=True)
         anchor_net = None
         if a.anchor > 0:
             apath = a.anchor_pt or a.resume
-            anchor_net = Net(enc, NA + 1); print("anchor", apath, anchor_net.load_state_dict(torch.load(apath), strict=False), flush=True)
+            anchor_net = Net(enc, NA + 1, H=h_of(apath)); print("anchor", apath, anchor_net.load_state_dict(torch.load(apath), strict=False), flush=True)
             anchor_net.eval()
             for p_ in anchor_net.parameters():
                 p_.requires_grad_(False)
@@ -261,7 +261,7 @@ def main():
         cpath = a.champ or a.resume
         if cpath and Path(cpath).exists():
             try:
-                champ = Net(enc, NA + 1); champ.load_state_dict(torch.load(cpath), strict=False); champ.eval()
+                champ = Net(enc, NA + 1, H=h_of(cpath)); champ.load_state_dict(torch.load(cpath), strict=False); champ.eval()
             except Exception as e:  # noqa: BLE001
                 champ = None; print("champ skipped", e, flush=True)
         if a.exploit and champ is not None:
@@ -271,7 +271,7 @@ def main():
         opp_kind = np.full(N, -1)
 
         if a.strong:  # the current network itself joins as an opponent (refreshed at every reset)
-            self_net = Net(enc, NA + 1); self_net.eval(); league.append(("self", self_net)); lstats["self"] = [0, 0]
+            self_net = Net(enc, NA + 1, H=net.H); self_net.eval(); league.append(("self", self_net)); lstats["self"] = [0, 0]
             a.league_share = max(a.league_share, 0.7)
 
         def assign_opps():
@@ -314,7 +314,7 @@ def main():
             b = dict(rid=en["rid"], st=en["st"], kind=en["kind"], side=en["side"], num=en["num"], valid=en["valid"],
                      tile=en["tile"], g=g, hstat=hst, deck=dk, dstat=dst, **ids)
             with torch.no_grad():
-                z, _tf, _hd = net.encode(to_t(b)); h = net.gru(z, torch.zeros(len(O), 256)); h = h + net.wide(h)
+                z, _tf, _hd = net.encode(to_t(b)); h = net.gru(z, torch.zeros(len(O), net.H)); h = h + net.wide(h)
                 return net.v(h).squeeze(-1).numpy()
         if a.vteach > 0 and a.fork == 2:
             teacher.value_fn, teacher.vw = vfn, a.vteach
@@ -323,8 +323,8 @@ def main():
         if a.sw > 0:
             teacher.value_fn, teacher.vw = vfn, a.sw
 
-        def fresh():
-            return dict(h=torch.zeros(N, 256), last_play=np.full((N, 8), -1, np.int64), prev_seen=np.full((N, 8), -1, np.int64))
+        def fresh(H=None):
+            return dict(h=torch.zeros(N, H or net.H), last_play=np.full((N, 8), -1, np.int64), prev_seen=np.full((N, 8), -1, np.int64))
 
         def batch_obs(seats, st):
             O = np.stack([vec.observations[i, seats[i]] for i in range(N)])
@@ -372,7 +372,7 @@ def main():
                 b_ = dict(rid=en["rid"], st=en["st"], kind=en["kind"], side=en["side"], num=en["num"], valid=en["valid"],
                           tile=en["tile"], g=g, hstat=hst, deck=dk, dstat=dst, **ids)
                 M_ = np.concatenate([Me.astype(bool), np.zeros((len(Oe), 1), bool)], 1)
-                ac_, _h, _t = net_act(net, b_, M_, torch.zeros(len(Oe), 256))
+                ac_, _h, _t = net_act(net, b_, M_, torch.zeros(len(Oe), net.H))
                 return ac_
             teacher.reply_fn = reply_fn
 
@@ -401,7 +401,7 @@ def main():
                 ds = [(ANY_OPP if opp_any else META)[(bi * N + i) % len(ANY_OPP if opp_any else META)] for i in range(N)]
                 mine = [ANY[(bi * N + i) % len(ANY)] for i in range(N)] if any_deck else None
                 seats = reset_all(seed_base + bi * 1009, ds, mine=mine)
-                st = fresh(); stc = fresh(); done = np.zeros(N, bool); ot = np.zeros(N, bool)
+                st = fresh(); stc = fresh(champ.H if champ is not None else None); done = np.zeros(N, bool); ot = np.zeros(N, bool)
                 gbuf = [[] for _ in range(N)] if gen_["dir"] else None
                 pend = np.zeros(N, np.int64); nrng = np.random.default_rng(seed_base + bi)
                 for step_ in range(1800):
@@ -799,13 +799,13 @@ def main():
                 lsoft = lsoft[has].mean() if has.any() else torch.zeros(())
                 lval = F.mse_loss(vv_, torch.from_numpy(pk["RET"][:, ix].reshape(-1)))
                 if a.v0_w > 0:  # the search asks the value of a position with a fresh memory: train exactly that
-                    h0z = net.gru(z.reshape(T * nb, -1), torch.zeros(T * nb, 256)); h0z = h0z + net.wide(h0z)
+                    h0z = net.gru(z.reshape(T * nb, -1), torch.zeros(T * nb, net.H)); h0z = h0z + net.wide(h0z)
                     lval = lval + a.v0_w * F.mse_loss(net.v(h0z).squeeze(-1), torch.from_numpy(pk["RET"][:, ix].reshape(-1)))
                 loss = lbc + a.soft_w * lsoft + a.val_w * lval + 0.1 * la + 0.1 * le
                 if anchor_net is not None:
                     with torch.no_grad():
                         za, tfa, handa = anchor_net.encode(flat); za = za.view(T, nb, -1)
-                        ha = torch.zeros(nb, 256); hsa = []
+                        ha = torch.zeros(nb, net.H); hsa = []
                         for t in range(T):
                             ha = anchor_net.gru(za[t], ha); hsa.append(ha); ha = ha * (1 - Dm[t]).unsqueeze(1)
                         lga, _ = anchor_net.heads(torch.stack(hsa).view(T * nb, -1), tfa, handa, flat, mk)
