@@ -1,0 +1,60 @@
+{
+ "train_decks": 249446,
+ "unique_decks": 23401,
+ "test_decks": 62874,
+ "result": {
+  "0": {
+   "decks": 5000,
+   "hidden_cards_guessed": 0.2086,
+   "whole_deck_right": 0.0
+  },
+  "1": {
+   "decks": 5000,
+   "hidden_cards_guessed": 0.3926,
+   "whole_deck_right": 0.0556
+  },
+  "2": {
+   "decks": 5000,
+   "hidden_cards_guessed": 0.5699,
+   "whole_deck_right": 0.2378
+  },
+  "3": {
+   "decks": 5000,
+   "hidden_cards_guessed": 0.6737,
+   "whole_deck_right": 0.3726
+  },
+  "4": {
+   "decks": 5000,
+   "hidden_cards_guessed": 0.7127,
+   "whole_deck_right": 0.4518
+  }
+ },
+ "league": [
+  [
+   "Ultimate Champion",
+   119539
+  ],
+  [
+   "Royal Champion",
+   35506
+  ],
+  [
+   null,
+   750
+  ],
+  [
+   "Grand Champion",
+   365
+  ]
+ ],
+ "battle_type": [
+  [
+   "pathOfLegend",
+   155410
+  ],
+  [
+   "trail",
+   750
+  ]
+ ]
+}
