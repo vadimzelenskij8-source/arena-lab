@@ -1,0 +1,13 @@
+[
+ {
+  "dir": "parts/sp-0",
+  "config": "CONFIG lr=2e-05 anchor=0.5 pikl_teach=0.3",
+  "vs_start": {
+   "games": 512,
+   "winrate": 0.2793,
+   "wins": 143,
+   "losses": 368
+  },
+  "net": 0.6031
+ }
+]
