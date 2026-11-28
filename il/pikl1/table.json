@@ -1,0 +1,47 @@
+{
+ "0.3": {
+  "vs_scripted": 0.9688,
+  "scripted_games": 256,
+  "vs_g2_wins": 419,
+  "vs_g2_losses": 90,
+  "vs_g2_games": 512,
+  "vs_g2_decisive": 0.8232,
+  "changed": 0.097
+ },
+ "0.1": {
+  "vs_scripted": 0.957,
+  "scripted_games": 256,
+  "vs_g2_wins": 378,
+  "vs_g2_losses": 133,
+  "vs_g2_games": 512,
+  "vs_g2_decisive": 0.7397,
+  "changed": 0.115
+ },
+ "base": {
+  "vs_scripted": 0.9219,
+  "scripted_games": 256,
+  "vs_g2_wins": 333,
+  "vs_g2_losses": 179,
+  "vs_g2_games": 512,
+  "vs_g2_decisive": 0.6504,
+  "changed": 0.0
+ },
+ "1": {
+  "vs_scripted": 0.8906,
+  "scripted_games": 256,
+  "vs_g2_wins": 338,
+  "vs_g2_losses": 130,
+  "vs_g2_games": 512,
+  "vs_g2_decisive": 0.7222,
+  "changed": 0.178
+ },
+ "0": {
+  "vs_scripted": 0.9062,
+  "scripted_games": 256,
+  "vs_g2_wins": 310,
+  "vs_g2_losses": 202,
+  "vs_g2_games": 512,
+  "vs_g2_decisive": 0.6055,
+  "changed": 0.149
+ }
+}
