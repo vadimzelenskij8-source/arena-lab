@@ -83,7 +83,7 @@ jobs:
           pip install -q ./sim/python && pip install -q --no-deps -e ./sim/ec && pip install -q pyyaml pyarrow
           export CLASHAI_CRFORGE_INSTALL=$PWD/sim/env CLASHAI_TABLES=$PWD/sim/tables CLASHAI_JAVA_HOME=$JAVA_HOME
           python -m clashai.data.download 2>&1 | tail -2
-          python il/conv.py --spec "64:$(( 40 + ${{ matrix.j }} )):0" --limit 3000 --minutes 180 --out human 2>&1 | grep -E "selected|DONE|Error|Traceback" | tail -5
+          python il/conv.py --spec "64:$(( 40 + ${{ matrix.j }} )):0" --limit 3000 --minutes ${{ inputs.gen_minutes }} --out human 2>&1 | grep -E "selected|DONE|Error|Traceback" | tail -5
           ls human | wc -l
       - uses: actions/upload-artifact@v4
         with: { name: "human-${{ matrix.j }}", path: human/, retention-days: 3 }
