@@ -35,8 +35,12 @@ for i, dk in enumerate(cnt):
         index[c].add(i)
 uniq = list(cnt)
 
+top8 = [c for c, _ in card.most_common(8)]
+
 def predict(rev):
     rev = set(rev); sc = collections.Counter()
+    if not rev:
+        return top8, len(uniq)
     ids = set.intersection(*(index[c] for c in rev)) if rev else set(range(len(uniq)))
     for i in ids:
         for c in uniq[i] - rev:
@@ -55,7 +59,7 @@ for k in (0, 1, 2, 3, 4):
             continue
         rev = od[:k]; pr, _ = predict(rev)
         h = len(set(pr) & (dk - set(rev))); hit += h; tot += 8 - len(set(rev)); exact += int(h == 8 - len(set(rev))); n += 1
-        if n >= 20000:
+        if n >= 5000:
             break
     res[k] = {"decks": n, "hidden_cards_guessed": round(hit / max(1, tot), 4), "whole_deck_right": round(exact / max(1, n), 4)}
     print("REVEALED", k, res[k], flush=True)
